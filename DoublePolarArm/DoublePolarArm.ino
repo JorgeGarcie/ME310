@@ -23,6 +23,11 @@ const float Cx    = 70.0f;
 const float Cy    = 70.0f;
 const float Rplat = 45.0f;
 
+// Store the current motor positions to optimize movement
+float current_lever_angle = 0;  // in radians
+float current_platform_angle = 0;  // in radians
+bool first_move = true;  // Flag for first movement
+
 // Configuration options
 bool useElbowUp = true;  // true = use first intersection (elbow up), false = use second intersection (elbow down)
 
@@ -79,6 +84,7 @@ void waitForMotors() {
 /**
  * Draw a point defined in platform-relative coordinates 
  * Using the intersection of lever arc and platform distance
+ * Optimized to minimize movement between points
  */
 bool drawPlatformPoint(float rx, float ry) {
   // 1. Constrain to platform radius
@@ -124,35 +130,76 @@ bool drawPlatformPoint(float rx, float ry) {
   float x2 = Cx * a / center_dist;
   float y2 = Cy * a / center_dist;
   
-  // Two intersection points - choose based on elbow configuration
-  float intersection_x, intersection_y;
+  // Calculate both possible intersections
+  float intersection1_x = x2 + h * (-Cy) / center_dist;
+  float intersection1_y = y2 + h * Cx / center_dist;
   
-  if (useElbowUp) {
-    // First solution ("elbow up")
-    intersection_x = x2 + h * (-Cy) / center_dist;
-    intersection_y = y2 + h * Cx / center_dist;
-    DEBUG_SERIAL.println("Using elbow UP configuration");
+  float intersection2_x = x2 - h * (-Cy) / center_dist;
+  float intersection2_y = y2 - h * Cx / center_dist;
+  
+  // Calculate lever angles for both solutions
+  float lever_angle1 = atan2(intersection1_y, intersection1_x);
+  float lever_angle2 = atan2(intersection2_y, intersection2_x);
+  
+  // Calculate intersection angles from platform center
+  float intersection1_angle_from_platform = atan2(intersection1_y - Cy, intersection1_x - Cx);
+  float intersection2_angle_from_platform = atan2(intersection2_y - Cy, intersection2_x - Cx);
+  
+  // Calculate platform angles for both solutions
+  float platform_angle1 = intersection1_angle_from_platform - original_angle;
+  float platform_angle2 = intersection2_angle_from_platform - original_angle;
+  
+  // Normalize platform angles to [-π, π]
+  while (platform_angle1 > PI) platform_angle1 -= 2*PI;
+  while (platform_angle1 < -PI) platform_angle1 += 2*PI;
+  while (platform_angle2 > PI) platform_angle2 -= 2*PI;
+  while (platform_angle2 < -PI) platform_angle2 += 2*PI;
+  
+  // Choose the solution with the minimum movement from current position
+  float theta1, theta2;
+  float movement1, movement2;
+  
+  if (first_move) {
+    // For first move, prefer the solution with platform angle closer to 0
+    movement1 = abs(platform_angle1);
+    movement2 = abs(platform_angle2);
+    first_move = false;
   } else {
-    // Second solution ("elbow down")
-    intersection_x = x2 - h * (-Cy) / center_dist;
-    intersection_y = y2 - h * Cx / center_dist;
-    DEBUG_SERIAL.println("Using elbow DOWN configuration");
+    // Calculate total angular distance for both solutions
+    movement1 = abs(lever_angle1 - current_lever_angle) + abs(platform_angle1 - current_platform_angle);
+    movement2 = abs(lever_angle2 - current_lever_angle) + abs(platform_angle2 - current_platform_angle);
   }
   
-  DEBUG_SERIAL.print("Intersection world coordinates: (");
-  DEBUG_SERIAL.print(intersection_x);
-  DEBUG_SERIAL.print(", ");
-  DEBUG_SERIAL.print(intersection_y);
-  DEBUG_SERIAL.println(")");
+  // Choose the solution with less movement
+  if (movement1 <= movement2) {
+    theta1 = lever_angle1;
+    theta2 = platform_angle1;
+    DEBUG_SERIAL.println("Using first intersection (less movement)");
+    DEBUG_SERIAL.print("Movement cost: ");
+    DEBUG_SERIAL.println(movement1);
+    
+    DEBUG_SERIAL.print("World coordinates: (");
+    DEBUG_SERIAL.print(intersection1_x);
+    DEBUG_SERIAL.print(", ");
+    DEBUG_SERIAL.print(intersection1_y);
+    DEBUG_SERIAL.println(")");
+  } else {
+    theta1 = lever_angle2;
+    theta2 = platform_angle2;
+    DEBUG_SERIAL.println("Using second intersection (less movement)");
+    DEBUG_SERIAL.print("Movement cost: ");
+    DEBUG_SERIAL.println(movement2);
+    
+    DEBUG_SERIAL.print("World coordinates: (");
+    DEBUG_SERIAL.print(intersection2_x);
+    DEBUG_SERIAL.print(", ");
+    DEBUG_SERIAL.print(intersection2_y);
+    DEBUG_SERIAL.println(")");
+  }
   
-  // Calculate angle of intersection point relative to platform center
-  float intersection_angle_from_platform = atan2(intersection_y - Cy, intersection_x - Cx);
-  
-  // Calculate required platform rotation to bring the target point to the intersection
-  float theta2 = intersection_angle_from_platform - original_angle;
-  
-  // Calculate lever angle to reach the intersection point
-  float theta1 = atan2(intersection_y, intersection_x);
+  // Store current positions for next movement
+  current_lever_angle = theta1;
+  current_platform_angle = theta2;
   
   // Print angles
   DEBUG_SERIAL.print("Platform angle (theta2) (deg): ");
