@@ -26,9 +26,16 @@
 
 // Geometry & homes (in raw units, 0–4095)
 #define POLAR_ARM_LENGTH   98.995f  // Polar arm length [mm]
-#define POLAR_ARM_HOME    (56.25f/360.0f*4096.0f)  // Polar arm home position
-#define PLATFORM_HOME     600.0f  // Platform home position to not obstruct
+#define POLAR_ARM_HOME    (56.25f/360.0f*4096.0f)  // DO NOT MODIFY USEFUL FOR CALCULATIONS - DO NOT GO THERE
+#define POLAR_ARM_NO_OBSTRUCT_HOME (236.25f/360.0f*4096.0f) // ACTUAL POSITION TO REST
+#define PLATFORM_HOME     590.0f  // Platform home position to not obstruct
 #define HANDLER_HOME     1705.0f  // Platform home position
+
+// Predetermined Positions in Units for System
+#define HOMING_HANDLER 1705
+#define HANDLER2PLATFORM 
+#define PLATFORM_UP 790
+#define STREAKING_STATION 3753
 
 // Movement speeds
 #define POLAR_ARM_SPEED   100  // Polar arm movement speed
@@ -40,11 +47,6 @@
 #define PURGE_TIMEOUT    2000  // Maximum time for purge operation
 #define HOME_TIMEOUT     5000  // Maximum time for homing operation
 #define DISH_LOAD_TIMEOUT 3000 // Maximum time for dish loading
-
-// Predetermined Positions in Units for the Cartridges
-#define HOMING_HANDLER 1705
-#define HANDLER2PLATFORM 3753
-#define POLAR_ARM_HOME_NO_OBSTRUCTION 640 + 300
 
 // Determine The Pins for Solenoid Valves and Diaphrams
 #define LID_SUCTION 5

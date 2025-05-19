@@ -66,8 +66,9 @@ void HardwareControl::homeAllAxes() {
   
   // Move motors to home positions
   dxl.setGoalPosition(DXL_PLATFORM, (uint32_t)PLATFORM_HOME);
-  waitForMotors(DXL_HANDLER); // Wait for Platform to Lower First 
-  dxl.setGoalPosition(DXL_POLAR_ARM, (uint32_t)POLAR_ARM_HOME);
+  waitForMotors(DXL_PLATFORM); // Wait for Platform to Lower First 
+  delay(500);
+  dxl.setGoalPosition(DXL_POLAR_ARM, (uint32_t)POLAR_ARM_NO_OBSTRUCT_HOME);
   dxl.setGoalPosition(DXL_HANDLER, (uint32_t)HANDLER_HOME);
   
   // Wait for motors to reach position
@@ -94,9 +95,10 @@ void HardwareControl::waitForMotors(uint8_t motorId) {
       m1 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_POLAR_ARM);
       m2 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_PLATFORM);
       m3 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_HANDLER);
+
     }
     delay(5);
-  } while (m1 || m2 || m3);
+  } while (m1 == 1 || m2 == 1|| m3 == 1);
 }
 
 uint16_t HardwareControl::degToRaw(float degrees) {
@@ -111,7 +113,7 @@ float HardwareControl::rawToDeg(uint16_t raw) {
 
 bool HardwareControl::homePosition() {
   // Set home position for all axes
-  dxl.setGoalPosition(DXL_POLAR_ARM, (uint32_t)POLAR_ARM_HOME);
+  dxl.setGoalPosition(DXL_POLAR_ARM, (uint32_t)POLAR_ARM_NO_OBSTRUCT_HOME);
   dxl.setGoalPosition(DXL_PLATFORM, (uint32_t)PLATFORM_HOME);
   dxl.setGoalPosition(DXL_HANDLER, (uint32_t)HANDLER_HOME);
   
@@ -464,29 +466,31 @@ bool HardwareControl::extrudeSample() { return true; }
 bool HardwareControl::retractSample() { return true; }
 
 bool HardwareControl::rotateToStreakingStation() { 
-  dxl.setGoalPosition(DXL_HANDLER, 3753);
+  dxl.setGoalPosition(DXL_HANDLER, STREAKING_STATION);
   waitForMotors();
 
   return true; }
 
 bool HardwareControl::rotateHandlerToInitial() { 
-  dxl.setGoalPosition(DXL_HANDLER, 1705);
+  dxl.setGoalPosition(DXL_HANDLER, HANDLER_HOME);
   waitForMotors();
 
   return true; }
 
 bool HardwareControl::platformGearUp() { 
-  dxl.setGoalPosition(DXL_PLATFORM, 790);
+  dxl.setGoalPosition(DXL_PLATFORM, PLATFORM_UP);
+  waitForMotors();
   return true; 
 }
 
 bool HardwareControl::platformGearDown() {
-  dxl.setGoalPosition(DXL_PLATFORM, 300);
+  dxl.setGoalPosition(DXL_PLATFORM, PLATFORM_HOME); // Home and Down are down.
+  waitForMotors();  
   return true; 
 }
 
 bool HardwareControl::platformSuctionOn() { 
-  digitalWrite(PLATFORM_SUCTION, HIGH); 
+  digitalWrite(PLATFORM_SUCTION, HIGH);  
   return true; 
 }
 

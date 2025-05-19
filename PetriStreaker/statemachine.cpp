@@ -69,7 +69,10 @@ void StateMachine::update() {
       break;
       
     case CYCLE_ROTATE_TO_STREAK:
+      hardware.platformGearDown(); // Always make sure that it is in the bottom.
+      delay(100); // Change 
       hardware.rotateToStreakingStation(); // Handler
+      delay(5000); // or wait till the handler stops somehow - Change
       hardware.platformGearUp();
       hardware.platformSuctionOn();
       hardware.lowerLidLifter();
@@ -98,6 +101,7 @@ void StateMachine::update() {
       hardware.retractSample();
       hardware.platformSuctionOff();
       hardware.platformGearDown();
+      delay(500); // wait for platform gear down
 
       stateComplete = updateExecuteStreakState();
       if (stateComplete) transitionToState(CYCLE_CUT_FILAMENT);
