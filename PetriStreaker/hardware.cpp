@@ -67,7 +67,6 @@ void HardwareControl::homeAllAxes() {
   // Move motors to home positions
   dxl.setGoalPosition(DXL_PLATFORM, (uint32_t)PLATFORM_HOME);
   waitForMotors(DXL_PLATFORM); // Wait for Platform to Lower First 
-  delay(500);
   dxl.setGoalPosition(DXL_POLAR_ARM, (uint32_t)POLAR_ARM_NO_OBSTRUCT_HOME);
   dxl.setGoalPosition(DXL_HANDLER, (uint32_t)HANDLER_HOME);
   
@@ -84,21 +83,53 @@ void HardwareControl::homeAllAxes() {
 
 void HardwareControl::waitForMotors(uint8_t motorId) {
   uint32_t m1, m2, m3;
+  
+  // Initial delay to allow motor controller to update status registers
+  delay(50);
+  
+  // Initial check to see if motors are moving
+  if (motorId > 0) {
+    m1 = dxl.readControlTableItem(ControlTableItem::MOVING, motorId);
+    m2 = 0;
+    m3 = 0;
+  } else {
+    m1 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_POLAR_ARM);
+    m2 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_PLATFORM);
+    m3 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_HANDLER);
+  }
+  
+  // If no motors appear to be moving initially, wait a bit more and check again
+  if (m1 == 0 && m2 == 0 && m3 == 0) {
+    delay(50);
+    
+    // Double-check
+    if (motorId > 0) {
+      m1 = dxl.readControlTableItem(ControlTableItem::MOVING, motorId);
+    } else {
+      m1 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_POLAR_ARM);
+      m2 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_PLATFORM);
+      m3 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_HANDLER);
+    }
+    
+    // If still no movement detected, assume the motors completed their movement quickly
+    if (m1 == 0 && m2 == 0 && m3 == 0) {
+      return;
+    }
+  }
+  
+  // Main waiting loop
   do {
-    // If specific motor specified, check only that one
     if (motorId > 0) {
       m1 = dxl.readControlTableItem(ControlTableItem::MOVING, motorId);
       m2 = 0;
       m3 = 0;
     } else {
-      // Check all motors
       m1 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_POLAR_ARM);
       m2 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_PLATFORM);
       m3 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_HANDLER);
-
     }
-    delay(5);
-  } while (m1 == 1 || m2 == 1|| m3 == 1);
+    delay(5);  // Small delay between checks
+  } while (m1 == 1 || m2 == 1 || m3 == 1);
 }
 
 uint16_t HardwareControl::degToRaw(float degrees) {
@@ -456,7 +487,7 @@ bool HardwareControl::movePolarArmToVial() {
 }
 
 bool HardwareControl::movePolarArmToPlatform(){
-  dxl.setGoalPosition(DXL_POLAR_ARM, degToRaw(56.25)); // 
+  dxl.setGoalPosition(DXL_POLAR_ARM, POLAR_ARM_NO_OBSTRUCT_HOME); // Change but can work for now
   waitForMotors();
   return true; 
 }
