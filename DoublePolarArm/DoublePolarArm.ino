@@ -395,6 +395,8 @@ void drawLine(float x1, float y1, float x2, float y2, int num_points) {
   DEBUG_SERIAL.println("Line complete");
 }
 
+
+
 void processCommand(String command) {
   // Check for home command
   if (command.equals("h") || command.equals("home")) {
