@@ -56,6 +56,7 @@ void StateMachine::update() {
       break;
       
     case CYCLE_LOWER_DISH:
+      hardware.rotateHandlerToInitial();
       stateComplete = updateLowerDishState();
       if (stateComplete) {
         if (hardware.areMoreDishesAvailable()) {
@@ -68,7 +69,7 @@ void StateMachine::update() {
       break;
       
     case CYCLE_ROTATE_TO_STREAK:
-      hardware.rotateToStreakingStation();
+      hardware.rotateToStreakingStation(); // Handler
       hardware.platformGearUp();
       hardware.platformSuctionOn();
       hardware.lowerLidLifter();
@@ -89,16 +90,35 @@ void StateMachine::update() {
       break;
       
     case CYCLE_EXECUTE_STREAK:
+      hardware.extrudeFilament(100);
+      hardware.executeStreakPattern(1); // Spiral Streak
+      hardware.lowerLidLifter();
+      hardware.LidSuctionOff();
+      hardware.raiseLidLifter();
+      hardware.retractSample();
+      hardware.platformSuctionOff();
+      hardware.platformGearDown();
+
       stateComplete = updateExecuteStreakState();
       if (stateComplete) transitionToState(CYCLE_CUT_FILAMENT);
       break;
       
     case CYCLE_CUT_FILAMENT:
+      hardware.movePolarArmToVial(); // Will be changed to rotate to cutter instead
+      hardware.extrudeSample();
+      hardware.cutFilament();
+      hardware.movePolarArmToPlatform(); // Maybe will change to platform plus offset to move away from lid lifter
+
       stateComplete = updateCutFilamentState();
       if (stateComplete) transitionToState(CYCLE_RESTACK_DISH);
       break;
       
     case CYCLE_RESTACK_DISH:
+      hardware.rotateHandlerToInitial();
+      hardware.solenoidLift();
+      hardware.solenoidDown();
+      hardware.rotateHandlerToInitial();
+
       stateComplete = updateRestackDishState();
       if (stateComplete) {
         moreDishesInCartridge = hardware.areMoreDishesAvailable();

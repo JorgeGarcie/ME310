@@ -12,8 +12,8 @@
 
 // Motor IDs
 #define DXL_POLAR_ARM    2  // Polar arm / lever motor ID
-#define DXL_PLATFORM     3  // Platform / dish handler motor ID
-#define DXL_HANDLER       4  // Handler for dish stacking motor ID
+#define DXL_PLATFORM     3  // Platform motor ID
+#define DXL_HANDLER      4  // Handler for dish stacking motor ID
 #define DXL_EXTRUDER     5  // Extruder for sample dispensing motor ID
 
 // Hardware pin definitions
@@ -26,9 +26,9 @@
 
 // Geometry & homes (in raw units, 0–4095)
 #define POLAR_ARM_LENGTH   98.995f  // Polar arm length [mm]
-#define POLAR_ARM_HOME    (95.36f/360.0f*4096.0f)  // Polar arm home position
-#define PLATFORM_HOME     0.0f  // Platform home position
-#define HANDLER_HOME     0.0f  // Platform home position
+#define POLAR_ARM_HOME    (56.25f/360.0f*4096.0f)  // Polar arm home position
+#define PLATFORM_HOME     600.0f  // Platform home position to not obstruct
+#define HANDLER_HOME     1705.0f  // Platform home position
 
 // Movement speeds
 #define POLAR_ARM_SPEED   100  // Polar arm movement speed
@@ -44,6 +44,7 @@
 // Predetermined Positions in Units for the Cartridges
 #define HOMING_HANDLER 1705
 #define HANDLER2PLATFORM 3753
+#define POLAR_ARM_HOME_NO_OBSTRUCTION 640 + 300
 
 // Determine The Pins for Solenoid Valves and Diaphrams
 #define LID_SUCTION 5

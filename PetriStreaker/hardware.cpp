@@ -35,6 +35,13 @@ void HardwareControl::initialize() {
   dxl.torqueOn(DXL_PLATFORM);
   dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, DXL_PLATFORM, PLATFORM_SPEED);
 
+  // Initialize handler motor
+  dxl.torqueOff(DXL_HANDLER);
+  dxl.setOperatingMode(DXL_HANDLER, OP_POSITION);
+  dxl.setOperatingMode(DXL_PLATFORM, 4); // USE IT TO RESET IT
+  dxl.torqueOn(DXL_HANDLER);
+  dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, DXL_HANDLER, PLATFORM_SPEED);
+
   // Initialize (Off) Solenoid Valves and Pumps
   pinMode(LID_SUCTION, OUTPUT);
   pinMode(LID_SOLENOID, OUTPUT);
@@ -58,8 +65,10 @@ void HardwareControl::homeAllAxes() {
   DEBUG_SERIAL.println("Homing all axes...");
   
   // Move motors to home positions
-  dxl.setGoalPosition(DXL_POLAR_ARM, (uint32_t)POLAR_ARM_HOME);
   dxl.setGoalPosition(DXL_PLATFORM, (uint32_t)PLATFORM_HOME);
+  waitForMotors(DXL_HANDLER); // Wait for Platform to Lower First 
+  dxl.setGoalPosition(DXL_POLAR_ARM, (uint32_t)POLAR_ARM_HOME);
+  dxl.setGoalPosition(DXL_HANDLER, (uint32_t)HANDLER_HOME);
   
   // Wait for motors to reach position
   waitForMotors();
@@ -73,19 +82,21 @@ void HardwareControl::homeAllAxes() {
 }
 
 void HardwareControl::waitForMotors(uint8_t motorId) {
-  uint32_t m1, m2;
+  uint32_t m1, m2, m3;
   do {
     // If specific motor specified, check only that one
     if (motorId > 0) {
       m1 = dxl.readControlTableItem(ControlTableItem::MOVING, motorId);
       m2 = 0;
+      m3 = 0;
     } else {
       // Check all motors
       m1 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_POLAR_ARM);
       m2 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_PLATFORM);
+      m3 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_HANDLER);
     }
     delay(5);
-  } while (m1 || m2);
+  } while (m1 || m2 || m3);
 }
 
 uint16_t HardwareControl::degToRaw(float degrees) {
@@ -102,6 +113,7 @@ bool HardwareControl::homePosition() {
   // Set home position for all axes
   dxl.setGoalPosition(DXL_POLAR_ARM, (uint32_t)POLAR_ARM_HOME);
   dxl.setGoalPosition(DXL_PLATFORM, (uint32_t)PLATFORM_HOME);
+  dxl.setGoalPosition(DXL_HANDLER, (uint32_t)HANDLER_HOME);
   
   // Wait for motors to complete
   waitForMotors();
@@ -442,7 +454,7 @@ bool HardwareControl::movePolarArmToVial() {
 }
 
 bool HardwareControl::movePolarArmToPlatform(){
-  dxl.setGoalPosition(DXL_POLAR_ARM, degToRaw(280.9)); // 290.9 for now but needs refinement
+  dxl.setGoalPosition(DXL_POLAR_ARM, degToRaw(56.25)); // 
   waitForMotors();
   return true; 
 }
@@ -454,20 +466,22 @@ bool HardwareControl::retractSample() { return true; }
 bool HardwareControl::rotateToStreakingStation() { 
   dxl.setGoalPosition(DXL_HANDLER, 3753);
   waitForMotors();
+
   return true; }
 
 bool HardwareControl::rotateHandlerToInitial() { 
   dxl.setGoalPosition(DXL_HANDLER, 1705);
   waitForMotors();
+
   return true; }
 
 bool HardwareControl::platformGearUp() { 
-  //dxl.setGoalPosition(DXL_PLATFORM, 790);
+  dxl.setGoalPosition(DXL_PLATFORM, 790);
   return true; 
 }
 
 bool HardwareControl::platformGearDown() {
-  //dxl.setGoalPosition(DXL_PLATFORM, 300);
+  dxl.setGoalPosition(DXL_PLATFORM, 300);
   return true; 
 }
 
