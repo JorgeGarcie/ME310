@@ -58,13 +58,17 @@ class HardwareControl {
     bool retractSample();
     bool rotateToStreakingStation();
     bool rotateHandlerToInitial();
+    bool rotateHandlerToFinished();
+    bool resetEncoder(uint8_t motorId);
     bool platformGearUp();
+    bool shakeHandler();
     bool platformGearDown();
     bool platformSuctionOn();
     bool platformSuctionOff();
     bool LidSuctionOn();
     bool LidSuctionOff();
     bool lowerLidLifter();
+    bool lowerLidLifterNoContact();
     bool raiseLidLifter();
     bool cutFilament();
     bool extrudeFilament(float amount);

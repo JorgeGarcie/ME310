@@ -71,11 +71,12 @@ void StateMachine::update() {
     case CYCLE_ROTATE_TO_STREAK:
       hardware.platformGearDown(); // Always make sure that it is in the bottom.
       hardware.rotateToStreakingStation(); // Handler
-      hardware.platformGearUp();
-      hardware.platformSuctionOn();
       hardware.LidSuctionOn();
       hardware.lowerLidLifter();
       delay(100);
+      hardware.platformGearUp();
+      hardware.platformSuctionOn();
+
       hardware.raiseLidLifter();
       hardware.movePolarArmToPlatform();
 
@@ -95,13 +96,13 @@ void StateMachine::update() {
       hardware.extrudeFilament(100);
       hardware.executeStreakPattern(0); // Line Streak
       hardware.movePolarArmToVial();
-      hardware.lowerLidLifter();
-      hardware.LidSuctionOff();
-      delay(300);
-      hardware.raiseLidLifter();
-      hardware.retractSample();
       hardware.platformSuctionOff();
       hardware.platformGearDown();
+      hardware.lowerLidLifter();
+      hardware.LidSuctionOff();
+      delay(1000);
+      hardware.raiseLidLifter();
+      hardware.retractSample();
 
       stateComplete = updateExecuteStreakState();
       if (stateComplete) transitionToState(CYCLE_CUT_FILAMENT);
@@ -118,9 +119,11 @@ void StateMachine::update() {
       break;
       
     case CYCLE_RESTACK_DISH:
-      hardware.rotateHandlerToInitial();
+      hardware.rotateHandlerToFinished();
+      hardware.resetEncoder(DXL_HANDLER);
       hardware.solenoidLift();
       hardware.solenoidDown();
+      delay(1000); // Simualtes Solenoid for now
       hardware.rotateHandlerToInitial();
 
       stateComplete = updateRestackDishState();

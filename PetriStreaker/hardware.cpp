@@ -43,8 +43,7 @@ void HardwareControl::initialize() {
 
   // Initialize handler motor
   dxl.torqueOff(DXL_HANDLER);
-  dxl.setOperatingMode(DXL_HANDLER, OP_POSITION);
-  dxl.setOperatingMode(DXL_PLATFORM, 4); // USE IT TO RESET IT
+  dxl.setOperatingMode(DXL_PLATFORM, OP_EXTENDED_POSITION); // USE IT TO RESET IT
   dxl.torqueOn(DXL_HANDLER);
   dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, DXL_HANDLER, HANDLER_SPEED);
 
@@ -526,10 +525,47 @@ bool HardwareControl::rotateHandlerToInitial() {
 
   return true; }
 
+bool HardwareControl::rotateHandlerToFinished() { 
+  dxl.setGoalPosition(DXL_HANDLER, HANDLER_RESTACKER);
+  waitForMotors();
+
+  return true; }
+
+bool HardwareControl::resetEncoder(uint8_t motorId) { 
+
+  dxl.torqueOff(motorId);
+  dxl.setOperatingMode(motorId, OP_POSITION); // USE IT TO RESET IT
+  dxl.setOperatingMode(motorId, 4); 
+  dxl.torqueOn(motorId);
+
+  return true; }
+
 bool HardwareControl::platformGearUp() { 
   dxl.setGoalPosition(DXL_PLATFORM, PLATFORM_UP);
   waitForMotors();
   return true; 
+}
+
+bool HardwareControl::shakeHandler() {
+  // Get current position
+  float pos = dxl.getPresentPosition(DXL_HANDLER);
+  
+  // Shake 10 times
+  for (int i = 0; i < 10; i++) {
+    // Move handler to positive offset
+    dxl.setGoalPosition(DXL_HANDLER, pos + 50);
+    waitForMotors(DXL_HANDLER);
+
+    // Move handler to negative offset
+    dxl.setGoalPosition(DXL_HANDLER, pos - 50);
+    waitForMotors(DXL_HANDLER);
+  }
+  
+  // Return to original position
+  dxl.setGoalPosition(DXL_HANDLER, pos);
+  waitForMotors(DXL_HANDLER);
+  
+  return true;
 }
 
 bool HardwareControl::platformGearDown() {
@@ -569,6 +605,13 @@ bool HardwareControl::lowerLidLifter() {
   waitForMotors();  
   return true; 
 }
+
+bool HardwareControl::lowerLidLifterNoContact() { 
+  dxl.setGoalPosition(DXL_LID_LIFTER, LID_LIFTER_DOWN + 150); // Home and Down are down.
+  waitForMotors();  
+  return true; 
+}
+
 bool HardwareControl::raiseLidLifter() { 
   dxl.setGoalPosition(DXL_LID_LIFTER, LID_LIFTER_HOME); // Home and Down are down.
   waitForMotors();  
