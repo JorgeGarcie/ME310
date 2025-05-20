@@ -73,8 +73,9 @@ void StateMachine::update() {
       hardware.rotateToStreakingStation(); // Handler
       hardware.platformGearUp();
       hardware.platformSuctionOn();
-      hardware.lowerLidLifter();
       hardware.LidSuctionOn();
+      hardware.lowerLidLifter();
+      delay(100);
       hardware.raiseLidLifter();
       hardware.movePolarArmToPlatform();
 
@@ -93,8 +94,10 @@ void StateMachine::update() {
     case CYCLE_EXECUTE_STREAK:
       hardware.extrudeFilament(100);
       hardware.executeStreakPattern(0); // Line Streak
+      hardware.movePolarArmToVial();
       hardware.lowerLidLifter();
       hardware.LidSuctionOff();
+      delay(300);
       hardware.raiseLidLifter();
       hardware.retractSample();
       hardware.platformSuctionOff();

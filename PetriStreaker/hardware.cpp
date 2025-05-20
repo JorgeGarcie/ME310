@@ -24,6 +24,12 @@ void HardwareControl::initialize() {
   dxl.setPortProtocolVersion(2.0); // Set Protocol version
   
   // Initialize polar arm motor
+  dxl.torqueOff(DXL_LID_LIFTER);
+  dxl.setOperatingMode(DXL_LID_LIFTER, OP_POSITION);
+  dxl.torqueOn(DXL_LID_LIFTER);
+  dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, DXL_LID_LIFTER, LID_LIFTER_SPEED);
+
+  // Initialize polar arm motor
   dxl.torqueOff(DXL_POLAR_ARM);
   dxl.setOperatingMode(DXL_POLAR_ARM, OP_POSITION);
   dxl.torqueOn(DXL_POLAR_ARM);
@@ -40,7 +46,7 @@ void HardwareControl::initialize() {
   dxl.setOperatingMode(DXL_HANDLER, OP_POSITION);
   dxl.setOperatingMode(DXL_PLATFORM, 4); // USE IT TO RESET IT
   dxl.torqueOn(DXL_HANDLER);
-  dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, DXL_HANDLER, PLATFORM_SPEED);
+  dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, DXL_HANDLER, HANDLER_SPEED);
 
   // Initialize (Off) Solenoid Valves and Pumps
   pinMode(LID_SUCTION, OUTPUT);
@@ -67,6 +73,8 @@ void HardwareControl::homeAllAxes() {
   // Move motors to home positions
   dxl.setGoalPosition(DXL_PLATFORM, (uint32_t)PLATFORM_HOME);
   waitForMotors(DXL_PLATFORM); // Wait for Platform to Lower First 
+  dxl.setGoalPosition(DXL_LID_LIFTER, (uint32_t)LID_LIFTER_HOME);
+  waitForMotors(DXL_LID_LIFTER); // Wait for Platform to Lower First 
   dxl.setGoalPosition(DXL_POLAR_ARM, (uint32_t)POLAR_ARM_NO_OBSTRUCT_HOME);
   dxl.setGoalPosition(DXL_HANDLER, (uint32_t)HANDLER_HOME);
   
@@ -82,7 +90,7 @@ void HardwareControl::homeAllAxes() {
 }
 
 void HardwareControl::waitForMotors(uint8_t motorId) {
-  uint32_t m1, m2, m3;
+  uint32_t m1, m2, m3, m4;
   
   // Initial delay to allow motor controller to update status registers
   delay(50);
@@ -92,14 +100,16 @@ void HardwareControl::waitForMotors(uint8_t motorId) {
     m1 = dxl.readControlTableItem(ControlTableItem::MOVING, motorId);
     m2 = 0;
     m3 = 0;
+    m4 = 0;
   } else {
     m1 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_POLAR_ARM);
     m2 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_PLATFORM);
     m3 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_HANDLER);
+    m4 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_LID_LIFTER);
   }
   
   // If no motors appear to be moving initially, wait a bit more and check again
-  if (m1 == 0 && m2 == 0 && m3 == 0) {
+  if (m1 == 0 && m2 == 0 && m3 == 0  && m4 == 0) {
     delay(50);
     
     // Double-check
@@ -109,10 +119,12 @@ void HardwareControl::waitForMotors(uint8_t motorId) {
       m1 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_POLAR_ARM);
       m2 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_PLATFORM);
       m3 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_HANDLER);
+      m4 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_LID_LIFTER);
+
     }
     
     // If still no movement detected, assume the motors completed their movement quickly
-    if (m1 == 0 && m2 == 0 && m3 == 0) {
+    if (m1 == 0 && m2 == 0 && m3 == 0  && m4 == 0) {
       return;
     }
   }
@@ -123,13 +135,15 @@ void HardwareControl::waitForMotors(uint8_t motorId) {
       m1 = dxl.readControlTableItem(ControlTableItem::MOVING, motorId);
       m2 = 0;
       m3 = 0;
+      m4 = 0;
     } else {
       m1 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_POLAR_ARM);
       m2 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_PLATFORM);
       m3 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_HANDLER);
+      m4 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_LID_LIFTER);
     }
     delay(5);  // Small delay between checks
-  } while (m1 == 1 || m2 == 1 || m3 == 1);
+  } while (m1 == 1 || m2 == 1 || m3 == 1 || m4 == 1);
 }
 
 uint16_t HardwareControl::degToRaw(float degrees) {
@@ -143,11 +157,15 @@ float HardwareControl::rawToDeg(uint16_t raw) {
 }
 
 bool HardwareControl::homePosition() {
-  // Set home position for all axes
-  dxl.setGoalPosition(DXL_POLAR_ARM, (uint32_t)POLAR_ARM_NO_OBSTRUCT_HOME);
-  dxl.setGoalPosition(DXL_PLATFORM, (uint32_t)PLATFORM_HOME);
-  dxl.setGoalPosition(DXL_HANDLER, (uint32_t)HANDLER_HOME);
+
   
+    // Move motors to home positions
+  dxl.setGoalPosition(DXL_PLATFORM, (uint32_t)PLATFORM_HOME);
+  waitForMotors(DXL_PLATFORM); // Wait for Platform to Lower First 
+  dxl.setGoalPosition(DXL_LID_LIFTER, (uint32_t)LID_LIFTER_HOME);
+  waitForMotors(DXL_LID_LIFTER); // Wait for Platform to Lower First 
+  dxl.setGoalPosition(DXL_POLAR_ARM, (uint32_t)POLAR_ARM_NO_OBSTRUCT_HOME);
+  dxl.setGoalPosition(DXL_HANDLER, (uint32_t)HANDLER_HOME);
   // Wait for motors to complete
   waitForMotors();
   
@@ -433,7 +451,7 @@ bool HardwareControl::executeStreakPattern(uint8_t pattern_id) {
   // Implement different streaking patterns based on pattern_id
   switch (pattern_id) {
     case 0:  // Simple 3-streak pattern
-      return drawLine(-30, 0, 30, 0, 30);
+      return drawLine(-10, 0, 10, 0, 10);
       
     case 1:  // Spiral streak
       return drawSpiral(30, 2, 50);
@@ -546,8 +564,16 @@ bool HardwareControl::LidSuctionOff(){
   return true; 
 }
 
-bool HardwareControl::lowerLidLifter() { return true; }
-bool HardwareControl::raiseLidLifter() { return true; }
+bool HardwareControl::lowerLidLifter() { 
+  dxl.setGoalPosition(DXL_LID_LIFTER, LID_LIFTER_DOWN); // Home and Down are down.
+  waitForMotors();  
+  return true; 
+}
+bool HardwareControl::raiseLidLifter() { 
+  dxl.setGoalPosition(DXL_LID_LIFTER, LID_LIFTER_HOME); // Home and Down are down.
+  waitForMotors();  
+  return true; 
+}
 bool HardwareControl::cutFilament() { return true; }
 bool HardwareControl::extrudeFilament(float amount) { return true; }
 bool HardwareControl::solenoidLift() { return true; }

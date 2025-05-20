@@ -11,10 +11,10 @@
 #define DXL_PROTOCOL 2.0
 
 // Motor IDs
+#define DXL_LID_LIFTER   1  // Lid Lifer / lever motor ID
 #define DXL_POLAR_ARM    2  // Polar arm / lever motor ID
 #define DXL_PLATFORM     3  // Platform motor ID
 #define DXL_HANDLER      4  // Handler for dish stacking motor ID
-#define DXL_EXTRUDER     5  // Extruder for sample dispensing motor ID
 
 // Hardware pin definitions
 #define DXL_DIR_PIN     -1  // Direction pin for Dynamixel communication
@@ -25,23 +25,25 @@
 #define MAX_DISHES        10  // Maximum number of dishes in cartridge
 
 // Geometry & homes (in raw units, 0–4095)
+#define LID_LIFTER_HOME   3503.0f
 #define POLAR_ARM_LENGTH   98.995f  // Polar arm length [mm]
 #define POLAR_ARM_HOME    (56.25f/360.0f*4096.0f)  // DO NOT MODIFY USEFUL FOR CALCULATIONS - DO NOT GO THERE
 #define POLAR_ARM_NO_OBSTRUCT_HOME (236.25f/360.0f*4096.0f) // ACTUAL POSITION TO REST
 #define PLATFORM_HOME     590.0f  // Platform home position to not obstruct
-#define HANDLER_HOME     1705.0f  // Platform home position
+#define HANDLER_HOME      1705.0f  // Platform home position
 
 // Predetermined Positions in Units for System
+#define LID_LIFTER_DOWN 2593
 #define HOMING_HANDLER 1705
 #define HANDLER2PLATFORM 
 #define PLATFORM_UP 790
 #define STREAKING_STATION 3753
 
 // Movement speeds
+#define LID_LIFTER_SPEED    50   // Extruder movement speed
 #define POLAR_ARM_SPEED   100  // Polar arm movement speed
 #define PLATFORM_SPEED    100  // Platform movement speed
 #define HANDLER_SPEED      100  // Handler movement speed
-#define EXTRUDER_SPEED    50   // Extruder movement speed
 
 // Operation timeouts (ms)
 #define PURGE_TIMEOUT    2000  // Maximum time for purge operation
