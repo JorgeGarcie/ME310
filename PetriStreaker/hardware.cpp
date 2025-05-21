@@ -450,7 +450,7 @@ bool HardwareControl::executeStreakPattern(uint8_t pattern_id) {
   // Implement different streaking patterns based on pattern_id
   switch (pattern_id) {
     case 0:  // Simple 3-streak pattern
-      return drawLine(-10, 0, 10, 0, 10);
+      return drawLine(-40, 0, -10, 0, 10);
       
     case 1:  // Spiral streak
       return drawSpiral(30, 2, 50);

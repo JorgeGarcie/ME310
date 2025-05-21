@@ -2,6 +2,7 @@
 #define HARDWARE_H
 
 #include <Dynamixel2Arduino.h>
+#include <Wire.h>
 #include "Config.h"
 
 class HardwareControl {
@@ -19,6 +20,9 @@ class HardwareControl {
     float platform_center_x;
     float platform_center_y;
     float platform_radius;
+
+    static const uint8_t EXTRUDER_I2C_ADDR = 0x08;  // I2C address of extruder controller
+    void sendExtruderCommand(char cmd);  // Helper to send I2C commands
     
     // Internal functions
     uint16_t degToRaw(float degrees);

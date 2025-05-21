@@ -2,6 +2,7 @@
 #include "Config.h"
 #include "Hardware.h"
 #include "StateMachine.h"
+#include <Wire.h>
 
 // Main Arduino setup function
 void setup() {

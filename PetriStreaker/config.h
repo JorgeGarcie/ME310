@@ -29,7 +29,7 @@
 #define POLAR_ARM_LENGTH   98.995f  // Polar arm length [mm]
 #define POLAR_ARM_HOME    (56.25f/360.0f*4096.0f)  // DO NOT MODIFY USEFUL FOR CALCULATIONS - DO NOT GO THERE
 #define POLAR_ARM_NO_OBSTRUCT_HOME (236.25f/360.0f*4096.0f) // ACTUAL POSITION TO REST
-#define PLATFORM_HOME     1100.0f  // Platform home position to not obstruct
+#define PLATFORM_HOME    1838.0f  // Platform home position to not obstruct
 #define HANDLER_HOME      2112.0f  // Platform home position means that it goes to cartridge. Middle is 1705 units
 #define HANDLER_RESTACKER 4584.0f
 
@@ -37,7 +37,7 @@
 #define LID_LIFTER_DOWN 2593
 #define HANDLER2PLATFORM 
 #define PLATFORM_UP 790
-#define STREAKING_STATION 3790
+#define STREAKING_STATION 3743
 
 // Movement speeds
 #define LID_LIFTER_SPEED    50   // Extruder movement speed

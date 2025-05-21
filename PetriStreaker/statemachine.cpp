@@ -86,14 +86,14 @@ void StateMachine::update() {
       
     case CYCLE_COLLECT_SAMPLE:
       hardware.movePolarArmToVial();
-      hardware.extrudeFilament(100);
+      hardware.extrudeSample();
       hardware.retractSample();
       stateComplete = updateCollectSampleState();
       if (stateComplete) transitionToState(CYCLE_EXECUTE_STREAK);
       break;
       
     case CYCLE_EXECUTE_STREAK:
-      hardware.extrudeFilament(100);
+      hardware.extrudeSample();
       hardware.executeStreakPattern(0); // Line Streak
       hardware.movePolarArmToVial();
       hardware.platformSuctionOff();
