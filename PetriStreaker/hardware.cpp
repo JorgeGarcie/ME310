@@ -46,6 +46,7 @@ void HardwareControl::initialize() {
   dxl.setOperatingMode(DXL_PLATFORM, OP_EXTENDED_POSITION); // USE IT TO RESET IT
   dxl.torqueOn(DXL_HANDLER);
   dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, DXL_HANDLER, HANDLER_SPEED);
+  dxl.writeControlTableItem(ControlTableItem::PROFILE_ACCELERATION, DXL_HANDLER, HANDLER_ACCEL);
 
   // Initialize (Off) Solenoid Valves and Pumps
   pinMode(LID_SUCTION, OUTPUT);
@@ -109,7 +110,7 @@ void HardwareControl::waitForMotors(uint8_t motorId) {
   
   // If no motors appear to be moving initially, wait a bit more and check again
   if (m1 == 0 && m2 == 0 && m3 == 0  && m4 == 0) {
-    delay(50);
+    delay(100);
     
     // Double-check
     if (motorId > 0) {
@@ -537,6 +538,8 @@ bool HardwareControl::resetEncoder(uint8_t motorId) {
   dxl.setOperatingMode(motorId, OP_POSITION); // USE IT TO RESET IT
   dxl.setOperatingMode(motorId, 4); 
   dxl.torqueOn(motorId);
+  dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, DXL_HANDLER, HANDLER_SPEED);
+  dxl.writeControlTableItem(ControlTableItem::PROFILE_ACCELERATION, DXL_HANDLER, HANDLER_ACCEL);
 
   return true; }
 

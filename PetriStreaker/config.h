@@ -39,11 +39,12 @@
 #define PLATFORM_UP 790
 #define STREAKING_STATION 3743
 
-// Movement speeds
+// Motion Profiles
 #define LID_LIFTER_SPEED    50   // Extruder movement speed
-#define POLAR_ARM_SPEED   100  // Polar arm movement speed
-#define PLATFORM_SPEED    100  // Platform movement speed
-#define HANDLER_SPEED      100  // Handler movement speed
+#define POLAR_ARM_SPEED     100  // Polar arm movement speed
+#define PLATFORM_SPEED      100  // Platform movement speed
+#define HANDLER_SPEED       100  // Handler movement speed
+#define HANDLER_ACCEL       20   // Handler Accel
 
 // Operation timeouts (ms)
 #define PURGE_TIMEOUT    2000  // Maximum time for purge operation
