@@ -55,6 +55,25 @@ void handleSerialCommand(String command) {
   else if (command.equals("help")) {
     printHelp();
   }
+  else if (command.equals("suction on")) {
+  DEBUG_SERIAL.println("Turn On Suction");
+  hardware.platformSuctionOn();
+  hardware.LidSuctionOn();
+  }
+  else if (command.equals("suction off")) {
+  DEBUG_SERIAL.println("Turn Off Suction");
+  hardware.platformSuctionOff();
+  hardware.LidSuctionOff();
+  }
+  else if (command.equals("lgl")) {
+  DEBUG_SERIAL.println("Lower Lid Gripper");
+  hardware.lowerLidLifter();
+
+  }
+  else if (command.equals("lgh")) {
+  DEBUG_SERIAL.println("Lower Lid Gripper");
+  hardware.raiseLidLifter();
+  }
   else {
     DEBUG_SERIAL.println("Unknown command. Type 'help' for available commands.");
   }
@@ -62,9 +81,13 @@ void handleSerialCommand(String command) {
 
 void printHelp() {
   DEBUG_SERIAL.println("Available commands:");
-  DEBUG_SERIAL.println("- status : Display current system status");
-  DEBUG_SERIAL.println("- home   : Move all axes to home position");
-  DEBUG_SERIAL.println("- start  : Start the streaking cycle");
-  DEBUG_SERIAL.println("- stop   : Stop the current cycle");
-  DEBUG_SERIAL.println("- help   : Display this help message");
+  DEBUG_SERIAL.println("- status      : Display current system status");
+  DEBUG_SERIAL.println("- home        : Move all axes to home position");
+  DEBUG_SERIAL.println("- start       : Start the streaking cycle");
+  DEBUG_SERIAL.println("- stop        : Stop the current cycle");
+  DEBUG_SERIAL.println("- help        : Display this help message");
+  DEBUG_SERIAL.println("- suction on  : Turn on suction ");
+  DEBUG_SERIAL.println("- suction off : Turn off suction");
+  DEBUG_SERIAL.println("- lgl: Lower Lid Gripper");
+  DEBUG_SERIAL.println("- lgh: Raise Lid Gripper");
 }
