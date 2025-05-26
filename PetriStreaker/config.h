@@ -36,8 +36,8 @@
 #define LID_LIFTER_DOWN 2593
 #define HANDLER2PLATFORM 
 #define PLATFORM_UP 790
-#define STREAKING_STATION 4150.0f // TUNING: Increase to move towards restacker. Decrease to move towards dropper.
-#define HANDLER_RESTACKER 5398.0f   
+#define STREAKING_STATION 3585.0f // TUNING: Increase to move towards restacker. Decrease to move towards dropper.
+#define HANDLER_RESTACKER 4416.0f   
 
 // Motion Profiles
 #define LID_LIFTER_SPEED    50   // Extruder movement speed
