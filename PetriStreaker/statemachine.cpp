@@ -94,7 +94,7 @@ void StateMachine::update() {
       
     case CYCLE_EXECUTE_STREAK:
       hardware.extrudeSample();
-      hardware.executeStreakPattern(0); // Line Streak
+      hardware.executeStreakPattern(1); // Line Streak
       hardware.movePolarArmToVial();
       hardware.platformSuctionOff();
       hardware.platformGearDown();
