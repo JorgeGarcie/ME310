@@ -23,6 +23,450 @@ class SystemStatus(Enum):
     FINISHING = "Completing Dish"
     ERROR = "Error - Check System"
 
+class ParentScreen:
+    def __init__(self, root,controller):
+        self.width=800
+        self.height=480
+        self.root = root
+        self.root.title("InoQ - Automated Petri Dish Streaker")
+        self.root.geometry("800x480")
+        self.root.configure(bg='#f8fafc')
+
+        self.controller=controller
+        self.frame = tk.Frame(self.root, bg='#ffffff')
+        self.frame.pack(fill='both', expand=True)
+
+        self.canvas = tk.Canvas(self.frame, bg='#ffffff', highlightthickness=0)
+        self.canvas.pack(fill='both', expand=True)
+
+
+        # # System state (user-friendly)
+        # self.current_status = SystemStatus.READY
+        # self.is_running = False
+        # self.dishes_in_system = 5  # Simulated
+        # self.current_dish = 0
+        # self.selected_pattern = StreakingPattern.SIMPLE_LINE
+        # self.start_time = None
+        # self.dishes_completed = 0
+        # self.estimated_time = 0
+        
+        # Clean, professional color scheme
+        self.colors = {
+            'bg_primary': '#f8fafc',
+            'bg_secondary': '#ffffff', 
+            'bg_card': '#ffffff',
+            'border': '#e2e8f0',
+            'accent_primary': '#1e3a8a',     # Navy blue
+            'accent_secondary': '#3b82f6',   # Lighter blue
+            'accent_light': '#dbeafe',       # Very light blue
+            'text_primary': '#1e293b',
+            'text_secondary': '#64748b',
+            'text_muted': '#94a3b8',
+            'success': '#059669',
+            'warning': '#d97706',
+            'error': '#dc2626',
+            'idle': '#6b7280'
+        }
+        
+        
+    def initialize_main_interface(self):
+        self.create_widgets()
+        self.update_display()
+
+    def create_widgets(self):
+        pass
+    
+    def update_display(self):
+        pass
+
+    def Back_btn(self):
+
+        self.back_btn = tk.Button(self.frame, text="Back", command=self.controller.go_back,
+                             font=('Segoe UI', 14),
+                             width=14,
+                             height=5
+                             )
+        self.back_btn.place(x=10, y=10)
+
+class StartScreen(ParentScreen):
+    def __init__(self, root, controller):
+        super().__init__(root, controller)
+        self.initialize_main_interface()
+
+        self.canvas.create_text(400, 120, text="InoQ", 
+                               font=('Segoe UI', 80, 'bold'),
+                               fill='#1e3a8a', anchor='center')
+
+
+
+    def create_widgets(self):
+        self.start_button = tk.Button(self.frame, text="START",
+                                    bg=self.colors['success'],
+                                    fg='white',
+                                    font=('Segoe UI', 50, 'bold'),
+                                    relief='flat',
+                                    cursor='hand2',
+                                    width=21,
+                                    height=2,
+
+                                    command=self.controller.go_forward
+                                    )
+        
+        self.start_button.place(anchor='center',relx=0.5,rely=0.5)
+
+        self.change_cartridge_button = tk.Button(self.frame, text="Change Cartridge",
+                                             bg=self.colors['accent_secondary'],
+                                             fg='white',
+                                             font=('Segoe UI', 30, 'bold'),
+                                             relief='flat',
+                                             cursor='hand2',
+                                             width=34,
+                                             height=3,
+                                             command=self.on_change_cartridge)
+        self.change_cartridge_button.place(anchor='center',relx=0.5,rely=0.8)  # Adjust x,y as you want
+
+    def on_change_cartridge(self):
+        self.controller.current_index=6
+        self.controller.update()
+
+class PetriSelector(ParentScreen):
+    def __init__(self, root, controller):
+        super().__init__(root, controller)
+        self.initialize_main_interface()
+
+
+    def create_widgets(self):
+        self.Back_btn()
+
+        title_label = tk.Label(self.frame, text="Select petri dish type",
+                           font=('Segoe UI', 32, 'bold'),
+                           fg=self.colors['accent_primary'],  # or a fixed color like '#1e3a8a'
+                           bg=self.colors['bg_secondary'])    # or just 'white' if simpler
+        title_label.place(relx=0.5, rely=0.1, anchor='center')
+
+        # Container for the three big buttons, centered
+        btn_container = tk.Frame(self.frame, bg='white')
+        btn_container.place(relx=0.5, rely=0.6, anchor='center')
+
+        btn_width = 15  # width in text units
+        btn_height = 13  # height in text units
+        btn_pad_x = 8  # horizontal padding between buttons
+
+
+
+        options = ['Type A', 'Type B', 'Type C']
+
+        for i, label in enumerate(options):
+            btn = tk.Button(btn_container, text=label,
+                        width=btn_width, height=btn_height,
+                        font=('Segoe UI', 20, 'bold'),
+                        bg='#1e3a8a', fg='white',
+                        relief='flat', cursor='hand2', command=lambda l=label: self.select_type(l))
+            btn.pack(side='left', padx=(btn_pad_x, btn_pad_x))
+
+
+    def select_type(self, selection):
+        self.controller.petriDishType = selection
+        self.controller.go_forward()
+
+class SwabSelector3(ParentScreen):
+    def __init__(self, root, controller):
+        super().__init__(root, controller)
+        self.initialize_main_interface()
+
+
+    def create_widgets(self):
+        self.Back_btn()
+
+
+        title_label = tk.Label(self.frame, text="Select swabbing style",
+                           font=('Segoe UI', 32, 'bold'),
+                           fg=self.colors['accent_primary'],  # or a fixed color like '#1e3a8a'
+                           bg=self.colors['bg_secondary'])    # or just 'white' if simpler
+        title_label.place(relx=0.5, rely=0.1, anchor='center')
+
+        # Container for the three big buttons, centered
+        btn_container = tk.Frame(self.frame, bg='white')
+        btn_container.place(relx=0.5, rely=0.6, anchor='center')
+
+        btn_width = 15  # width in text units
+        btn_height = 13  # height in text units
+        btn_pad_x = 8  # horizontal padding between buttons
+
+
+
+        options = ['Style A', 'Style B', 'Style C']
+
+        for i, label in enumerate(options):
+            btn = tk.Button(btn_container, text=label,
+                        width=btn_width, height=btn_height,
+                        font=('Segoe UI', 20, 'bold'),
+                        bg='#1e3a8a', fg='white',
+                        relief='flat', cursor='hand2', command=lambda l=label: self.select_option(l))
+            btn.pack(side='left', padx=(btn_pad_x, btn_pad_x))
+
+
+    def select_option(self, selection):
+        self.controller.swabStyle = selection
+        self.controller.go_forward()
+
+
+class SwabSelector5(ParentScreen):
+    def __init__(self, root, controller):
+        super().__init__(root, controller)
+        self.initialize_main_interface()
+
+
+    def create_widgets(self):
+        self.Back_btn()
+
+        btn_container = tk.Frame(self.frame, bg='white', width=800, height=480)
+        btn_container.place(relx=0.5, rely=0.5, anchor='center')
+
+        btn_width = 14
+        btn_height = 8
+        pad_x = 10
+        pad_y = 170
+
+        # Coordinates for top row (2 buttons, centered)
+        top_y = 90
+        top_xs = [200 - 0.5 * pad_x, 400 + 0.5 * pad_x]  # Adjust for centering 2 buttons
+
+        # Coordinates for bottom row (3 buttons)
+        bottom_y = top_y + btn_height + pad_y
+        bottom_xs = [100 - pad_x, 300, 500 + pad_x]
+
+        labels = ['Option 1', 'Option 2', 'Option 3', 'Option 4', 'Option 5']
+
+        # Top row buttons (2 buttons)
+        for i in range(2):
+            btn = tk.Button(btn_container, text=labels[i],
+                            width=btn_width, height=btn_height,
+                            font=('Segoe UI', 16, 'bold'),
+                            bg='#1e3a8a', fg='white',
+                            relief='flat', cursor='hand2',
+                            command=lambda l=labels[i]: self.select_option(l))
+            btn.place(x=top_xs[i], y=top_y)
+
+        # Bottom row buttons (3 buttons)
+        for i in range(3):
+            btn = tk.Button(btn_container, text=labels[i + 2],
+                            width=btn_width, height=btn_height,
+                            font=('Segoe UI', 16, 'bold'),
+                            bg='#1e3a8a', fg='white',
+                            relief='flat', cursor='hand2',
+                            command=lambda l=labels[i + 2]: self.select_option(l))
+            btn.place(x=bottom_xs[i], y=bottom_y)
+
+        self.back_btn.lift()
+
+
+    def select_option(self, selection):
+        self.controller.swabStyle = selection
+        self.controller.go_forward()
+
+class NumberSelector(ParentScreen):
+    def __init__(self, root, controller):
+        super().__init__(root, controller)
+        self.initialize_main_interface()
+
+
+    def create_widgets(self):
+        self.Back_btn()
+
+        title_label = tk.Label(self.frame, text="Select number of \ndishes to prepare",
+                           font=('Segoe UI', 32, 'bold'),
+                           fg=self.colors['accent_primary'],  # or a fixed color like '#1e3a8a'
+                           bg=self.colors['bg_secondary'])    # or just 'white' if simpler
+        title_label.place(relx=0.5, rely=0.15, anchor='center')
+
+        # Square label to display number
+        self.counter_label = tk.Label(self.frame, text=str(self.controller.numberOfPlates),
+                                      bg='#f1f5f9', fg='#1e293b',
+                                      font=('Segoe UI', 64, 'bold'),
+                                      width=4, height=2,
+                                      relief='ridge', bd=2)
+        self.counter_label.place(relx=0.5, rely=0.5, anchor='center')
+
+        # Increase button (+)
+        self.plus_btn = tk.Button(self.frame, text="+", command=self.increase,
+                                  font=('Segoe UI', 40, 'bold'),
+                                  bg='#059669', fg='white',
+                                  width=9, height=6, relief='flat', cursor='hand2')
+        self.plus_btn.place(relx=0.81, rely=0.6, anchor='center')
+
+        # Decrease button (−)
+        self.minus_btn = tk.Button(self.frame, text="−", command=self.decrease,
+                                   font=('Segoe UI', 40, 'bold'),
+                                   bg='#dc2626', fg='white',
+                                   width=9, height=6, relief='flat', cursor='hand2')
+        self.minus_btn.place(relx=0.19, rely=0.6, anchor='center')
+
+        self.new_btn = tk.Button(self.frame, text="READY", command=self.new_button_action,
+                             font=('Segoe UI', 20),
+                             bg='#3b82f6', fg='white',
+                             width=12, height=4, relief='raised', cursor='hand2')
+        # Place it slightly below the number label (rely > 0.5)
+        self.new_btn.place(relx=0.5, rely=0.8, anchor='center')
+
+    def new_button_action(self):
+        self.controller.go_forward()
+
+    def increase(self):
+        if self.controller.numberOfPlates < 10:
+            self.controller.numberOfPlates += 1
+            self.counter_label.config(text=str(self.controller.numberOfPlates))
+
+    def decrease(self):
+        if self.controller.numberOfPlates > 1:
+            self.controller.numberOfPlates -= 1
+            self.counter_label.config(text=str(self.controller.numberOfPlates))
+
+class SummaryScreen(ParentScreen):
+    def __init__(self, root, controller):
+        super().__init__(root, controller)
+        self.initialize_main_interface()
+
+    def create_widgets(self):
+        self.Back_btn()
+
+        # Summary text with values from controller
+        summary_text = (
+            f"Type: {self.controller.petriDishType or '____'}\n\n"
+            f"Style: {self.controller.swabStyle or '____'}\n\n"
+            f"Number: {self.controller.numberOfPlates}"
+        )
+
+        # Frame to hold the text info
+        info_frame = tk.Frame(self.frame, bg=self.colors['bg_secondary'])
+        info_frame.place(relx=0.3, rely=0.6, anchor='center')
+
+        self.summary_label = tk.Label(info_frame, text=summary_text,
+                                      font=('Segoe UI', 40),
+                                      justify='left',
+                                      bg=self.colors['bg_secondary'],
+                                      fg=self.colors['text_primary'])
+        self.summary_label.pack()
+
+        # Frame for buttons, stacked vertically
+        btn_frame = tk.Frame(self.frame, bg=self.colors['bg_secondary'])
+        btn_frame.place(relx=0.75, rely=0.5, anchor='center')
+
+        self.run_btn = tk.Button(btn_frame, text="Run",
+                                 font=('Segoe UI', 20, 'bold'),
+                                 bg=self.colors['success'],
+                                 fg='white',
+                                 width=20,
+                                 height=7,
+                                 cursor='hand2',
+                                 command=self.on_run)
+        self.run_btn.pack(pady=(0, 20))  # Padding between buttons
+
+        self.cancel_btn = tk.Button(btn_frame, text="Cancel",
+                                    font=('Segoe UI', 20, 'bold'),
+                                    bg=self.colors['error'],
+                                    fg='white',
+                                    width=20,
+                                    height=7,
+                                    cursor='hand2',
+                                    command=self.on_cancel)
+        self.cancel_btn.pack()
+
+    def on_run(self):
+        self.controller.go_forward()
+        self.controller.isRun=True
+        self.controller.run()
+
+    def on_cancel(self):
+        self.controller.numberOfPlates=1
+        self.petriDishType=None
+        self.swabStyle=None
+        self.controller.current_index =0
+        self.controller.update()
+
+class RunningScreen(ParentScreen):
+    def __init__(self, root, controller):
+        super().__init__(root, controller)
+        self.done_button = None  # Placeholder for the DONE button
+        self.initialize_main_interface()
+
+    def create_widgets(self):
+        # Running label
+        self.running_label = tk.Label(self.frame, text="Running ...",
+                                      font=('Segoe UI', 48, 'bold'),
+                                      fg=self.colors['accent_primary'],
+                                      bg=self.colors['bg_secondary'])
+        self.running_label.place(relx=0.5, rely=0.4, anchor='center')
+
+        # Progress label (X out of Y Petri dishes)
+        self.progress_label = tk.Label(self.frame, text="0 out of 0 Petri dishes",
+                                       font=('Segoe UI', 24),
+                                       fg=self.colors['text_primary'],
+                                       bg=self.colors['bg_secondary'])
+        self.progress_label.place(relx=0.5, rely=0.55, anchor='center')
+
+        self.update_progress(0)
+
+    def update_progress(self, current):
+        total = self.controller.numberOfPlates
+        self.progress_label.config(text=f"{current} out of {total} Petri dishes")
+
+    def enable_done_button(self):
+        if self.done_button:
+            return  # Avoid creating multiple buttons
+
+        self.done_button = tk.Button(self.frame, text="DONE",
+                                     font=('Segoe UI', 36, 'bold'),
+                                     bg=self.colors['success'],
+                                     fg='white',
+                                     relief='flat', cursor='hand2',
+                                     command=self.go_to_start)
+        self.done_button.place(relx=0.5, rely=0.75, anchor='center')
+
+    def go_to_start(self):
+        self.controller.current_index = 0
+        self.controller.update()
+
+class WaitScreen(ParentScreen):
+    def __init__(self, root, controller):
+        super().__init__(root, controller)
+        self.initialize_main_interface()
+
+
+    def create_widgets(self):
+        self.message_label = tk.Label(self.frame, text="WAIT",
+                                      font=('Segoe UI', 60, 'bold'),
+                                      fg=self.colors['accent_primary'],
+                                      bg=self.colors['bg_secondary'])
+        self.message_label.place(relx=0.5, rely=0.4, anchor='center')
+
+        # DONE button starts hidden
+        self.done_btn = tk.Button(self.frame, text="DONE",
+                                  font=('Segoe UI', 36, 'bold'),
+                                  bg=self.colors['success'], fg='white',
+                                  relief='flat', cursor='hand2',
+                                  width=20,
+                                  height=4,
+                                  command=self.on_done)
+        
+
+        # Don't place it yet, only after message changes
+        self.root.after(2000,self.update_message)
+
+    def update_message(self):
+        self.message_label.config(text="You can now remove\n the cartridge")
+        self.done_btn.place(relx=0.5, rely=0.75, anchor='center')
+
+    def on_done(self):
+        self.controller.current_index = 0
+        self.controller.numberOfPlates=1
+        self.controller.petriDishType=None
+        self.controller.swabStyle=None      
+        self.controller.current_index = 0 
+        self.controller.update()
+
+
+
 class LoadingScreen:
     def __init__(self, parent, callback):
         self.parent = parent
@@ -43,11 +487,11 @@ class LoadingScreen:
         self.draw_hexagonal_pattern()
         
         # Add InoQ branding
-        self.canvas.create_text(700, 350, text="InoQ", 
+        self.canvas.create_text(400, 240, text="InoQ", 
                                font=('Segoe UI', 52, 'bold'),
                                fill='#1e3a8a', anchor='center')
         
-        self.canvas.create_text(700, 410, text="Automated Petri Dish Streaking System",
+        self.canvas.create_text(400, 280, text="Automated Petri Dish Streaking System",
                                font=('Segoe UI', 16),
                                fill='#666666', anchor='center')
         
@@ -60,12 +504,12 @@ class LoadingScreen:
         self.animate_loading()
         
         # Auto-complete loading after 3 seconds
-        self.parent.after(3000, self.complete_loading)
+        self.parent.after(100, self.complete_loading)
     
     def draw_hexagonal_pattern(self):
         # Create subtle hexagonal pattern in blue theme
-        width = 1400
-        height = 900
+        width = 800
+        height = 480
         
         hex_size = 35
         hex_spacing = 60
@@ -103,7 +547,7 @@ class InoQControlPanel:
     def __init__(self, root):
         self.root = root
         self.root.title("InoQ - Automated Petri Dish Streaker")
-        self.root.geometry("1400x900")
+        self.root.geometry("800x480")
         self.root.configure(bg='#f8fafc')
         
         # System state (user-friendly)
@@ -144,7 +588,7 @@ class InoQControlPanel:
     def create_widgets(self):
         # Main container with light background
         main_frame = tk.Frame(self.root, bg=self.colors['bg_primary'])
-        main_frame.pack(fill='both', expand=True, padx=40, pady=30)
+        main_frame.pack(fill='both', expand=True, padx=20, pady=20)
         
         # Header
         self.create_header(main_frame)
@@ -171,7 +615,7 @@ class InoQControlPanel:
 
     def create_header(self, parent):
         header_frame = tk.Frame(parent, bg=self.colors['bg_primary'])
-        header_frame.pack(fill='x', pady=(0, 30))
+        header_frame.pack(fill='x', pady=(0, 10))
         
         # Logo and title
         title_frame = tk.Frame(header_frame, bg=self.colors['bg_primary'])
@@ -557,7 +1001,7 @@ class InoQControlPanel:
 
 def main():
     root = tk.Tk()
-    app = InoQControlPanel(root)
+    app = NumberSelector(root)
     root.mainloop()
 
 if __name__ == "__main__":

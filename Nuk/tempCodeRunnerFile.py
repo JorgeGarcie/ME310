@@ -1,0 +1,1 @@
+self.current_index = 0
