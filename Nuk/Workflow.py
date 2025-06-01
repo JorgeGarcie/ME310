@@ -2,7 +2,7 @@ import serial
 import tkinter as tk
 import time
 import MEGAobj
-import OPBobj
+import Nuk.ORBobj as ORBobj
 
 
 # init
@@ -10,11 +10,11 @@ mega=MEGAobj.MegaObj(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
 
 mega.initCom()
 
-opd = OPBobj.OPBobj(port='/dev/cu.usbmodem21201', baudrate=115200, timeout=1)
+opd = ORBobj.OPBobj(port='/dev/cu.usbmodem21201', baudrate=115200, timeout=1)
 
 
 
-def wait_for_confirmation(comObj : MEGAobj.MegaObj | OPBobj.OPBobj, tar_resp : str,err_resp: str=None , timeout : int=5):
+def wait_for_confirmation(comObj : MEGAobj.MegaObj | ORBobj.OPBobj, tar_resp : str,err_resp: str=None , timeout : int=5):
     start_time = time.time()
     while True:
         response = comObj.read()

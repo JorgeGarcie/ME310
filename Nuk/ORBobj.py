@@ -3,7 +3,7 @@ import tkinter as tk
 import time
 
 
-class OPBobj:
+class ORBobj:
     def __init__(self, port='/dev/cu.usbmodem21201', baudrate=115200, timeout=1):
         self.com = serial.Serial(port=port, baudrate=baudrate, timeout=timeout)
 
