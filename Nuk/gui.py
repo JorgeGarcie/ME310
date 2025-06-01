@@ -138,6 +138,12 @@ class PetriSelector(ParentScreen):
     def create_widgets(self):
         self.Back_btn()
 
+        title_label = tk.Label(self.frame, text="Select petri dish type",
+                           font=('Segoe UI', 32, 'bold'),
+                           fg=self.colors['accent_primary'],  # or a fixed color like '#1e3a8a'
+                           bg=self.colors['bg_secondary'])    # or just 'white' if simpler
+        title_label.place(relx=0.5, rely=0.1, anchor='center')
+
         # Container for the three big buttons, centered
         btn_container = tk.Frame(self.frame, bg='white')
         btn_container.place(relx=0.5, rely=0.6, anchor='center')
@@ -163,7 +169,49 @@ class PetriSelector(ParentScreen):
         self.controller.petriDishType = selection
         self.controller.go_forward()
 
-class SwabSelector(ParentScreen):
+class SwabSelector3(ParentScreen):
+    def __init__(self, root, controller):
+        super().__init__(root, controller)
+        self.initialize_main_interface()
+
+
+    def create_widgets(self):
+        self.Back_btn()
+
+
+        title_label = tk.Label(self.frame, text="Select swabbing style",
+                           font=('Segoe UI', 32, 'bold'),
+                           fg=self.colors['accent_primary'],  # or a fixed color like '#1e3a8a'
+                           bg=self.colors['bg_secondary'])    # or just 'white' if simpler
+        title_label.place(relx=0.5, rely=0.1, anchor='center')
+
+        # Container for the three big buttons, centered
+        btn_container = tk.Frame(self.frame, bg='white')
+        btn_container.place(relx=0.5, rely=0.6, anchor='center')
+
+        btn_width = 15  # width in text units
+        btn_height = 13  # height in text units
+        btn_pad_x = 8  # horizontal padding between buttons
+
+
+
+        options = ['Style A', 'Style B', 'Style C']
+
+        for i, label in enumerate(options):
+            btn = tk.Button(btn_container, text=label,
+                        width=btn_width, height=btn_height,
+                        font=('Segoe UI', 20, 'bold'),
+                        bg='#1e3a8a', fg='white',
+                        relief='flat', cursor='hand2', command=lambda l=label: self.select_option(l))
+            btn.pack(side='left', padx=(btn_pad_x, btn_pad_x))
+
+
+    def select_option(self, selection):
+        self.controller.swabStyle = selection
+        self.controller.go_forward()
+
+
+class SwabSelector5(ParentScreen):
     def __init__(self, root, controller):
         super().__init__(root, controller)
         self.initialize_main_interface()
@@ -225,6 +273,12 @@ class NumberSelector(ParentScreen):
 
     def create_widgets(self):
         self.Back_btn()
+
+        title_label = tk.Label(self.frame, text="Select number of \ndishes to prepare",
+                           font=('Segoe UI', 32, 'bold'),
+                           fg=self.colors['accent_primary'],  # or a fixed color like '#1e3a8a'
+                           bg=self.colors['bg_secondary'])    # or just 'white' if simpler
+        title_label.place(relx=0.5, rely=0.15, anchor='center')
 
         # Square label to display number
         self.counter_label = tk.Label(self.frame, text=str(self.controller.numberOfPlates),

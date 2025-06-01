@@ -28,9 +28,6 @@ class OPBobj:
     
     def release(self, id):
         self.write(f"RELEASE {id}")
-
-    def Nai(self, dir):
-        self.write(f"NAI {dir}")
     
     def sucction(self, state):
         self.write(f"SUCTION {state}")

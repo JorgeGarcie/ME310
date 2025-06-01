@@ -28,6 +28,9 @@ class MegaObj:
     def fetch(self):
         self.write(f"FETCH")
     
+    def Nai(self, dir):
+        self.write(f"NAI {dir}")
+
     def initCom(self,timeout=5):
         start_time = time.time()
         while True:
