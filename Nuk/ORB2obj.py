@@ -15,8 +15,14 @@ class ORB2:
     def read(self):
         return self.com.readline().decode().strip()
 
-    def GRAB(self,TYPE):
+    def grab(self,TYPE):
         self.write(f"OPEN {TYPE}")
 
-    def RELEAS(self,TYPE):
+    def releas(self,TYPE):
         self.write(f"RELEASE {TYPE}")
+    
+    def releasAll(self):
+        self.write(f"RELEASE ALL")
+    
+    def grabAll(self):
+        self.write(f"GRAB ALL")

@@ -126,6 +126,7 @@ class StartScreen(ParentScreen):
         self.change_cartridge_button.place(anchor='center',relx=0.5,rely=0.8)  # Adjust x,y as you want
 
     def on_change_cartridge(self):
+        self.controller.RemoveCart()
         self.controller.current_index=6
         self.controller.update()
 
@@ -458,12 +459,8 @@ class WaitScreen(ParentScreen):
         self.done_btn.place(relx=0.5, rely=0.75, anchor='center')
 
     def on_done(self):
-        self.controller.current_index = 0
-        self.controller.numberOfPlates=1
-        self.controller.petriDishType=None
-        self.controller.swabStyle=None      
-        self.controller.current_index = 0 
-        self.controller.update()
+        self.controller.LoadCart()
+        
 
 
 

@@ -4,7 +4,7 @@ import tkinter as tk
 import time
 
 import MEGAobj
-import Nuk.ORBobj as ORBobj
+import ORBobj 
 import ORB2obj
 
 class AppController:
@@ -24,10 +24,10 @@ class AppController:
         self.current_run=0
     
         
-        self.mega=MEGAobj.MegaObj(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
+        self.mega = MEGAobj.MegaObj(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
         self.orb = ORBobj.ORBobj(port='/dev/cu.usbmodem21201', baudrate=115200, timeout=1)
         self.mega.initCom()
-        self.orb2=ORB2obj.ORB2(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
+        self.orb2 = ORB2obj.ORB2(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
 
 
 
@@ -128,11 +128,11 @@ class AppController:
     def GetDish(self,TYPE):
         self.orb.lift(TYPE,"UP")
         self.wait_for_confirmation(self.orb,"LIFT UP")
-        self.orb2.RELEAS(TYPE)
+        self.orb2.releas(TYPE)
         self.wait_for_confirmation("RELEASED")
         self.orb.lift(TYPE,"MID")
         self.wait_for_confirmation(self.orb,"LIFT MID")
-        self.orb2.GRAB(TYPE)
+        self.orb2.grab(TYPE)
         self.wait_for_confirmation("GRABBED")
         self.orb.lift(TYPE,"DOWN")
         self.wait_for_confirmation(self.orb,"LIFT DOWN")
@@ -146,12 +146,32 @@ class AppController:
             self.current_screen.enable_done_button()
 
     def RemoveCart(self):
-        self.orb.write("REMOVECTRG")
+        self.orb.liftAll("UP")
+        self.wait_for_confirmation(self.orb,"ALL LIFT UP")
+        self.orb2.releasAll()
+        self.wait_for_confirmation("RELEASED ALL")
+        self.orb.liftAll("TOP")
+        self.wait_for_confirmation(self.orb,"ALL LIFT TOP")
         self.wait_for_confirmation(self.orb,"CTRG RDY")
         self.current_screen.update_message()
+    
+    def LoadCart(self):
+        self.orb.liftAll("UP")
+        self.wait_for_confirmation(self.orb,"ALL LIFT UP")
+        self.orb2.grabAll()
+        self.wait_for_confirmation("GRABBED ALL")
+        self.orb.liftAll("DOWN")
+        self.wait_for_confirmation(self.orb,"ALL LIFT DOWN")
+
+        self.numberOfPlates=1
+        self.petriDishType=None
+        self.swabStyle=None      
+        self.current_index = 0 
+        self.update()
+
 
     @staticmethod
-    def wait_for_confirmation(comObj : MEGAobj.MegaObj | ORBobj.OPBobj, tar_resp : str,err_resp: str=None , timeout : int=5):
+    def wait_for_confirmation(comObj : MEGAobj.MegaObj | ORBobj.ORBobj, tar_resp : str,err_resp: str=None , timeout : int=5):
         start_time = time.time()
         while True:
             response = comObj.read()
