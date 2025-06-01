@@ -94,7 +94,7 @@ void StateMachine::update() {
       
     case CYCLE_EXECUTE_STREAK:
       hardware.extrudeSample();
-      hardware.executeStreakPattern(1); // Line Streak
+      hardware.executeStreakPattern(0); // Line Streak
       hardware.movePolarArmToVial();
       hardware.platformSuctionOff();
       hardware.platformGearDown();
@@ -121,8 +121,8 @@ void StateMachine::update() {
     case CYCLE_RESTACK_DISH:
       hardware.rotateHandlerToFinished();
       hardware.resetEncoder(DXL_HANDLER);
-      hardware.solenoidLift();
-      hardware.solenoidDown();
+      hardware.moveRestackerUp();
+      hardware.moveRestackerDown();
       delay(1000); // Simualtes Solenoid for now
       hardware.rotateHandlerToInitial();
 

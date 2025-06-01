@@ -1,9 +1,23 @@
+/**
+ * @file Hardware.cpp
+ * @brief Implementation of hardware control functions for the Petri Dish Streaker
+ * 
+ * This file implements all hardware control operations including motor control,
+ * coordinate transformations, pattern drawing, and pneumatic system control.
+ */
+
 #include "Hardware.h"
 #include <math.h>
+#include <Servo.h>
 
 // Global hardware instance
 HardwareControl hardware;
 
+/**
+ * @brief Constructor - Initialize hardware control object
+ * 
+ * Sets up initial values for position tracking and platform geometry.
+ */
 HardwareControl::HardwareControl() : dxl(DXL_SERIAL, DXL_DIR_PIN) {
   current_polar_angle = 0.0f;
   current_platform_angle = 0.0f;
@@ -16,14 +30,23 @@ HardwareControl::HardwareControl() : dxl(DXL_SERIAL, DXL_DIR_PIN) {
   platform_radius = 45.0f;    // Rplat
 }
 
+/**
+ * @brief Initialize all hardware components
+ * 
+ * Sets up Dynamixel motors, servos, pneumatic systems, and I2C communication.
+ * Must be called before using any other hardware functions.
+ */
 void HardwareControl::initialize() {
   DEBUG_SERIAL.println("Initializing hardware...");
+  
+  // Initialize I2C for extruder control
+  Wire.begin();
   
   // Initialize Dynamixel
   dxl.begin(DXL_BAUD_RATE);
   dxl.setPortProtocolVersion(2.0); // Set Protocol version
   
-  // Initialize polar arm motor
+  // Initialize lid lifter motor
   dxl.torqueOff(DXL_LID_LIFTER);
   dxl.setOperatingMode(DXL_LID_LIFTER, OP_POSITION);
   dxl.torqueOn(DXL_LID_LIFTER);
@@ -43,10 +66,35 @@ void HardwareControl::initialize() {
 
   // Initialize handler motor
   dxl.torqueOff(DXL_HANDLER);
-  dxl.setOperatingMode(DXL_PLATFORM, OP_EXTENDED_POSITION); // USE IT TO RESET IT
+  dxl.setOperatingMode(DXL_HANDLER, OP_EXTENDED_POSITION); // USE IT TO RESET IT
   dxl.torqueOn(DXL_HANDLER);
   dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, DXL_HANDLER, HANDLER_SPEED);
   dxl.writeControlTableItem(ControlTableItem::PROFILE_ACCELERATION, DXL_HANDLER, HANDLER_ACCEL);
+
+  // Initialize restacker motor
+  dxl.torqueOff(DXL_RESTACKER);
+  dxl.setOperatingMode(DXL_RESTACKER, OP_POSITION);
+  dxl.torqueOn(DXL_RESTACKER);
+  dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, DXL_RESTACKER, RESTACKER_SPEED);
+
+  // Initialize Cartridge 1 motor
+  dxl.torqueOff(DXL_CARTRIDGE1);
+  dxl.setOperatingMode(DXL_CARTRIDGE1, OP_POSITION);
+  dxl.torqueOn(DXL_CARTRIDGE1);
+  dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, DXL_CARTRIDGE1, CARTRIDGE1_SPEED);
+
+  // Initialize Cartridge 2 motor
+  dxl.torqueOff(DXL_CARTRIDGE2);
+  dxl.setOperatingMode(DXL_CARTRIDGE2, OP_POSITION);
+  dxl.torqueOn(DXL_CARTRIDGE2);
+  dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, DXL_CARTRIDGE2, CARTRIDGE2_SPEED);
+
+  // Initialize Cartridge 3 motor
+  dxl.torqueOff(DXL_CARTRIDGE3);
+  dxl.setOperatingMode(DXL_CARTRIDGE3, OP_POSITION);
+  dxl.torqueOn(DXL_CARTRIDGE3);
+  dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, DXL_CARTRIDGE3, CARTRIDGE3_SPEED);
+
 
   // Initialize (Off) Solenoid Valves and Pumps
   pinMode(LID_SUCTION, OUTPUT);
@@ -67,18 +115,35 @@ void HardwareControl::initialize() {
   DEBUG_SERIAL.println("Hardware initialization complete");
 }
 
+/**
+ * @brief Home all motors to their starting positions
+ * 
+ * Moves all motors to predefined home positions in a safe sequence.
+ * Restacker and cartridges are homed first, then the main motion system.
+ */
 void HardwareControl::homeAllAxes() {
   DEBUG_SERIAL.println("Homing all axes...");
   
-  // Move motors to home positions
+  // First: Home restacker, cartridges and platform (prevent handler interferences)
+  DEBUG_SERIAL.println("Homing restacker and cartridges...");
+  dxl.setGoalPosition(DXL_RESTACKER, RESTACKER_HOME);
+  dxl.setGoalPosition(DXL_CARTRIDGE1, CARTRIDGE1_HOME);
+  dxl.setGoalPosition(DXL_CARTRIDGE2, CARTRIDGE2_HOME);
+  dxl.setGoalPosition(DXL_CARTRIDGE3, CARTRIDGE3_HOME);
   dxl.setGoalPosition(DXL_PLATFORM, (uint32_t)PLATFORM_HOME);
-  waitForMotors(DXL_PLATFORM); // Wait for Platform to Lower First 
+  
+  // Wait for restacker, cartridges and platform to complete
+  waitForMotors();
+  
+  // Then: Home main motion system
+  DEBUG_SERIAL.println("Homing main motion system...");
+
   dxl.setGoalPosition(DXL_LID_LIFTER, (uint32_t)LID_LIFTER_HOME);
-  waitForMotors(DXL_LID_LIFTER); // Wait for Platform to Lower First 
+  waitForMotors(DXL_LID_LIFTER); // Wait for Lid Lifter 
   dxl.setGoalPosition(DXL_POLAR_ARM, (uint32_t)POLAR_ARM_NO_OBSTRUCT_HOME);
   dxl.setGoalPosition(DXL_HANDLER, (uint32_t)HANDLER_HOME);
   
-  // Wait for motors to reach position
+  // Wait for all motors to reach position
   waitForMotors();
   
   // Reset current positions
@@ -89,8 +154,16 @@ void HardwareControl::homeAllAxes() {
   DEBUG_SERIAL.println("All axes homed");
 }
 
+/**
+ * @brief Wait for motors to complete their movement
+ * 
+ * Monitors motor status and blocks until all specified motors stop moving.
+ * Includes timing logic to handle motor controller status update delays.
+ * 
+ * @param motorId Specific motor to wait for (0 = wait for all motors)
+ */
 void HardwareControl::waitForMotors(uint8_t motorId) {
-  uint32_t m1, m2, m3, m4;
+  uint32_t m1, m2, m3, m4, m5, m6, m7, m8;
   
   // Initial delay to allow motor controller to update status registers
   delay(50);
@@ -98,33 +171,39 @@ void HardwareControl::waitForMotors(uint8_t motorId) {
   // Initial check to see if motors are moving
   if (motorId > 0) {
     m1 = dxl.readControlTableItem(ControlTableItem::MOVING, motorId);
-    m2 = 0;
-    m3 = 0;
-    m4 = 0;
+    m2 = m3 = m4 = m5 = m6 = m7 = m8 = 0;
   } else {
-    m1 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_POLAR_ARM);
-    m2 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_PLATFORM);
-    m3 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_HANDLER);
-    m4 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_LID_LIFTER);
+    // Check all 8 motors
+    m1 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_LID_LIFTER);
+    m2 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_POLAR_ARM);
+    m3 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_PLATFORM);
+    m4 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_HANDLER);
+    m5 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_RESTACKER);
+    m6 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_CARTRIDGE1);
+    m7 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_CARTRIDGE2);
+    m8 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_CARTRIDGE3);
   }
   
   // If no motors appear to be moving initially, wait a bit more and check again
-  if (m1 == 0 && m2 == 0 && m3 == 0  && m4 == 0) {
-    delay(100);
+  if (m1 == 0 && m2 == 0 && m3 == 0 && m4 == 0 && m5 == 0 && m6 == 0 && m7 == 0 && m8 == 0) {
+    delay(50);
     
     // Double-check
     if (motorId > 0) {
       m1 = dxl.readControlTableItem(ControlTableItem::MOVING, motorId);
     } else {
-      m1 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_POLAR_ARM);
-      m2 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_PLATFORM);
-      m3 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_HANDLER);
-      m4 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_LID_LIFTER);
-
+      m1 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_LID_LIFTER);
+      m2 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_POLAR_ARM);
+      m3 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_PLATFORM);
+      m4 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_HANDLER);
+      m5 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_RESTACKER);
+      m6 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_CARTRIDGE1);
+      m7 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_CARTRIDGE2);
+      m8 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_CARTRIDGE3);
     }
     
     // If still no movement detected, assume the motors completed their movement quickly
-    if (m1 == 0 && m2 == 0 && m3 == 0  && m4 == 0) {
+    if (m1 == 0 && m2 == 0 && m3 == 0 && m4 == 0 && m5 == 0 && m6 == 0 && m7 == 0 && m8 == 0) {
       return;
     }
   }
@@ -133,18 +212,152 @@ void HardwareControl::waitForMotors(uint8_t motorId) {
   do {
     if (motorId > 0) {
       m1 = dxl.readControlTableItem(ControlTableItem::MOVING, motorId);
-      m2 = 0;
-      m3 = 0;
-      m4 = 0;
+      m2 = m3 = m4 = m5 = m6 = m7 = m8 = 0;
     } else {
-      m1 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_POLAR_ARM);
-      m2 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_PLATFORM);
-      m3 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_HANDLER);
-      m4 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_LID_LIFTER);
+      m1 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_LID_LIFTER);
+      m2 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_POLAR_ARM);
+      m3 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_PLATFORM);
+      m4 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_HANDLER);
+      m5 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_RESTACKER);
+      m6 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_CARTRIDGE1);
+      m7 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_CARTRIDGE2);
+      m8 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_CARTRIDGE3);
     }
     delay(5);  // Small delay between checks
-  } while (m1 == 1 || m2 == 1 || m3 == 1 || m4 == 1);
+  } while (m1 == 1 || m2 == 1 || m3 == 1 || m4 == 1 || m5 == 1 || m6 == 1 || m7 == 1 || m8 == 1);
 }
+
+// ============================================================================
+// NEW MOTOR MOVEMENT FUNCTIONS
+// ============================================================================
+
+/**
+ * @brief Move restacker to up position
+ * @return true if successful
+ */
+bool HardwareControl::moveRestackerUp() {
+  dxl.setGoalPosition(DXL_RESTACKER, RESTACKER_UP);
+  waitForMotors(DXL_RESTACKER);
+  return true;
+}
+
+/**
+ * @brief Move restacker to down position  
+ * @return true if successful
+ */
+bool HardwareControl::moveRestackerDown() {
+  dxl.setGoalPosition(DXL_RESTACKER, RESTACKER_HOME);
+  waitForMotors(DXL_RESTACKER);
+  return true;
+}
+
+/**
+ * @brief Move specified cartridge to up position
+ * @param cartridge_id Cartridge number (1, 2, or 3)
+ * @return true if successful
+ */
+bool HardwareControl::moveCartridgeUp(uint8_t cartridge_id) {
+  switch(cartridge_id) {
+    case 1:
+      dxl.setGoalPosition(DXL_CARTRIDGE1, CARTRIDGE1_UP);
+      waitForMotors(DXL_CARTRIDGE1);
+      break;
+    case 2:
+      dxl.setGoalPosition(DXL_CARTRIDGE2, CARTRIDGE2_UP);
+      waitForMotors(DXL_CARTRIDGE2);
+      break;
+    case 3:
+      dxl.setGoalPosition(DXL_CARTRIDGE3, CARTRIDGE3_UP);
+      waitForMotors(DXL_CARTRIDGE3);
+      break;
+    default:
+      return false;
+  }
+  return true;
+}
+
+/**
+ * @brief Move specified cartridge to down position
+ * @param cartridge_id Cartridge number (1, 2, or 3)
+ * @return true if successful
+ */
+bool HardwareControl::moveCartridgeDown(uint8_t cartridge_id) {
+  switch(cartridge_id) {
+    case 1:
+      dxl.setGoalPosition(DXL_CARTRIDGE1, CARTRIDGE1_HOME);
+      waitForMotors(DXL_CARTRIDGE1);
+      break;
+    case 2:
+      dxl.setGoalPosition(DXL_CARTRIDGE2, CARTRIDGE2_HOME);
+      waitForMotors(DXL_CARTRIDGE2);
+      break;
+    case 3:
+      dxl.setGoalPosition(DXL_CARTRIDGE3, CARTRIDGE3_HOME);
+      waitForMotors(DXL_CARTRIDGE3);
+      break;
+    default:
+      return false;
+  }
+  return true;
+}
+
+/**
+ * @brief Home all cartridges to down position
+ * @return true if successful
+ */
+bool HardwareControl::homeAllCartridges() {
+  dxl.setGoalPosition(DXL_CARTRIDGE1, CARTRIDGE1_HOME);
+  dxl.setGoalPosition(DXL_CARTRIDGE2, CARTRIDGE2_HOME);
+  dxl.setGoalPosition(DXL_CARTRIDGE3, CARTRIDGE3_HOME);
+  
+  // Wait for all cartridges to complete together
+  waitForMotors();
+  
+  return true;
+}
+
+// ============================================================================
+// SERVO CONTROL FUNCTIONS (GRIPPER)
+// ============================================================================
+
+/**
+ * @brief Open gripper using servo sequence
+ * @return true if successful
+ */
+bool HardwareControl::openGripper() {
+  // Step 1: Move Servo 1 to 110
+  servo1.write(110);
+  delay(2000);  // Wait 2 seconds before starting Servo 2
+
+  // Step 2: Move Servo 2 to 40
+  servo2.write(40);
+  delay(3000);  // Hold Servo 2 at 40 for 3 seconds
+
+  // Step 3: Return Servo 2 to 90
+  servo2.write(90);
+  delay(2000);  // Wait remaining 2 seconds
+
+  // Step 4: Return Servo 1 to 60
+  servo1.write(60);
+  delay(1000);  // Short pause before returning
+  
+  return true;
+}
+
+/**
+ * @brief Close gripper to default position
+ * @return true if successful
+ */
+bool HardwareControl::closeGripper() {
+  servo1.write(60);
+  servo2.write(90);
+  return true;
+}
+
+
+// ============================================================================
+// POLAR GANTRY 
+// ============================================================================
 
 uint16_t HardwareControl::degToRaw(float degrees) {
   float d = fmod(degrees, 360.0f);
@@ -157,9 +370,7 @@ float HardwareControl::rawToDeg(uint16_t raw) {
 }
 
 bool HardwareControl::homePosition() {
-
-  
-    // Move motors to home positions
+  // Move motors to home positions
   dxl.setGoalPosition(DXL_PLATFORM, (uint32_t)PLATFORM_HOME);
   waitForMotors(DXL_PLATFORM); // Wait for Platform to Lower First 
   dxl.setGoalPosition(DXL_LID_LIFTER, (uint32_t)LID_LIFTER_HOME);
@@ -312,7 +523,6 @@ bool HardwareControl::drawPlatformPoint(float rx, float ry) {
   waitForMotors();
   return true;
 }
-
 
 bool HardwareControl::moveToCoordinate(float x, float y) {
   return drawPlatformPoint(x, y);
@@ -491,7 +701,10 @@ bool HardwareControl::executeStreakPattern(uint8_t pattern_id) {
   }
 }
 
-// Placeholder implementations for hardware control functions
+// ============================================================================
+// STATE-SPECIFIC OPERATION IMPLEMENTATIONS
+// ============================================================================
+
 bool HardwareControl::doPurgeOperation() { return true; }
 bool HardwareControl::openFirstFingers() { return true; }
 bool HardwareControl::clampFirstFingers() { return true; }
@@ -510,38 +723,78 @@ bool HardwareControl::movePolarArmToPlatform(){
   return true; 
 }
 
+bool HardwareControl::extrudeSample(){ return true;}         
+bool HardwareControl::retractSample(){ return true;}     
 
-bool HardwareControl::extrudeSample() { return true; }
-bool HardwareControl::retractSample() { return true; }
+
+
+bool HardwareControl::setHandlerGoalPosition(float position) {
+  // Safety threshold - motors considered "up" if above home + threshold
+  float thres = 50;
+  
+  // Get current positions and check if motors are in "up" positions
+  float platform_pos = dxl.getPresentPosition(DXL_PLATFORM);
+  float restacker_pos = dxl.getPresentPosition(DXL_RESTACKER);
+  DEBUG_SERIAL.println(restacker_pos);
+  float c1_pos = dxl.getPresentPosition(DXL_CARTRIDGE1);
+  float c2_pos = dxl.getPresentPosition(DXL_CARTRIDGE2);
+  float c3_pos = dxl.getPresentPosition(DXL_CARTRIDGE3);
+  
+  // Check if any motor is above its home position (indicating "up" state)
+  if (platform_pos > (PLATFORM_HOME + thres) || 
+      restacker_pos > (RESTACKER_HOME + thres) || 
+      c1_pos > (CARTRIDGE1_HOME + thres) || 
+      c2_pos > (CARTRIDGE2_HOME + thres) || 
+      c3_pos > (CARTRIDGE3_HOME + thres)) {
+    
+    DEBUG_SERIAL.println("ERROR: Motors in UP position! Can't move handler safely!");
+    DEBUG_SERIAL.print("Platform: "); DEBUG_SERIAL.print(platform_pos); DEBUG_SERIAL.print(" (limit: "); DEBUG_SERIAL.print(PLATFORM_HOME + thres); DEBUG_SERIAL.println(")");
+    DEBUG_SERIAL.print("Restacker: "); DEBUG_SERIAL.print(restacker_pos); DEBUG_SERIAL.print(" (limit: "); DEBUG_SERIAL.print(RESTACKER_HOME + thres); DEBUG_SERIAL.println(")");
+    DEBUG_SERIAL.print("Cartridge1: "); DEBUG_SERIAL.print(c1_pos); DEBUG_SERIAL.print(" (limit: "); DEBUG_SERIAL.print(CARTRIDGE1_HOME + thres); DEBUG_SERIAL.println(")");
+    DEBUG_SERIAL.print("Cartridge2: "); DEBUG_SERIAL.print(c2_pos); DEBUG_SERIAL.print(" (limit: "); DEBUG_SERIAL.print(CARTRIDGE2_HOME + thres); DEBUG_SERIAL.println(")");
+    DEBUG_SERIAL.print("Cartridge3: "); DEBUG_SERIAL.print(c3_pos); DEBUG_SERIAL.print(" (limit: "); DEBUG_SERIAL.print(CARTRIDGE3_HOME + thres); DEBUG_SERIAL.println(")");
+    
+    return false;
+  }
+  
+  // Safe to move - set goal position
+  dxl.setGoalPosition(DXL_HANDLER, position);
+  return true;    
+}
 
 bool HardwareControl::rotateToStreakingStation() { 
-  dxl.setGoalPosition(DXL_HANDLER, STREAKING_STATION);
+  if (!setHandlerGoalPosition(STREAKING_STATION)) {
+    return false;  // Safety check failed
+  }
   waitForMotors();
-
-  return true; }
+  return true; 
+}
 
 bool HardwareControl::rotateHandlerToInitial() { 
-  dxl.setGoalPosition(DXL_HANDLER, HANDLER_HOME);
+  if (!setHandlerGoalPosition(HANDLER_HOME)) {
+    return false;  // Safety check failed
+  }
   waitForMotors();
-
-  return true; }
+  return true; 
+}
 
 bool HardwareControl::rotateHandlerToFinished() { 
-  dxl.setGoalPosition(DXL_HANDLER, HANDLER_RESTACKER);
+  if (!setHandlerGoalPosition(HANDLER_RESTACKER)) {  // Fixed: was HANDLER_HOME
+    return false;  // Safety check failed
+  }
   waitForMotors();
-
-  return true; }
+  return true; 
+}
 
 bool HardwareControl::resetEncoder(uint8_t motorId) { 
-
   dxl.torqueOff(motorId);
   dxl.setOperatingMode(motorId, OP_POSITION); // USE IT TO RESET IT
   dxl.setOperatingMode(motorId, 4); 
   dxl.torqueOn(motorId);
   dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, DXL_HANDLER, HANDLER_SPEED);
   dxl.writeControlTableItem(ControlTableItem::PROFILE_ACCELERATION, DXL_HANDLER, HANDLER_ACCEL);
-
-  return true; }
+  return true; 
+}
 
 bool HardwareControl::platformGearUp() { 
   dxl.setGoalPosition(DXL_PLATFORM, PLATFORM_UP);
@@ -620,14 +873,10 @@ bool HardwareControl::raiseLidLifter() {
   waitForMotors();  
   return true; 
 }
+
 bool HardwareControl::cutFilament() { return true; }
 bool HardwareControl::extrudeFilament(float amount) { return true; }
-bool HardwareControl::solenoidLift() { return true; }
-bool HardwareControl::solenoidDown() { return true; }
 
-void HardwareControl::setMotorSpeed(uint8_t motorId, uint32_t speed) {
-  dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, motorId, speed);
-}
 
 uint16_t HardwareControl::getMotorPosition(uint8_t motorId) {
   return dxl.getPresentPosition(motorId);
