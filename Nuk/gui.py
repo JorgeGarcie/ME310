@@ -59,13 +59,14 @@ class ParentScreen:
             'accent_primary': '#1e3a8a',     # Navy blue
             'accent_secondary': '#3b82f6',   # Lighter blue
             'accent_light': '#dbeafe',       # Very light blue
-            'text_primary': '#1e293b',
+            'text_primary':'#37657c',#104862', #'#1e293b',
             'text_secondary': '#64748b',
             'text_muted': '#94a3b8',
             'success': '#059669',
             'warning': '#d97706',
             'error': '#dc2626',
             'idle': '#6b7280'
+            # #688a9d
         }
         
         
@@ -82,6 +83,7 @@ class ParentScreen:
     def Back_btn(self):
 
         self.back_btn = tk.Button(self.frame, command=self.controller.go_back,
+                                  image=self.controller.photoBack
                              )
         self.back_btn.place(x=20, y=20,
                              width=200,
@@ -90,24 +92,27 @@ class ParentScreen:
 class StartScreen(ParentScreen):
     def __init__(self, root, controller):
         super().__init__(root, controller)
-        self.initialize_main_interface()
 
+
+        self.initialize_main_interface()
         self.canvas.create_text(400, 80, text="InoQ", 
                                font=('Segoe UI', 100, 'bold'),
-                               fill='#1e3a8a', anchor='center')
+                               fill=self.colors['text_primary'], anchor='center')
 
 
 
     def create_widgets(self):
         self.start_button = tk.Button(self.frame, 
                                     cursor='hand2',
-                                    command=self.controller.go_forward
+                                    command=self.controller.go_forward,
+                                    image=self.controller.photoStart
                                     )
         
         self.start_button.place(anchor='center',relx=0.5,rely=0.5,width=760,height=140)
 
         self.change_cartridge_button = tk.Button(self.frame, 
                                                   cursor='hand2',
+                                                  image=self.controller.photoCCrtg,
                                              command=self.on_change_cartridge)
         self.change_cartridge_button.place(anchor='center',relx=0.5,rely=0.83,width=760,height=140)  # Adjust x,y as you want
 
@@ -127,7 +132,7 @@ class PetriSelector(ParentScreen):
 
         title_label = tk.Label(self.frame, text="SELECT PETRI DISH TYPE",
                            font=('Segoe UI', 32, 'bold'),
-                           fg=self.colors['accent_primary'],  # or a fixed color like '#1e3a8a'
+                           fg=self.colors['text_primary'],  # or a fixed color like '#1e3a8a'
                            bg=self.colors['bg_secondary'])    # or just 'white' if simpler
         title_label.place(relx=0.6, y=65, anchor='center')
 
@@ -137,10 +142,11 @@ class PetriSelector(ParentScreen):
         btn_pad_x = 20  # horizontal padding between buttons
 
 
-        options = ['Type A', 'Type B', 'Type C']
+        options = ['BLOOD', 'MACCONKEY', 'CHOCOLATE']
 
-        for i, label in enumerate(options):
+        for i, (label, photo) in enumerate(zip(options,self.controller.photos_Dish )):
             btn = tk.Button(self.frame,cursor='hand2',
+                            image=photo,
                              command=lambda l=label: self.select_type(l))
             btn.place(x=i*(btn_width_px + btn_pad_x)+btn_pad_x, y=140,
                   width=btn_width_px, height=btn_height_px)
@@ -162,7 +168,7 @@ class SwabSelector3(ParentScreen):
 
         title_label = tk.Label(self.frame, text="SELECT SWABBING STYLE",
                            font=('Segoe UI', 32, 'bold'),
-                           fg=self.colors['accent_primary'],  # or a fixed color like '#1e3a8a'
+                           fg=self.colors['text_primary'],  # or a fixed color like '#1e3a8a'
                            bg=self.colors['bg_secondary'])    # or just 'white' if simpler
         title_label.place(relx=0.6, y=65, anchor='center')
 
@@ -172,9 +178,9 @@ class SwabSelector3(ParentScreen):
         btn_pad_x = 20  # horizontal padding between buttons
 
 
-        options = ['Type A', 'Type B', 'Type C']
+        options = ['LINE', 'QUADRANT', 'SPIRAL']
 
-        for i, (label, photo) in enumerate(zip(options,self.controller.photos )):
+        for i, (label, photo) in enumerate(zip(options,self.controller.photos_Swab )):
             btn = tk.Button(self.frame,cursor='hand2',image=photo,
                             bd=0,
                             highlightthickness=0,
@@ -256,7 +262,7 @@ class NumberSelector(ParentScreen):
 
         title_label = tk.Label(self.frame, text="Select number of \ndishes to prepare",
                            font=('Segoe UI', 32, 'bold'),
-                           fg=self.colors['accent_primary'],  # or a fixed color like '#1e3a8a'
+                           fg=self.colors['text_primary'],  # or a fixed color like '#1e3a8a'
                            bg=self.colors['bg_secondary'])    # or just 'white' if simpler
         title_label.place(relx=0.5, rely=0.15, anchor='center')
 
@@ -270,17 +276,20 @@ class NumberSelector(ParentScreen):
 
         # Increase button (+)
         self.plus_btn = tk.Button(self.frame, command=self.increase,
-                                   cursor='hand2')
+                                   cursor='hand2',
+                                   image=self.controller.photoPlus)
         self.plus_btn.place(x=510,y=140,width=270,height=325)
 
         # Decrease button (−)
         self.minus_btn = tk.Button(self.frame, command=self.decrease,
-                                  cursor='hand2')
+                                  cursor='hand2',
+                                  image=self.controller.photoNeg)
         self.minus_btn.place(x=20,y=140,width=270,height=325)
 
         # Ready button
         self.new_btn = tk.Button(self.frame, command=self.new_button_action,
-                            cursor='hand2')
+                            cursor='hand2',
+                            image=self.controller.photoNext)
         self.new_btn.place(relx=0.5, rely=0.77, anchor='center',width=205,height=190)
 
     def new_button_action(self):
@@ -325,12 +334,14 @@ class SummaryScreen(ParentScreen):
 
         self.run_btn = tk.Button(self.frame, 
                                  cursor='hand2',
-                                 command=self.on_run)
+                                 command=self.on_run,
+                                 image=self.controller.photoRun)
         self.run_btn.place(x=460,y=100,width=320,height=175)  # Padding between buttons
 
         self.cancel_btn = tk.Button(self.frame, 
                                     cursor='hand2',
-                                    command=self.on_cancel)
+                                    command=self.on_cancel,
+                                    image=self.controller.photoCancel)
         self.cancel_btn.place(x=460,y=285,width=320,height=175)
 
     def on_run(self):

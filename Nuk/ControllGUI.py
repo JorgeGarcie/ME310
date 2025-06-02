@@ -10,11 +10,27 @@ import ORB2obj
 
 class AppController:
     def __init__(self,root):
-        self.photos = [
-    tk.PhotoImage(file="Nuk/ImagesForGUI/image1.png"),
-    tk.PhotoImage(file="Nuk/ImagesForGUI/image2.png"),
-    tk.PhotoImage(file="Nuk/ImagesForGUI/image3.png")
+        self.photos_Swab = [
+    tk.PhotoImage(file="Nuk/ImagesForGUI/line.png"),
+    tk.PhotoImage(file="Nuk/ImagesForGUI/quad.png"),
+    tk.PhotoImage(file="Nuk/ImagesForGUI/spiral.png")
 ]
+        self.photos_Dish=[
+            tk.PhotoImage(file="Nuk/ImagesForGUI/blood.png"),
+            tk.PhotoImage(file="Nuk/ImagesForGUI/macconkey.png"),
+             tk.PhotoImage(file="Nuk/ImagesForGUI/chocolate.png")
+        ]
+
+        self.photoStart=tk.PhotoImage(file="Nuk/ImagesForGUI/start.png")
+        self.photoBack=tk.PhotoImage(file="Nuk/ImagesForGUI/back.png")
+        self.photoPlus=tk.PhotoImage(file="Nuk/ImagesForGUI/plus.png")
+        self.photoNeg=tk.PhotoImage(file="Nuk/ImagesForGUI/minus.png")
+        self.photoCCrtg=tk.PhotoImage(file="Nuk/ImagesForGUI/changecartridge.png")
+        self.photoNext=tk.PhotoImage(file="Nuk/ImagesForGUI/next.png")
+        self.photoCancel=tk.PhotoImage(file="Nuk/ImagesForGUI/cancel.png")
+        self.photoRun=tk.PhotoImage(file="Nuk/ImagesForGUI/run.png")
+
+
         self.root=root
         # root.attributes("-fullscreen", True)
         self.numberOfPlates=1
@@ -31,7 +47,11 @@ class AppController:
     
         
         # self.mega = MEGAobj.MegaObj(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
+<<<<<<< HEAD
         self.orb = ORBobj.ORBobj(port='COM11', baudrate=115200, timeout=1)
+=======
+        # self.orb = ORBobj.ORBobj(port='/dev/cu.usbmodem21201', baudrate=115200, timeout=1)
+>>>>>>> db80674fe0016b9bc43d1df4454bd788d737b93b
         # self.mega.initCom()
         # self.orb2 = ORB2obj.ORB2(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
 
@@ -63,69 +83,69 @@ class AppController:
         self.orb.moveArm(self.petriDishType)
         self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
 
-        self.GetDish(self.petriDishType)
+        # self.GetDish(self.petriDishType)
 
-        self.orb.moveArm("WORK AREA")
-        self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
+        # self.orb.moveArm("WORK AREA")
+        # self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
 
-        # self.mega.Nai("UP")
-        # self.wait_for_confirmation(self.mega,"NAI UP")
+        # # self.mega.Nai("UP")
+        # # self.wait_for_confirmation(self.mega,"NAI UP")
 
-        self.orb.sucction("ON")
-        self.wait_for_confirmation(self.orb,"SUCC ON")
+        # self.orb.sucction("ON")
+        # self.wait_for_confirmation(self.orb,"SUCC ON")
 
-        self.orb.lid("OPEN")
-        self.wait_for_confirmation(self.orb,"LID REMOVED")
+        # self.orb.lid("OPEN")
+        # self.wait_for_confirmation(self.orb,"LID REMOVED")
 
-        self.orb.fetch()
-        self.wait_for_confirmation(self.orb,"FETCH RDY")
+        # self.orb.fetch()
+        # self.wait_for_confirmation(self.orb,"FETCH RDY")
 
-        # self.mega.fetch()
-        # self.wait_for_confirmation(self.mega, "FETCH START")
-        # self.wait_for_confirmation(self.mega, "FETCH COMPLETED")
-
-
-        self.orb.extrude()
-        self.wait_for_confirmation(self.orb,"EXTRUDE RDY")
-
-        # self.mega.extrude()
-        # self.wait_for_confirmation(self.mega, "EXTRUDE START")
-        # self.wait_for_confirmation(self.mega, "EXTRUDE COMPLETED","EXTRUDE FAILED")
+        # # self.mega.fetch()
+        # # self.wait_for_confirmation(self.mega, "FETCH START")
+        # # self.wait_for_confirmation(self.mega, "FETCH COMPLETED")
 
 
-        self.orb.swab(self.petriDishType)
-        self.wait_for_confirmation(self.orb,"SWAB COMPLETED")
+        # self.orb.extrude()
+        # self.wait_for_confirmation(self.orb,"EXTRUDE RDY")
 
-        # self.mega.prepCut()
-        # self.wait_for_confirmation(self.mega, "PREP START")
-        # self.wait_for_confirmation(self.mega, "FILAMENT RDY")
-
-        self.orb.cut()
-        self.wait_for_confirmation(self.orb,"CUT RDY")
-
-        # self.mega.cut()
-        # self.wait_for_confirmation(self.mega, "CUT START")
-        # self.wait_for_confirmation(self.mega, "CUT COMPLETED")
+        # # self.mega.extrude()
+        # # self.wait_for_confirmation(self.mega, "EXTRUDE START")
+        # # self.wait_for_confirmation(self.mega, "EXTRUDE COMPLETED","EXTRUDE FAILED")
 
 
-        self.orb.lid("CLOSE")
-        self.wait_for_confirmation(self.orb,"LID ON")
+        # self.orb.swab(self.petriDishType)
+        # self.wait_for_confirmation(self.orb,"SWAB COMPLETED")
 
-        self.orb.sucction("OFF")
-        self.wait_for_confirmation(self.orb,"SUCC OFF")
+        # # self.mega.prepCut()
+        # # self.wait_for_confirmation(self.mega, "PREP START")
+        # # self.wait_for_confirmation(self.mega, "FILAMENT RDY")
+
+        # self.orb.cut()
+        # self.wait_for_confirmation(self.orb,"CUT RDY")
+
+        # # self.mega.cut()
+        # # self.wait_for_confirmation(self.mega, "CUT START")
+        # # self.wait_for_confirmation(self.mega, "CUT COMPLETED")
 
 
-        # self.mega.Nai("DOWN")
-        # self.wait_for_confirmation(self.mega,"NAI DOWN")
+        # self.orb.lid("CLOSE")
+        # self.wait_for_confirmation(self.orb,"LID ON")
 
-        self.orb.moveArm("STRG")
-        self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
+        # self.orb.sucction("OFF")
+        # self.wait_for_confirmation(self.orb,"SUCC OFF")
 
-        self.orb.lift("STRG", "UP")
-        self.wait_for_confirmation(self.orb,"LIFT UP")
 
-        self.orb.lift("STRG", "DOWN")
-        self.wait_for_confirmation(self.orb,"LIFT UP")
+        # # self.mega.Nai("DOWN")
+        # # self.wait_for_confirmation(self.mega,"NAI DOWN")
+
+        # self.orb.moveArm("STRG")
+        # self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
+
+        # self.orb.lift("STRG", "UP")
+        # self.wait_for_confirmation(self.orb,"LIFT UP")
+
+        # self.orb.lift("STRG", "DOWN")
+        # self.wait_for_confirmation(self.orb,"LIFT UP")
 
 
         self.current_screen.update_progress(self.current_run)
@@ -188,6 +208,7 @@ class AppController:
                 raise Exception(f"ERROR: {err_resp}" )
             if time.time() - start_time > timeout:
                 raise TimeoutError(f"Timeout waiting for response: {tar_resp}")
+
 
 
 if __name__ == "__main__":
