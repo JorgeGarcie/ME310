@@ -1,0 +1,24 @@
+ACTION,"COMMAND ""argument""",ARGUMENT,Expexted response OpenRB1,Expexted response MEGA,Expexted result OpenRB2,COMMENT
+Mover arm,"MOVE ""position""",NORMAL/BLOOD/CHOCOLAT/STRG/WORK AREA,MOVE COMPLETED,N/A,N/A,
+Lift/Lower PetriDish,"LIFT ""position"" ""dir""",NORMAL/BLOOD/CHOCOLAT/STRG; UP/DOWN/MID/TOP,LIFT UP / LIFT DOWN /LIFT MID /LIFT TOP,N/A,N/A,"UP-> top (right below petri), DOWN-> Bottom, MID-> 1 Petri heigh lower than UP, TOP-> 1 Petri higher than UP"
+Grab Petridish,"GRAB ""position""",NORMAL/BLOOD/CHOCOLAT,N/A,N/A,GRABBED,
+Releas petrisdish,"RELEASE ""position""",NORMAL/BLOOD/CHOCOLAT,N/A,N/A,RELEASED,
+Lift roatation Assy,"NAI ""dir""",UP/DOWN,N/A,NAI UP / NAI DOWN,N/A,
+Start/Stop sucction of rot. Assy,"SUCTION  ""state""",ROT/LID ; ON/OFF,SUCC ON / SUCC OFF ,N/A,N/A,
+Lid handler ,"LID ""state""",OPEN/CLOSE,LID REMOVED / LID ON,N/A,N/A,(De)Actiavtes suction and moves gantry
+Fetch sample,FETCH,N/A,FETCH RDY,FETCH START -> FETCH COMPLETED,N/A,Polar arm needs to move to sample location
+Cut sample,CUT,N/A,CUT RDY,CUT START -> CUT COMPLETED,N/A,Polar arm needs to move to cut area
+Extrude,EXTRUDE,N/A,N/A,EXTRUDE START -> EXTRUDE COMPLETED / EXTRUDE FAILED,N/A,Polar arm needs to move over petridsih
+Prepare for cut,PREP CUT,N/A,N/A,PREP START -> FILAMENT RDY,N/A,
+Lift all,"LIFT ALL ""dir""",UP/DOWN/MID/TOP,ALL LIFT UP /ALL LIFT DOWN /ALL LIFT MID /ALL LIFT TOP,N/A,N/A,"Lifts all the ""cartige"" at the same time to the hight level given by ""dir"""
+Grab all,GRAB ALL,N/A,N/A,N/A,RELEASED ALL,
+Releas all,RELEASE ALL,N/A,N/A,N/A,GRABBED ALL,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,
+,,,,,,

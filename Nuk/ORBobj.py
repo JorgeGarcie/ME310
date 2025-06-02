@@ -49,3 +49,7 @@ class ORBobj:
     
     def getDish(self, position):
         self.write(f"GET {position}")
+
+    def liftAll(self,dir):
+        self.write(f"LIFT ALL {dir}")
+        
