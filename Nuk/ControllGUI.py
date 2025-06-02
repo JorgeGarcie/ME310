@@ -9,8 +9,13 @@ import ORB2obj
 
 class AppController:
     def __init__(self,root):
+        self.photos = [
+    tk.PhotoImage(file="Nuk/ImagesForGUI/image1.png"),
+    tk.PhotoImage(file="Nuk/ImagesForGUI/image2.png"),
+    tk.PhotoImage(file="Nuk/ImagesForGUI/image3.png")
+]
         self.root=root
-        root.attributes("-fullscreen", True)
+        # root.attributes("-fullscreen", True)
         self.numberOfPlates=1
         self.petriDishType=None
         self.swabStyle=None
@@ -24,10 +29,10 @@ class AppController:
         self.current_run=0
     
         
-        self.mega = MEGAobj.MegaObj(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
-        self.orb = ORBobj.ORBobj(port='/dev/cu.usbmodem21201', baudrate=115200, timeout=1)
-        self.mega.initCom()
-        self.orb2 = ORB2obj.ORB2(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
+        # self.mega = MEGAobj.MegaObj(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
+        # self.orb = ORBobj.ORBobj(port='/dev/cu.usbmodem21201', baudrate=115200, timeout=1)
+        # self.mega.initCom()
+        # self.orb2 = ORB2obj.ORB2(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
 
 
 
