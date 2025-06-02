@@ -775,6 +775,30 @@ bool HardwareControl::rotateHandlerToInitial() {
   return true; 
 }
 
+bool HardwareControl::rotateHandlerToC1() { 
+  if (!setHandlerGoalPosition(HANDLER_C1)) {
+    return false;  // Safety check failed
+  }
+  waitForMotors();
+  return true; 
+}
+
+bool HardwareControl::rotateHandlerToC2() { 
+  if (!setHandlerGoalPosition(HANDLER_C2)) {
+    return false;  // Safety check failed
+  }
+  waitForMotors();
+  return true; 
+}
+
+bool HardwareControl::rotateHandlerToC3() { 
+  if (!setHandlerGoalPosition(HANDLER_C3)) {
+    return false;  // Safety check failed
+  }
+  waitForMotors();
+  return true; 
+}
+
 bool HardwareControl::rotateHandlerToFinished() { 
   if (!setHandlerGoalPosition(HANDLER_RESTACKER)) {  // Fixed: was HANDLER_HOME
     return false;  // Safety check failed
@@ -848,7 +872,7 @@ bool HardwareControl::LidSuctionOn(){
 bool HardwareControl::LidSuctionOff(){
   digitalWrite(LID_SOLENOID, HIGH); // Release Pressure
   digitalWrite(LID_SUCTION, LOW);  // Turn Motor Off
-  delay(10);
+  delay(50);
   digitalWrite(LID_SOLENOID, LOW); // Turn back solenoid Off
   return true; 
 }
@@ -903,7 +927,9 @@ bool HardwareControl::moveToWorkArea() {
  */
 bool HardwareControl::moveToStorage() {
   DEBUG_SERIAL.println("Moving to storage position");
-  return rotateHandlerToFinished();
+  bool a = rotateHandlerToFinished();
+  bool b = resetEncoder(DXL_HANDLER);
+  return a && b;
 }
 
 /**
@@ -912,7 +938,7 @@ bool HardwareControl::moveToStorage() {
  */
 bool HardwareControl::moveToNormal() {
   DEBUG_SERIAL.println("Moving to normal cartridge position");
-  return rotateHandlerToInitial(); // Adjust position as needed
+  return rotateHandlerToC1(); // Adjust position as needed
 }
 
 /**
@@ -921,7 +947,7 @@ bool HardwareControl::moveToNormal() {
  */
 bool HardwareControl::moveToBlood() {
   DEBUG_SERIAL.println("Moving to blood cartridge position");
-  return rotateHandlerToInitial(); // TODO: Replace with specific position
+  return rotateHandlerToC2(); // TODO: Replace with specific position
 }
 
 /**
@@ -930,7 +956,7 @@ bool HardwareControl::moveToBlood() {
  */
 bool HardwareControl::moveToChocolat() {
   DEBUG_SERIAL.println("Moving to chocolat cartridge position");
-  return rotateHandlerToInitial(); // TODO: Replace with specific position
+  return rotateHandlerToC3(); // TODO: Replace with specific position
 }
 
 // ============================================================================
@@ -1104,10 +1130,10 @@ bool HardwareControl::lidClose() {
   bool success = true;
   
   // Complete lid replacement sequence
-  success &= lowerLidLifterNoContact(); // Lower without touching dish
+  success &= lowerLidLifter(); // Lower without touching dish
   delay(100);                           // Position above dish
   success &= suctionLidOff();           // Release lid
-  delay(100);                           // Allow lid to settle
+  delay(300);                           // Allow lid to settle
   success &= raiseLidLifter();          // Move away
   
   return success;
