@@ -10,11 +10,27 @@ import ORB2obj
 
 class AppController:
     def __init__(self,root):
-        self.photos = [
-    tk.PhotoImage(file="Nuk/ImagesForGUI/image1.png"),
-    tk.PhotoImage(file="Nuk/ImagesForGUI/image2.png"),
-    tk.PhotoImage(file="Nuk/ImagesForGUI/image3.png")
+        self.photos_Swab = [
+    tk.PhotoImage(file="Nuk/ImagesForGUI/line.png"),
+    tk.PhotoImage(file="Nuk/ImagesForGUI/quad.png"),
+    tk.PhotoImage(file="Nuk/ImagesForGUI/spiral.png")
 ]
+        self.photos_Dish=[
+            tk.PhotoImage(file="Nuk/ImagesForGUI/blood.png"),
+            tk.PhotoImage(file="Nuk/ImagesForGUI/macconkey.png"),
+             tk.PhotoImage(file="Nuk/ImagesForGUI/chocolate.png")
+        ]
+
+        self.photoStart=tk.PhotoImage(file="Nuk/ImagesForGUI/start.png")
+        self.photoBack=tk.PhotoImage(file="Nuk/ImagesForGUI/back.png")
+        self.photoPlus=tk.PhotoImage(file="Nuk/ImagesForGUI/plus.png")
+        self.photoNeg=tk.PhotoImage(file="Nuk/ImagesForGUI/minus.png")
+        self.photoCCrtg=tk.PhotoImage(file="Nuk/ImagesForGUI/changecartridge.png")
+        self.photoNext=tk.PhotoImage(file="Nuk/ImagesForGUI/next.png")
+        self.photoCancel=tk.PhotoImage(file="Nuk/ImagesForGUI/cancel.png")
+        self.photoRun=tk.PhotoImage(file="Nuk/ImagesForGUI/run.png")
+
+
         self.root=root
         # root.attributes("-fullscreen", True)
         self.numberOfPlates=1
@@ -31,7 +47,7 @@ class AppController:
     
         
         # self.mega = MEGAobj.MegaObj(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
-        self.orb = ORBobj.ORBobj(port='/dev/cu.usbmodem21201', baudrate=115200, timeout=1)
+        # self.orb = ORBobj.ORBobj(port='/dev/cu.usbmodem21201', baudrate=115200, timeout=1)
         # self.mega.initCom()
         # self.orb2 = ORB2obj.ORB2(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
 
