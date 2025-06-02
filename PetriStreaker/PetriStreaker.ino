@@ -148,7 +148,26 @@ void handleSerialCommand(String command) {
     DEBUG_SERIAL.println("Closing gripper");
     hardware.closeGripper();
   }
-  
+
+  else if (command.equals("suction on")) {
+  DEBUG_SERIAL.println("Turn On Suction");
+  hardware.platformSuctionOn();
+  hardware.LidSuctionOn();
+  }
+  else if (command.equals("suction off")) {
+  DEBUG_SERIAL.println("Turn Off Suction");
+  hardware.platformSuctionOff();
+  hardware.LidSuctionOff();
+  }
+  else if (command.equals("lgl")) {
+  DEBUG_SERIAL.println("Lower Lid Gripper");
+  hardware.lowerLidLifter();
+
+  }
+  else if (command.equals("lgh")) {
+  DEBUG_SERIAL.println("Lower Lid Gripper");
+  hardware.raiseLidLifter();
+  }
   // Help command
   else if (command.equals("help")) {
     printHelp();
@@ -180,5 +199,9 @@ void printHelp() {
   DEBUG_SERIAL.println("- cartridge3down: Move cartridge 3 down");
   DEBUG_SERIAL.println("- opengrip     : Open gripper servos");
   DEBUG_SERIAL.println("- closegrip    : Close gripper servos");
+  DEBUG_SERIAL.println("- suction on  : Turn on suction ");
+  DEBUG_SERIAL.println("- suction off : Turn off suction");
+  DEBUG_SERIAL.println("- lgl: Lower Lid Gripper");
+  DEBUG_SERIAL.println("- lgh: Raise Lid Gripper");
   DEBUG_SERIAL.println("- help         : Display this help message");
 }
