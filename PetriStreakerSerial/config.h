@@ -16,9 +16,9 @@
 #define DXL_PLATFORM     3  // Platform motor ID NOT USE FOR NOW
 #define DXL_HANDLER      4  // Handler for dish stacking motor ID
 #define DXL_RESTACKER    5  // Handler for dish stacking motor ID
-#define DXL_CARTRIDGE1   6  // Handler for dish stacking motor ID
-#define DXL_CARTRIDGE2   7  // Handler for dish stacking motor ID
-#define DXL_CARTRIDGE3   8  // Handler for dish stacking motor ID
+#define DXL_CARTRIDGE1   8  // Handler for dish stacking motor ID
+#define DXL_CARTRIDGE2   6  // Handler for dish stacking motor ID
+#define DXL_CARTRIDGE3   7  // Handler for dish stacking motor ID
 
 // Hardware pin definitions
 #define DXL_DIR_PIN     -1  // Direction pin for Dynamixel communication
@@ -36,20 +36,24 @@
 #define PLATFORM_HOME     1238.0f  // Platform home position to not obstruct 
 #define HANDLER_HOME      1947.0f  // Platform home position means that it goes to cartridge. Middle is 1705 units 2112. New is 1540 so 407 units
 #define RESTACKER_HOME    2669.0f  // Restacker position down
-#define CARTRIDGE1_HOME   0.0f     // C1 position down
-#define CARTRIDGE2_HOME   2650.0f  // C2 position down
-#define CARTRIDGE3_HOME   1320.0f  // C3 position down
+#define CARTRIDGE2_HOME   0.0f     // C1 position down
+#define CARTRIDGE3_HOME   2650.0f  // C2 position down
+#define CARTRIDGE1_HOME   1320.0f  // C3 position down
 
 
 // Predetermined Positions in Units for System
 #define STREAKING_STATION 3585.0f // Handler
-#define HANDLER_RESTACKER 4416.0f   
+#define HANDLER_RESTACKER 4416.0f 
+#define HANDLER_C1 2762.0f 
+#define HANDLER_C2 1947.0f 
+#define HANDLER_C3 1123.0f 
+
 #define RESTACKER_UP    3207.0f
 #define PLATFORM_UP     790.0f
 #define RESTACKER_UP    4095.0f  // Restacker position down
-#define CARTRIDGE1_UP   1976.0f     // C1 position down
-#define CARTRIDGE2_UP   4095.0f  // C2 position down
-#define CARTRIDGE3_UP   4095.0f  // C3 position down
+#define CARTRIDGE2_UP   1976.0f     // C1 position down
+#define CARTRIDGE3_UP   4095.0f  // C2 position down
+#define CARTRIDGE1_UP   4095.0f  // C3 position down
 #define LID_LIFTER_DOWN 3000.0f  // Drop the lid down
 
 // Motion Profiles

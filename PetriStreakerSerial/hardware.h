@@ -282,6 +282,9 @@ class HardwareControl {
     bool retractSample();         ///< Retract sample material
     bool rotateToStreakingStation(); ///< Rotate handler to streaking position
     bool rotateHandlerToInitial(); ///< Rotate handler to initial position
+    bool rotateHandlerToC1(); 
+    bool rotateHandlerToC2(); 
+    bool rotateHandlerToC3(); 
     bool rotateHandlerToFinished(); ///< Rotate handler to finished position
     /**
     * @brief Safely set handler goal position with collision checking
