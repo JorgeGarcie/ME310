@@ -430,8 +430,8 @@ bool HardwareControl::lidClose() {
   bool success = true;
   
   // Complete lid replacement sequence
-  success &= lowerLidLifterNoContact();
-  delay(200);
+  success &= lowerLidLifter();
+  delay(100);
   success &= suctionLidOff();
   delay(300);
   success &= raiseLidLifter();
@@ -706,7 +706,7 @@ bool HardwareControl::LidSuctionOn(){
 bool HardwareControl::LidSuctionOff(){
   digitalWrite(LID_SOLENOID, HIGH);
   digitalWrite(LID_SUCTION, LOW);
-  delay(50);
+  delay(100);
   digitalWrite(LID_SOLENOID, LOW);
   return true; 
 }
@@ -717,12 +717,6 @@ bool HardwareControl::LidSuctionOff(){
 
 bool HardwareControl::lowerLidLifter() {
   dxl.setGoalPosition(DXL_LID_LIFTER, LID_LIFTER_DOWN);
-  waitForMotors();  
-  return true; 
-}
-
-bool HardwareControl::lowerLidLifterNoContact() {
-  dxl.setGoalPosition(DXL_LID_LIFTER, LID_LIFTER_DOWN + 150);
   waitForMotors();  
   return true; 
 }

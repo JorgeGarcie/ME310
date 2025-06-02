@@ -38,7 +38,7 @@ class AppController:
         self.swabStyle=None
 
         self.screens = [gg.StartScreen, gg.PetriSelector, gg.SwabSelector3, gg.NumberSelector,gg.SummaryScreen,gg.RunningScreen,gg.WaitScreen]
-        self.current_index = 0
+        self.current_index = 0    
         self.current_screen = None
 
         self.isRun=False
@@ -47,11 +47,7 @@ class AppController:
     
         
         # self.mega = MEGAobj.MegaObj(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
-<<<<<<< HEAD
-        self.orb = ORBobj.ORBobj(port='COM11', baudrate=115200, timeout=1)
-=======
-        # self.orb = ORBobj.ORBobj(port='/dev/cu.usbmodem21201', baudrate=115200, timeout=1)
->>>>>>> db80674fe0016b9bc43d1df4454bd788d737b93b
+        #self.orb = ORBobj.ORBobj(port='COM11', baudrate=115200, timeout=1)
         # self.mega.initCom()
         # self.orb2 = ORB2obj.ORB2(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
 
@@ -63,6 +59,7 @@ class AppController:
 
         screen_class = self.screens[index]
         self.current_screen = screen_class(self.root,self) 
+        
     
     def go_back(self):
         if self.current_index >= 0:
@@ -71,6 +68,7 @@ class AppController:
             self.update()
 
     def go_forward(self):
+      
         if self.current_index < len(self.screens) - 1:
             self.current_index += 1
             self.show_screen(self.current_index)
@@ -78,24 +76,27 @@ class AppController:
 
     def update(self):
         self.show_screen(self.current_index)
+       
         
     def run_single(self):
-        self.orb.moveArm(self.petriDishType)
-        self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
+        print("RUNNING")
+        print(self.current_screen)
+       # self.orb.moveArm(self.petriDishType)
+        #self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
 
-        # self.GetDish(self.petriDishType)
+#        self.GetDish(self.petriDishType)
 
-        # self.orb.moveArm("WORK AREA")
-        # self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
+        #self.orb.moveArm("WORK AREA")
+        #self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
 
         # # self.mega.Nai("UP")
         # # self.wait_for_confirmation(self.mega,"NAI UP")
 
-        # self.orb.sucction("ON")
-        # self.wait_for_confirmation(self.orb,"SUCC ON")
+       # self.orb.sucction("ON")
+       # self.wait_for_confirmation(self.orb,"SUCC ON")
 
-        # self.orb.lid("OPEN")
-        # self.wait_for_confirmation(self.orb,"LID REMOVED")
+        #self.orb.lid("OPEN")
+        #self.wait_for_confirmation(self.orb,"LID REMOVED")
 
         # self.orb.fetch()
         # self.wait_for_confirmation(self.orb,"FETCH RDY")
@@ -131,33 +132,32 @@ class AppController:
         # self.orb.lid("CLOSE")
         # self.wait_for_confirmation(self.orb,"LID ON")
 
-        # self.orb.sucction("OFF")
-        # self.wait_for_confirmation(self.orb,"SUCC OFF")
+       # self.orb.sucction("OFF")
+       # self.wait_for_confirmation(self.orb,"SUCC OFF")
 
 
         # # self.mega.Nai("DOWN")
         # # self.wait_for_confirmation(self.mega,"NAI DOWN")
 
-        # self.orb.moveArm("STRG")
-        # self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
+       # self.orb.moveArm("STRG")
+       # self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
 
-        # self.orb.lift("STRG", "UP")
-        # self.wait_for_confirmation(self.orb,"LIFT UP")
+ #       self.orb.lift("STRG", "UP")
+  #      self.wait_for_confirmation(self.orb,"LIFT UP")
 
-        # self.orb.lift("STRG", "DOWN")
-        # self.wait_for_confirmation(self.orb,"LIFT UP")
-
-
-        self.current_screen.update_progress(self.current_run)
+   #     self.orb.lift("STRG", "DOWN")
+    #    self.wait_for_confirmation(self.orb,"LIFT DOWN")
+        #self.current_screen.update_progress(self.current_run)
         self.current_run+=1
+        
 
     def GetDish(self,TYPE):
         self.orb.lift(TYPE,"UP")
         self.wait_for_confirmation(self.orb,"LIFT UP")
         # self.orb2.releas(TYPE)
         # self.wait_for_confirmation(self.orb2,"RELEASED")
-        self.orb.lift(TYPE,"MID")
-        self.wait_for_confirmation(self.orb,"LIFT MID")
+        #self.orb.lift(TYPE,"MID")
+        #self.wait_for_confirmation(self.orb,"LIFT MID")
         # self.orb2.grab(TYPE)
         # self.wait_for_confirmation(self.orb2"GRABBED")
         self.orb.lift(TYPE,"DOWN")
@@ -165,6 +165,7 @@ class AppController:
         
     def run(self):
         if(self.current_run<self.numberOfPlates):
+           
             self.run_single()
             self.root.after(200,self.run)
         else:
@@ -197,11 +198,11 @@ class AppController:
 
 
     @staticmethod
-    def wait_for_confirmation(comObj : MEGAobj.MegaObj | ORBobj.ORBobj, tar_resp : str,err_resp: str=None , timeout : int=5):
+    def wait_for_confirmation(comObj : MEGAobj.MegaObj | ORBobj.ORBobj, tar_resp : str,err_resp: str=None , timeout : int=10):
         start_time = time.time()
         while True:
             response = comObj.read()
-            
+            print(response)
             if response == tar_resp:
                 return True
             if response == err_resp:

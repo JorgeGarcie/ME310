@@ -125,7 +125,6 @@ class HardwareControl {
     // Lid lifter functions
     bool lowerLidLifter();
     bool raiseLidLifter();
-    bool lowerLidLifterNoContact();
     
     // Polar arm functions
     bool movePolarArmToVial();

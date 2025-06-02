@@ -17,7 +17,7 @@ void CommandHandler::initialize() {
   DEBUG_SERIAL.println("=================================");
   DEBUG_SERIAL.println("Available commands:");
   DEBUG_SERIAL.println("MOVE [position], LIFT [pos] [dir], GRAB [pos], RELEASE [pos]");
-  DEBUG_SERIAL.println("PLATFORM LIFT [dir], SUCTION [device] [state], LID [state]");
+  DEBUG_SERIAL.println("PLATFORM LIFT [dir], SUCTION [state], LID [state]");
   DEBUG_SERIAL.println("FETCH, CUT, PATTERN [id], HOME ALL, STATUS, RESET");
   DEBUG_SERIAL.println("CYCLE START, ABORT, PAUSE, RESUME");
   DEBUG_SERIAL.println("=================================");
@@ -257,40 +257,30 @@ void CommandHandler::handlePlatformCommand(String args) {
   }
 }
 
+
 void CommandHandler::handleSuctionCommand(String args) {
-  // SUCTION "device" "state" - ROT/LID ; ON/OFF
-  int spaceIndex = args.indexOf(' ');
-  if (spaceIndex < 0) {
-    DEBUG_SERIAL.println("SUCTION INVALID ARGS");
-    return;
-  }
+  // SUCTION "state" - simplified to platform suction only
+  // Command format: "SUCTION ON" or "SUCTION OFF"
   
-  String device = args.substring(0, spaceIndex);
-  String state = args.substring(spaceIndex + 1);
-  
-  DEBUG_SERIAL.print("Suction ");
-  DEBUG_SERIAL.print(device);
-  DEBUG_SERIAL.print(" ");
-  DEBUG_SERIAL.println(state);
+  DEBUG_SERIAL.print("Platform suction ");
+  DEBUG_SERIAL.println(args);
   
   bool success = false;
   
-  if (device == "ROT") {
-    if (state == "ON") {
-      success = hardware->suctionRotationOn();
-    } else if (state == "OFF") {
-      success = hardware->suctionRotationOff();
-    }
-  }
-  else if (device == "LID") {
-    if (state == "ON") {
-      success = hardware->suctionLidOn();
-    } else if (state == "OFF") {
-      success = hardware->suctionLidOff();
-    }
+  if (args == "ON") {
+    success = hardware->suctionRotationOn();  // Platform suction on
+    DEBUG_SERIAL.println(success ? "SUCC ON" : "ERROR");
+
+  } else if (args == "OFF") {
+    success = hardware->suctionRotationOff(); // Platform suction off
+    DEBUG_SERIAL.println(success ? "SUCC OFF" : "ERROR");
+
+  } else {
+    DEBUG_SERIAL.println("SUCTION INVALID STATE");
+    return;
   }
   
-  DEBUG_SERIAL.println(success ? "SUCC ON" : "SUCC OFF");
+  // Send response
 }
 
 void CommandHandler::handleLidCommand(String state) {

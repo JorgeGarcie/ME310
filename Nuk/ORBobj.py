@@ -21,7 +21,7 @@ class ORBobj:
         self.write(f"MOVE {position}")
 
     def lift(self, id, dir):
-        self.write(f"LIFT {id}")
+        self.write(f"LIFT {id} {dir}")
 
     def grab(self, id):
         self.write(f"GRAB {id}")

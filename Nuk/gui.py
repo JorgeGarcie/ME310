@@ -142,7 +142,7 @@ class PetriSelector(ParentScreen):
         btn_pad_x = 20  # horizontal padding between buttons
 
 
-        options = ['BLOOD', 'MACCONKEY', 'CHOCOLATE']
+        options = ['BLOOD', 'NORMAL', 'CHOCOLAT']
 
         for i, (label, photo) in enumerate(zip(options,self.controller.photos_Dish )):
             btn = tk.Button(self.frame,cursor='hand2',
@@ -346,8 +346,6 @@ class SummaryScreen(ParentScreen):
 
     def on_run(self):
         self.controller.go_forward()
-        self.controller.isRun=True
-        self.controller.run()
 
     def on_cancel(self):
         self.controller.numberOfPlates=1
@@ -361,7 +359,10 @@ class RunningScreen(ParentScreen):
         super().__init__(root, controller)
         self.done_button = None  # Placeholder for the DONE button
         self.initialize_main_interface()
-
+        print("run")
+        self.controller.run()
+        
+        
     def create_widgets(self):
         # Running label
         self.running_label = tk.Label(self.frame, text="Running ...",
@@ -378,6 +379,7 @@ class RunningScreen(ParentScreen):
         self.progress_label.place(relx=0.5, rely=0.55, anchor='center')
 
         self.update_progress(0)
+         
 
     def update_progress(self, current):
         total = self.controller.numberOfPlates
