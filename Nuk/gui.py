@@ -81,49 +81,35 @@ class ParentScreen:
 
     def Back_btn(self):
 
-        self.back_btn = tk.Button(self.frame, text="Back", command=self.controller.go_back,
-                             font=('Segoe UI', 14),
-                             width=14,
-                             height=5
+        self.back_btn = tk.Button(self.frame, command=self.controller.go_back,
                              )
-        self.back_btn.place(x=10, y=10)
+        self.back_btn.place(x=20, y=20,
+                             width=200,
+                             height=100)
 
 class StartScreen(ParentScreen):
     def __init__(self, root, controller):
         super().__init__(root, controller)
         self.initialize_main_interface()
 
-        self.canvas.create_text(400, 120, text="InoQ", 
-                               font=('Segoe UI', 80, 'bold'),
+        self.canvas.create_text(400, 80, text="InoQ", 
+                               font=('Segoe UI', 100, 'bold'),
                                fill='#1e3a8a', anchor='center')
 
 
 
     def create_widgets(self):
-        self.start_button = tk.Button(self.frame, text="START",
-                                    bg=self.colors['success'],
-                                    fg='white',
-                                    font=('Segoe UI', 50, 'bold'),
-                                    relief='flat',
+        self.start_button = tk.Button(self.frame, 
                                     cursor='hand2',
-                                    width=21,
-                                    height=2,
-
                                     command=self.controller.go_forward
                                     )
         
-        self.start_button.place(anchor='center',relx=0.5,rely=0.5)
+        self.start_button.place(anchor='center',relx=0.5,rely=0.5,width=760,height=140)
 
-        self.change_cartridge_button = tk.Button(self.frame, text="Change Cartridge",
-                                             bg=self.colors['accent_secondary'],
-                                             fg='white',
-                                             font=('Segoe UI', 30, 'bold'),
-                                             relief='flat',
-                                             cursor='hand2',
-                                             width=34,
-                                             height=3,
+        self.change_cartridge_button = tk.Button(self.frame, 
+                                                  cursor='hand2',
                                              command=self.on_change_cartridge)
-        self.change_cartridge_button.place(anchor='center',relx=0.5,rely=0.8)  # Adjust x,y as you want
+        self.change_cartridge_button.place(anchor='center',relx=0.5,rely=0.83,width=760,height=140)  # Adjust x,y as you want
 
     def on_change_cartridge(self):
         self.controller.RemoveCart()
@@ -139,31 +125,25 @@ class PetriSelector(ParentScreen):
     def create_widgets(self):
         self.Back_btn()
 
-        title_label = tk.Label(self.frame, text="Select petri dish type",
+        title_label = tk.Label(self.frame, text="SELECT PETRI DISH TYPE",
                            font=('Segoe UI', 32, 'bold'),
                            fg=self.colors['accent_primary'],  # or a fixed color like '#1e3a8a'
                            bg=self.colors['bg_secondary'])    # or just 'white' if simpler
-        title_label.place(relx=0.5, rely=0.1, anchor='center')
+        title_label.place(relx=0.6, y=65, anchor='center')
 
-        # Container for the three big buttons, centered
-        btn_container = tk.Frame(self.frame, bg='white')
-        btn_container.place(relx=0.5, rely=0.6, anchor='center')
 
-        btn_width = 15  # width in text units
-        btn_height = 13  # height in text units
-        btn_pad_x = 8  # horizontal padding between buttons
-
+        btn_width_px = 240  # width in text units
+        btn_height_px = 325  # height in text units
+        btn_pad_x = 20  # horizontal padding between buttons
 
 
         options = ['Type A', 'Type B', 'Type C']
 
         for i, label in enumerate(options):
-            btn = tk.Button(btn_container, text=label,
-                        width=btn_width, height=btn_height,
-                        font=('Segoe UI', 20, 'bold'),
-                        bg='#1e3a8a', fg='white',
-                        relief='flat', cursor='hand2', command=lambda l=label: self.select_type(l))
-            btn.pack(side='left', padx=(btn_pad_x, btn_pad_x))
+            btn = tk.Button(self.frame,cursor='hand2',
+                             command=lambda l=label: self.select_type(l))
+            btn.place(x=i*(btn_width_px + btn_pad_x)+btn_pad_x, y=140,
+                  width=btn_width_px, height=btn_height_px)
 
 
     def select_type(self, selection):
@@ -173,38 +153,37 @@ class PetriSelector(ParentScreen):
 class SwabSelector3(ParentScreen):
     def __init__(self, root, controller):
         super().__init__(root, controller)
+        
         self.initialize_main_interface()
-
 
     def create_widgets(self):
         self.Back_btn()
 
 
-        title_label = tk.Label(self.frame, text="Select swabbing style",
+        title_label = tk.Label(self.frame, text="SELECT SWABBING STYLE",
                            font=('Segoe UI', 32, 'bold'),
                            fg=self.colors['accent_primary'],  # or a fixed color like '#1e3a8a'
                            bg=self.colors['bg_secondary'])    # or just 'white' if simpler
-        title_label.place(relx=0.5, rely=0.1, anchor='center')
+        title_label.place(relx=0.6, y=65, anchor='center')
 
         # Container for the three big buttons, centered
-        btn_container = tk.Frame(self.frame, bg='white')
-        btn_container.place(relx=0.5, rely=0.6, anchor='center')
-
-        btn_width = 15  # width in text units
-        btn_height = 13  # height in text units
-        btn_pad_x = 8  # horizontal padding between buttons
+        btn_width_px = 240  # width in text units
+        btn_height_px = 325  # height in text units
+        btn_pad_x = 20  # horizontal padding between buttons
 
 
+        options = ['Type A', 'Type B', 'Type C']
 
-        options = ['Style A', 'Style B', 'Style C']
-
-        for i, label in enumerate(options):
-            btn = tk.Button(btn_container, text=label,
-                        width=btn_width, height=btn_height,
-                        font=('Segoe UI', 20, 'bold'),
-                        bg='#1e3a8a', fg='white',
-                        relief='flat', cursor='hand2', command=lambda l=label: self.select_option(l))
-            btn.pack(side='left', padx=(btn_pad_x, btn_pad_x))
+        for i, (label, photo) in enumerate(zip(options,self.controller.photos )):
+            btn = tk.Button(self.frame,cursor='hand2',image=photo,
+                            bd=0,
+                            highlightthickness=0,
+                            relief='flat', 
+                             command=lambda l=label: self.select_option(l))
+            btn.place(x=i*(btn_width_px + btn_pad_x)+btn_pad_x, y=140,
+                  width=btn_width_px, height=btn_height_px)
+            
+            
 
 
     def select_option(self, selection):
@@ -284,31 +263,25 @@ class NumberSelector(ParentScreen):
         # Square label to display number
         self.counter_label = tk.Label(self.frame, text=str(self.controller.numberOfPlates),
                                       bg='#f1f5f9', fg='#1e293b',
-                                      font=('Segoe UI', 64, 'bold'),
-                                      width=4, height=2,
+                                      font=('Segoe UI', 100, 'bold'),
+                                      width=3, height=1,
                                       relief='ridge', bd=2)
-        self.counter_label.place(relx=0.5, rely=0.5, anchor='center')
+        self.counter_label.place(relx=0.5, y=203, anchor='center')
 
         # Increase button (+)
-        self.plus_btn = tk.Button(self.frame, text="+", command=self.increase,
-                                  font=('Segoe UI', 40, 'bold'),
-                                  bg='#059669', fg='white',
-                                  width=9, height=6, relief='flat', cursor='hand2')
-        self.plus_btn.place(relx=0.81, rely=0.6, anchor='center')
+        self.plus_btn = tk.Button(self.frame, command=self.increase,
+                                   cursor='hand2')
+        self.plus_btn.place(x=510,y=140,width=270,height=325)
 
         # Decrease button (−)
-        self.minus_btn = tk.Button(self.frame, text="−", command=self.decrease,
-                                   font=('Segoe UI', 40, 'bold'),
-                                   bg='#dc2626', fg='white',
-                                   width=9, height=6, relief='flat', cursor='hand2')
-        self.minus_btn.place(relx=0.19, rely=0.6, anchor='center')
+        self.minus_btn = tk.Button(self.frame, command=self.decrease,
+                                  cursor='hand2')
+        self.minus_btn.place(x=20,y=140,width=270,height=325)
 
-        self.new_btn = tk.Button(self.frame, text="READY", command=self.new_button_action,
-                             font=('Segoe UI', 20),
-                             bg='#3b82f6', fg='white',
-                             width=12, height=4, relief='raised', cursor='hand2')
-        # Place it slightly below the number label (rely > 0.5)
-        self.new_btn.place(relx=0.5, rely=0.8, anchor='center')
+        # Ready button
+        self.new_btn = tk.Button(self.frame, command=self.new_button_action,
+                            cursor='hand2')
+        self.new_btn.place(relx=0.5, rely=0.77, anchor='center',width=205,height=190)
 
     def new_button_action(self):
         self.controller.go_forward()
@@ -339,39 +312,26 @@ class SummaryScreen(ParentScreen):
         )
 
         # Frame to hold the text info
-        info_frame = tk.Frame(self.frame, bg=self.colors['bg_secondary'])
-        info_frame.place(relx=0.3, rely=0.6, anchor='center')
 
-        self.summary_label = tk.Label(info_frame, text=summary_text,
-                                      font=('Segoe UI', 40),
+        self.summary_label = tk.Label(self.frame, text=summary_text,
+                                      font=('Segoe UI', 40,'bold'),
                                       justify='left',
                                       bg=self.colors['bg_secondary'],
                                       fg=self.colors['text_primary'])
-        self.summary_label.pack()
+        self.summary_label.place(relx=0.3, rely=0.6, anchor='center')
 
         # Frame for buttons, stacked vertically
-        btn_frame = tk.Frame(self.frame, bg=self.colors['bg_secondary'])
-        btn_frame.place(relx=0.75, rely=0.5, anchor='center')
+        
 
-        self.run_btn = tk.Button(btn_frame, text="Run",
-                                 font=('Segoe UI', 20, 'bold'),
-                                 bg=self.colors['success'],
-                                 fg='white',
-                                 width=20,
-                                 height=7,
+        self.run_btn = tk.Button(self.frame, 
                                  cursor='hand2',
                                  command=self.on_run)
-        self.run_btn.pack(pady=(0, 20))  # Padding between buttons
+        self.run_btn.place(x=460,y=100,width=320,height=175)  # Padding between buttons
 
-        self.cancel_btn = tk.Button(btn_frame, text="Cancel",
-                                    font=('Segoe UI', 20, 'bold'),
-                                    bg=self.colors['error'],
-                                    fg='white',
-                                    width=20,
-                                    height=7,
+        self.cancel_btn = tk.Button(self.frame, 
                                     cursor='hand2',
                                     command=self.on_cancel)
-        self.cancel_btn.pack()
+        self.cancel_btn.place(x=460,y=285,width=320,height=175)
 
     def on_run(self):
         self.controller.go_forward()
@@ -998,7 +958,7 @@ class InoQControlPanel:
 
 def main():
     root = tk.Tk()
-    app = NumberSelector(root)
+    app = PetriSelector(root)
     root.mainloop()
 
 if __name__ == "__main__":
