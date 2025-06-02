@@ -30,10 +30,10 @@ class AppController:
         self.current_run=0
     
         
-        self.mega = MEGAobj.MegaObj(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
+        # self.mega = MEGAobj.MegaObj(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
         self.orb = ORBobj.ORBobj(port='/dev/cu.usbmodem21201', baudrate=115200, timeout=1)
-        self.mega.initCom()
-        self.orb2 = ORB2obj.ORB2(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
+        # self.mega.initCom()
+        # self.orb2 = ORB2obj.ORB2(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
 
 
 
@@ -68,8 +68,8 @@ class AppController:
         self.orb.moveArm("WORK AREA")
         self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
 
-        self.mega.Nai("UP")
-        self.wait_for_confirmation(self.mega,"NAI UP")
+        # self.mega.Nai("UP")
+        # self.wait_for_confirmation(self.mega,"NAI UP")
 
         self.orb.sucction("ON")
         self.wait_for_confirmation(self.orb,"SUCC ON")
@@ -80,32 +80,32 @@ class AppController:
         self.orb.fetch()
         self.wait_for_confirmation(self.orb,"FETCH RDY")
 
-        self.mega.fetch()
-        self.wait_for_confirmation(self.mega, "FETCH START")
-        self.wait_for_confirmation(self.mega, "FETCH COMPLETED")
+        # self.mega.fetch()
+        # self.wait_for_confirmation(self.mega, "FETCH START")
+        # self.wait_for_confirmation(self.mega, "FETCH COMPLETED")
 
 
         self.orb.extrude()
         self.wait_for_confirmation(self.orb,"EXTRUDE RDY")
 
-        self.mega.extrude()
-        self.wait_for_confirmation(self.mega, "EXTRUDE START")
-        self.wait_for_confirmation(self.mega, "EXTRUDE COMPLETED","EXTRUDE FAILED")
+        # self.mega.extrude()
+        # self.wait_for_confirmation(self.mega, "EXTRUDE START")
+        # self.wait_for_confirmation(self.mega, "EXTRUDE COMPLETED","EXTRUDE FAILED")
 
 
         self.orb.swab(self.petriDishType)
         self.wait_for_confirmation(self.orb,"SWAB COMPLETED")
 
-        self.mega.prepCut()
-        self.wait_for_confirmation(self.mega, "PREP START")
-        self.wait_for_confirmation(self.mega, "FILAMENT RDY")
+        # self.mega.prepCut()
+        # self.wait_for_confirmation(self.mega, "PREP START")
+        # self.wait_for_confirmation(self.mega, "FILAMENT RDY")
 
         self.orb.cut()
         self.wait_for_confirmation(self.orb,"CUT RDY")
 
-        self.mega.cut()
-        self.wait_for_confirmation(self.mega, "CUT START")
-        self.wait_for_confirmation(self.mega, "CUT COMPLETED")
+        # self.mega.cut()
+        # self.wait_for_confirmation(self.mega, "CUT START")
+        # self.wait_for_confirmation(self.mega, "CUT COMPLETED")
 
 
         self.orb.lid("CLOSE")
@@ -115,8 +115,8 @@ class AppController:
         self.wait_for_confirmation(self.orb,"SUCC OFF")
 
 
-        self.mega.Nai("DOWN")
-        self.wait_for_confirmation(self.mega,"NAI DOWN")
+        # self.mega.Nai("DOWN")
+        # self.wait_for_confirmation(self.mega,"NAI DOWN")
 
         self.orb.moveArm("STRG")
         self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
@@ -134,12 +134,12 @@ class AppController:
     def GetDish(self,TYPE):
         self.orb.lift(TYPE,"UP")
         self.wait_for_confirmation(self.orb,"LIFT UP")
-        self.orb2.releas(TYPE)
-        self.wait_for_confirmation("RELEASED")
+        # self.orb2.releas(TYPE)
+        # self.wait_for_confirmation(self.orb2,"RELEASED")
         self.orb.lift(TYPE,"MID")
         self.wait_for_confirmation(self.orb,"LIFT MID")
-        self.orb2.grab(TYPE)
-        self.wait_for_confirmation("GRABBED")
+        # self.orb2.grab(TYPE)
+        # self.wait_for_confirmation(self.orb2"GRABBED")
         self.orb.lift(TYPE,"DOWN")
         self.wait_for_confirmation(self.orb,"LIFT DOWN")
         
@@ -154,8 +154,8 @@ class AppController:
     def RemoveCart(self):
         self.orb.liftAll("UP")
         self.wait_for_confirmation(self.orb,"ALL LIFT UP")
-        self.orb2.releasAll()
-        self.wait_for_confirmation("RELEASED ALL")
+        # self.orb2.releasAll()
+        # self.wait_for_confirmation(self.orb2,"RELEASED ALL")
         self.orb.liftAll("TOP")
         self.wait_for_confirmation(self.orb,"ALL LIFT TOP")
         self.wait_for_confirmation(self.orb,"CTRG RDY")
@@ -164,8 +164,8 @@ class AppController:
     def LoadCart(self):
         self.orb.liftAll("UP")
         self.wait_for_confirmation(self.orb,"ALL LIFT UP")
-        self.orb2.grabAll()
-        self.wait_for_confirmation("GRABBED ALL")
+        # self.orb2.grabAll()
+        # self.wait_for_confirmation(self.orb2,"GRABBED ALL")
         self.orb.liftAll("DOWN")
         self.wait_for_confirmation(self.orb,"ALL LIFT DOWN")
 
