@@ -31,7 +31,7 @@ class AppController:
     
         
         # self.mega = MEGAobj.MegaObj(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
-        self.orb = ORBobj.ORBobj(port='/dev/cu.usbmodem21201', baudrate=115200, timeout=1)
+        self.orb = ORBobj.ORBobj(port='COM11', baudrate=115200, timeout=1)
         # self.mega.initCom()
         # self.orb2 = ORB2obj.ORB2(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
 
