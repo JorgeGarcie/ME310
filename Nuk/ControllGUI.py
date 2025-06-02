@@ -2,9 +2,10 @@ import gui as gg
 import serial
 import tkinter as tk
 import time
+import os
 
 import MEGAobj
-import Nuk.ORBobj as ORBobj
+import ORBobj
 import ORB2obj
 
 class AppController:
@@ -25,7 +26,7 @@ class AppController:
     
         
         self.mega=MEGAobj.MegaObj(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
-        self.orb = ORBobj.ORBobj(port='/dev/cu.usbmodem21201', baudrate=115200, timeout=1)
+        self.orb = ORBobj.ORBobj(port='COM11', baudrate=115200, timeout=1)
         self.mega.initCom()
         self.orb2=ORB2obj.ORB2(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
 
@@ -151,7 +152,7 @@ class AppController:
         self.current_screen.update_message()
 
     @staticmethod
-    def wait_for_confirmation(comObj : MEGAobj.MegaObj | ORBobj.OPBobj, tar_resp : str,err_resp: str=None , timeout : int=5):
+    def wait_for_confirmation(comObj : MEGAobj.MegaObj | ORBobj.ORBobj, tar_resp : str,err_resp: str=None , timeout : int=5):
         start_time = time.time()
         while True:
             response = comObj.read()
