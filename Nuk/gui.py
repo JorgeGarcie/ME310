@@ -389,16 +389,17 @@ class RunningScreen(ParentScreen):
         if self.done_button:
             return  # Avoid creating multiple buttons
 
-        self.done_button = tk.Button(self.frame, text="DONE",
-                                     font=('Segoe UI', 36, 'bold'),
-                                     bg=self.colors['success'],
-                                     fg='white',
-                                     relief='flat', cursor='hand2',
-                                     command=self.go_to_start)
-        self.done_button.place(relx=0.5, rely=0.75, anchor='center')
+        self.done_button = tk.Button(self.frame, cursor='hand2',
+                                     command=self.go_to_start,
+                                     image=self.controller.photoDone)
+        self.done_button.place(relx=0.5, rely=0.78, anchor='center', width=500,height=160)
 
     def go_to_start(self):
-        self.controller.current_index = 0
+        self.controller.current_run = 0
+        self.controller.numberOfPlates=1
+        self.petriDishType=None
+        self.swabStyle=None
+        self.controller.current_index =0
         self.controller.update()
 
 class WaitScreen(ParentScreen):
@@ -415,14 +416,12 @@ class WaitScreen(ParentScreen):
         self.message_label.place(relx=0.5, rely=0.4, anchor='center')
 
         # DONE button starts hidden
-        self.done_btn = tk.Button(self.frame, text="DONE",
-                                  font=('Segoe UI', 36, 'bold'),
-                                  bg=self.colors['success'], fg='white',
-                                  relief='flat', cursor='hand2',
-                                  width=20,
-                                  height=4,
-                                  command=self.on_done)
-        
+        self.done_btn = tk.Button(self.frame,
+                                   cursor='hand2',
+                                   command=self.on_done,
+                                   image=self.controller.photoDone
+                                  )
+        self.done_btn.place(relx=0.5,rely=0.7,anchor='center',width=500,height=160)
 
         # Don't place it yet, only after message changes
         self.root.after(2000,self.update_message)
@@ -434,6 +433,40 @@ class WaitScreen(ParentScreen):
     def on_done(self):
         self.controller.LoadCart()
         
+
+class FakeController:
+    def __init__(self, root):
+        self.root = root
+        self.photos_Swab = [
+    tk.PhotoImage(file="Nuk/ImagesForGUI/line.png"),
+    tk.PhotoImage(file="Nuk/ImagesForGUI/quad.png"),
+    tk.PhotoImage(file="Nuk/ImagesForGUI/spiral.png")
+]
+        self.photos_Dish=[
+            tk.PhotoImage(file="Nuk/ImagesForGUI/blood.png"),
+            tk.PhotoImage(file="Nuk/ImagesForGUI/macconkey.png"),
+             tk.PhotoImage(file="Nuk/ImagesForGUI/chocolate.png")
+        ]
+
+        self.photoStart=tk.PhotoImage(file="Nuk/ImagesForGUI/start.png")
+        self.photoBack=tk.PhotoImage(file="Nuk/ImagesForGUI/back.png")
+        self.photoPlus=tk.PhotoImage(file="Nuk/ImagesForGUI/plus.png")
+        self.photoNeg=tk.PhotoImage(file="Nuk/ImagesForGUI/minus.png")
+        self.photoCCrtg=tk.PhotoImage(file="Nuk/ImagesForGUI/changecartridge.png")
+        self.photoNext=tk.PhotoImage(file="Nuk/ImagesForGUI/next.png")
+        self.photoCancel=tk.PhotoImage(file="Nuk/ImagesForGUI/cancel.png")
+        self.photoRun=tk.PhotoImage(file="Nuk/ImagesForGUI/run.png")
+        self.photoDone=tk.PhotoImage(file="Nuk/ImagesForGUI/done.png")
+
+
+        self.numberOfPlates=10000000
+        self.current_run=10000000
+
+    def go_back(self):
+        print("Back button pressed (fake)")
+
+    def go_forward(self):
+        print("Forward button pressed (fake)")
 
 
 
@@ -971,7 +1004,9 @@ class InoQControlPanel:
 
 def main():
     root = tk.Tk()
-    app = PetriSelector(root)
+    FC=FakeController(root)
+    app = WaitScreen(root,FC)
+    #app.enable_done_button()
     root.mainloop()
 
 if __name__ == "__main__":
