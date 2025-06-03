@@ -346,6 +346,7 @@ class SummaryScreen(ParentScreen):
 
     def on_run(self):
         self.controller.go_forward()
+        self.root.after(200,self.controller.run)
 
     def on_cancel(self):
         self.controller.numberOfPlates=1
@@ -359,8 +360,7 @@ class RunningScreen(ParentScreen):
         super().__init__(root, controller)
         self.done_button = None  # Placeholder for the DONE button
         self.initialize_main_interface()
-        print("run")
-        self.controller.run()
+        
         
         
     def create_widgets(self):

@@ -27,7 +27,7 @@ class MegaObj:
         self.write(f"FETCH")
     
     def Nai(self, dir):
-        self.write(f"NAI {dir}")
+        self.write(f"PLATFORM LIFT {dir}")
 
     def initCom(self,timeout=5):
         start_time = time.time()

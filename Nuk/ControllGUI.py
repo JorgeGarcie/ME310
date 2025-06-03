@@ -46,9 +46,9 @@ class AppController:
         self.current_run=0
     
         
-        # self.mega = MEGAobj.MegaObj(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
-        #self.orb = ORBobj.ORBobj(port='COM11', baudrate=115200, timeout=1)
-        # self.mega.initCom()
+        self.mega = MEGAobj.MegaObj(port='COM12', baudrate=115200, timeout=1)
+        self.mega.initCom()
+        self.orb = ORBobj.ORBobj(port='COM11', baudrate=115200, timeout=1)
         # self.orb2 = ORB2obj.ORB2(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
 
 
@@ -79,27 +79,26 @@ class AppController:
        
         
     def run_single(self):
-        print("RUNNING")
-        print(self.current_screen)
-       # self.orb.moveArm(self.petriDishType)
-        #self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
+     
+        self.orb.moveArm(self.petriDishType)
+        self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
 
-#        self.GetDish(self.petriDishType)
+        self.GetDish(self.petriDishType)
 
-        #self.orb.moveArm("WORK AREA")
-        #self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
+        self.orb.moveArm("WORK AREA")
+        self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
+        
+        self.mega.Nai("UP")
+        self.wait_for_confirmation(self.mega,"PLATFORM LIFT UP")
 
-        # # self.mega.Nai("UP")
-        # # self.wait_for_confirmation(self.mega,"NAI UP")
+        self.orb.sucction("ON")
+        self.wait_for_confirmation(self.orb,"SUCC ON")
+        
+        self.orb.lid("OPEN")
+        self.wait_for_confirmation(self.orb,"LID REMOVED")
 
-       # self.orb.sucction("ON")
-       # self.wait_for_confirmation(self.orb,"SUCC ON")
-
-        #self.orb.lid("OPEN")
-        #self.wait_for_confirmation(self.orb,"LID REMOVED")
-
-        # self.orb.fetch()
-        # self.wait_for_confirmation(self.orb,"FETCH RDY")
+        ##self.orb.fetch()
+        ##self.wait_for_confirmation(self.orb,"FETCH RDY")
 
         # # self.mega.fetch()
         # # self.wait_for_confirmation(self.mega, "FETCH START")
@@ -128,26 +127,24 @@ class AppController:
         # # self.wait_for_confirmation(self.mega, "CUT START")
         # # self.wait_for_confirmation(self.mega, "CUT COMPLETED")
 
+        self.orb.sucction("OFF")
+        self.wait_for_confirmation(self.orb,"SUCC OFF")
 
-        # self.orb.lid("CLOSE")
-        # self.wait_for_confirmation(self.orb,"LID ON")
+        self.mega.Nai("DOWN")
+        self.wait_for_confirmation(self.mega,"PLATFORM LIFT DOWN")
+        
+        self.orb.lid("CLOSE")
+        self.wait_for_confirmation(self.orb,"LID ON")
 
-       # self.orb.sucction("OFF")
-       # self.wait_for_confirmation(self.orb,"SUCC OFF")
+        self.orb.moveArm("STRG")
+        self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
 
+        self.orb.lift("STRG", "UP")
+        self.wait_for_confirmation(self.orb,"LIFT UP")
 
-        # # self.mega.Nai("DOWN")
-        # # self.wait_for_confirmation(self.mega,"NAI DOWN")
-
-       # self.orb.moveArm("STRG")
-       # self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
-
- #       self.orb.lift("STRG", "UP")
-  #      self.wait_for_confirmation(self.orb,"LIFT UP")
-
-   #     self.orb.lift("STRG", "DOWN")
-    #    self.wait_for_confirmation(self.orb,"LIFT DOWN")
-        #self.current_screen.update_progress(self.current_run)
+        self.orb.lift("STRG", "DOWN")
+        self.wait_for_confirmation(self.orb,"LIFT DOWN")
+        self.current_screen.update_progress(self.current_run)
         self.current_run+=1
         
 
