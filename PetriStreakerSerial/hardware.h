@@ -42,6 +42,7 @@ class HardwareControl {
     uint16_t degToRaw(float degrees);
     float rawToDeg(uint16_t raw);
     void waitForMotors(uint8_t motorId = 0);
+    void waitForMotorsMin(uint8_t motorId = 0);
     
   public:
     HardwareControl();
@@ -129,6 +130,8 @@ class HardwareControl {
     // Polar arm functions
     bool movePolarArmToVial();
     bool movePolarArmToPlatform();
+    bool movePolarArmToCutting();
+    bool extrude();
     
     // ========================================================================
     // PATTERN DRAWING FUNCTIONS

@@ -181,7 +181,7 @@ void loop() {
       break;
 
     case NAIDOWN:
-       analogWrite(LIFT_PIN,0);
+      analogWrite(LIFT_PIN,0);
       Serial.println("PLATFORM LIFT DOWN");
       MEGA = SBY;
       break;

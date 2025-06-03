@@ -96,6 +96,9 @@ void CommandHandler::executeCommand(String command) {
   else if (cmd == "RESUME") {
     handleResumeCommand();
   }
+  else if (cmd == "EXTRUDE") {
+    handleExtrudeCommand();
+  }
   else {
     DEBUG_SERIAL.println("UNKNOWN COMMAND");
   }
@@ -382,4 +385,10 @@ void CommandHandler::handleResumeCommand() {
   // RESUME
   DEBUG_SERIAL.println("Resuming system");
   DEBUG_SERIAL.println("SYSTEM RESUMED");
+}
+
+void CommandHandler::handleExtrudeCommand() {
+  // EXTRUDE
+  bool success = hardware->extrude();  // Waits for completion
+  DEBUG_SERIAL.println(success ? "EXTRUDE RDY" : "EXTRUDE FAILED");
 }

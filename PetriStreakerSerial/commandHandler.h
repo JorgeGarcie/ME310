@@ -34,6 +34,7 @@ private:
   void handleResetCommand();
   void handleCycleCommand(String args);
   void handleAbortCommand();
+  void handleExtrudeCommand();
   void handlePauseCommand();
   void handleResumeCommand();
   

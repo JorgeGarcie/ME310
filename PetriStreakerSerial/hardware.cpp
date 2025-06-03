@@ -31,7 +31,7 @@ void HardwareControl::initialize() {
   DEBUG_SERIAL.println("Initializing hardware...");
   
   // Initialize I2C for extruder control
-  Wire.begin();
+  //Wire.begin();
   
   // Initialize Dynamixel
   dxl.begin(DXL_BAUD_RATE);
@@ -128,7 +128,7 @@ void HardwareControl::homeAllAxes() {
   DEBUG_SERIAL.println("Homing main motion system...");
   dxl.setGoalPosition(DXL_LID_LIFTER, (uint32_t)LID_LIFTER_HOME);
   waitForMotors(DXL_LID_LIFTER);
-  dxl.setGoalPosition(DXL_POLAR_ARM, (uint32_t)POLAR_ARM_NO_OBSTRUCT_HOME);
+  dxl.setGoalPosition(DXL_POLAR_ARM, (uint32_t)POLAR_ARM_TO_VIAL);
   dxl.setGoalPosition(DXL_HANDLER, (uint32_t)HANDLER_HOME);
   
   // Wait for all motors to reach position
@@ -210,6 +210,74 @@ void HardwareControl::waitForMotors(uint8_t motorId) {
   } while (m1 == 1 || m2 == 1 || m3 == 1 || m4 == 1 || m5 == 1 || m6 == 1 || m7 == 1 || m8 == 1);
 }
 
+
+/**
+ * @brief Wait for motors to complete their movement
+ */
+void HardwareControl::waitForMotorsMin(uint8_t motorId) {
+  uint32_t m1, m2, m3, m4, m5, m6, m7, m8;
+  
+  // Initial delay to allow motor controller to update status registers
+  delay(10);
+  
+  // Initial check to see if motors are moving
+  if (motorId > 0) {
+    m1 = dxl.readControlTableItem(ControlTableItem::MOVING, motorId);
+    m2 = m3 = m4 = m5 = m6 = m7 = m8 = 0;
+  } else {
+    // Check all 8 motors
+    m1 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_LID_LIFTER);
+    m2 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_POLAR_ARM);
+    m3 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_PLATFORM);
+    m4 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_HANDLER);
+    m5 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_RESTACKER);
+    m6 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_CARTRIDGE1);
+    m7 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_CARTRIDGE2);
+    m8 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_CARTRIDGE3);
+  }
+  
+  // If no motors appear to be moving initially, wait a bit more and check again
+  if (m1 == 0 && m2 == 0 && m3 == 0 && m4 == 0 && m5 == 0 && m6 == 0 && m7 == 0 && m8 == 0) {
+    delay(10);
+    
+    // Double-check
+    if (motorId > 0) {
+      m1 = dxl.readControlTableItem(ControlTableItem::MOVING, motorId);
+    } else {
+      m1 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_LID_LIFTER);
+      m2 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_POLAR_ARM);
+      m3 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_PLATFORM);
+      m4 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_HANDLER);
+      m5 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_RESTACKER);
+      m6 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_CARTRIDGE1);
+      m7 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_CARTRIDGE2);
+      m8 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_CARTRIDGE3);
+    }
+    
+    // If still no movement detected, assume completed quickly
+    if (m1 == 0 && m2 == 0 && m3 == 0 && m4 == 0 && m5 == 0 && m6 == 0 && m7 == 0 && m8 == 0) {
+      return;
+    }
+  }
+  
+  // Main waiting loop
+  do {
+    if (motorId > 0) {
+      m1 = dxl.readControlTableItem(ControlTableItem::MOVING, motorId);
+      m2 = m3 = m4 = m5 = m6 = m7 = m8 = 0;
+    } else {
+      m1 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_LID_LIFTER);
+      m2 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_POLAR_ARM);
+      m3 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_PLATFORM);
+      m4 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_HANDLER);
+      m5 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_RESTACKER);
+      m6 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_CARTRIDGE1);
+      m7 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_CARTRIDGE2);
+      m8 = dxl.readControlTableItem(ControlTableItem::MOVING, DXL_CARTRIDGE3);
+    }
+    delay(1);
+  } while (m1 == 1 || m2 == 1 || m3 == 1 || m4 == 1 || m5 == 1 || m6 == 1 || m7 == 1 || m8 == 1);
+}
 // ============================================================================
 // SEMANTIC WRAPPER FUNCTIONS (MATCH NUK COMMANDS)
 // ============================================================================
@@ -458,7 +526,16 @@ bool HardwareControl::fetchSample() {
  */
 bool HardwareControl::prepareCut() {
   DEBUG_SERIAL.println("Preparing for cut operation");
-  return movePolarArmToVial(); // TODO: Replace with actual cutter position when implemented
+  return movePolarArmToCutting(); 
+}
+
+/**
+ * @brief Prepare for extruding operation
+ * EXTRUDE command implementation
+ */
+bool HardwareControl::extrude() {
+  DEBUG_SERIAL.println("Preparing for cut operation");
+  return movePolarArmToPlatform(); 
 }
 
 // ============================================================================
@@ -732,13 +809,19 @@ bool HardwareControl::raiseLidLifter() {
 // ============================================================================
 
 bool HardwareControl::movePolarArmToVial() {
-  dxl.setGoalPosition(DXL_POLAR_ARM, degToRaw(280.9));
+  dxl.setGoalPosition(DXL_POLAR_ARM, POLAR_ARM_TO_VIAL);
+  waitForMotors();
+  return true; 
+}
+
+bool HardwareControl::movePolarArmToCutting() {
+  dxl.setGoalPosition(DXL_POLAR_ARM, POLAR_ARM_TO_CUT);
   waitForMotors();
   return true; 
 }
 
 bool HardwareControl::movePolarArmToPlatform(){
-  dxl.setGoalPosition(DXL_POLAR_ARM, POLAR_ARM_NO_OBSTRUCT_HOME);
+  dxl.setGoalPosition(DXL_POLAR_ARM, POLAR_ARM_SWABBING);
   waitForMotors();
   return true; 
 }
@@ -846,7 +929,7 @@ bool HardwareControl::drawPlatformPoint(float rx, float ry) {
   dxl.setGoalPosition(DXL_POLAR_ARM, degToRaw(deg1));
   dxl.setGoalPosition(DXL_PLATFORM, degToRaw(deg2));
   
-  waitForMotors();
+  waitForMotorsMin();
   return true;
 }
 
@@ -925,7 +1008,7 @@ bool HardwareControl::drawFlower(float radius, float amplitude, int petals, int 
 bool HardwareControl::executeStreakPattern(uint8_t pattern_id) {
   switch (pattern_id) {
     case 0:  // Simple 3-streak pattern
-      return drawLine(-40, 0, -10, 0, 10);
+      return drawLine(-40, 0, 40, 0, 60);
       
     case 1:  // Spiral streak
       return drawSpiral(30, 2, 50);

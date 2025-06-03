@@ -31,7 +31,9 @@
 // Geometry & homes (in raw units, 0–4095)
 #define LID_LIFTER_HOME   3849.0f
 #define POLAR_ARM_LENGTH   98.995f  // Polar arm length [mm]
-#define POLAR_ARM_HOME    (56.25f/360.0f*4096.0f)  // DO NOT MODIFY USEFUL FOR CALCULATIONS - DO NOT GO THERE
+//#define POLAR_ARM_HOME    (56.25f/360.0f*4096.0f)  // DO NOT MODIFY USEFUL FOR CALCULATIONS - DO NOT GO THERE
+//#define POLAR_ARM_HOME    (178.51f/360.0f*4096.0f)  // DO NOT MODIFY USEFUL FOR CALCULATIONS - DO NOT GO THERE
+#define POLAR_ARM_HOME    (0.51f/360.0f*4096.0f)  // DO NOT MODIFY USEFUL FOR CALCULATIONS - DO NOT GO THERE
 #define POLAR_ARM_NO_OBSTRUCT_HOME (236.25f/360.0f*4096.0f) // ACTUAL POSITION TO RES      T
 #define PLATFORM_HOME     1238.0f  // Platform home position to not obstruct 
 #define HANDLER_HOME      1947.0f  // Platform home position means that it goes to cartridge. Middle is 1705 units 2112. New is 1540 so 407 units
@@ -47,6 +49,10 @@
 #define HANDLER_C1 2762.0f 
 #define HANDLER_C2 1947.0f 
 #define HANDLER_C3 1123.0f 
+#define POLAR_ARM_TO_VIAL 2042.0f
+#define POLAR_ARM_TO_CUT 2590.0f
+#define POLAR_ARM_SWABBING   621.0f
+
 
 #define RESTACKER_UP    3207.0f
 #define PLATFORM_UP     790.0f
