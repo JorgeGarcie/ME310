@@ -29,7 +29,7 @@ class AppController:
         self.photoNext=tk.PhotoImage(file="Nuk/ImagesForGUI/next.png")
         self.photoCancel=tk.PhotoImage(file="Nuk/ImagesForGUI/cancel.png")
         self.photoRun=tk.PhotoImage(file="Nuk/ImagesForGUI/run.png")
-
+        self.photoDone=tk.PhotoImage(file="Nuk/ImagesForGUI/done.png")
 
         self.root=root
         # root.attributes("-fullscreen", True)
@@ -49,7 +49,7 @@ class AppController:
         self.mega = MEGAobj.MegaObj(port='COM12', baudrate=115200, timeout=1)
         self.mega.initCom()
         self.orb = ORBobj.ORBobj(port='COM11', baudrate=115200, timeout=1)
-        # self.orb2 = ORB2obj.ORB2(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
+        self.orb2 = ORB2obj.ORB2(port='/dev/cu.usbmodem21301', baudrate=115200, timeout=1)
 
 
 
@@ -146,7 +146,7 @@ class AppController:
         self.wait_for_confirmation(self.orb,"LIFT DOWN")
         self.current_screen.update_progress(self.current_run)
         self.current_run+=1
-        
+        print("runnig")
 
     def GetDish(self,TYPE):
         self.orb.lift(TYPE,"UP")
