@@ -62,6 +62,22 @@
 #define CARTRIDGE1_UP   4095.0f  // C3 position down
 #define LID_LIFTER_DOWN 3000.0f  // Drop the lid down
 
+/* 
+POSITIONS 
+
+STORAGE CARTRIDGE (EX POS) ID 5
+top: 6000, up: 4900, mid: 4300, down: 2700. HANDLER 300
+
+CHOCOLAT C3 CARTRIDGE (EX POS) ID 7
+top: 6000, up: 4900, mid: 4300, down: 2700.  HANDLER 1120
+
+BLOOD C2 CARTRIDGE (EX POS) ID 6
+top: 3450, up: 2350, mid: 1750, down: 0 OR 150.  HANDLER 1950
+
+NORMAL C1 CARTRIDGE (EX POS) ID 8
+top: 4840, up: 3640, mid: 3090, down: 1340.  HANDLER 2762
+
+*/
 // Motion Profiles
 #define LID_LIFTER_SPEED    50   // Extruder movement speed
 #define POLAR_ARM_SPEED     100  // Polar arm movement speed

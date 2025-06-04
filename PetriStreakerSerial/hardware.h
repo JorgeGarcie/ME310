@@ -43,9 +43,15 @@ class HardwareControl {
     float rawToDeg(uint16_t raw);
     void waitForMotors(uint8_t motorId = 0);
     void waitForMotorsMin(uint8_t motorId = 0);
+  
+    // ADD THESE for extended position tracking:
+    float cumulative_platform_degrees;  // Track total rotation
+    float last_platform_degrees;        // Previous target in degrees
     
   public:
     HardwareControl();
+    int32_t extendedPlatformPosition(float target_degrees);
+
 
     // ========================================================================
     // INITIALIZATION

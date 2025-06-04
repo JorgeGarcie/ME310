@@ -1,8 +1,8 @@
 /**
- * @file Hardware.cpp - Complete Cleaned Version
+ * @file Hardware.cpp - Complete Cleaned Version with Extended Position Logic
  * @brief Implementation of hardware control functions for the Petri Dish Streaker
  * 
- * Cleaned version with semantic wrapper functions and state machine functions removed.
+ * Updated version with extended position tracking for platform motor to avoid discontinuities.
  */
 
 #include "Hardware.h"
@@ -18,10 +18,42 @@ HardwareControl::HardwareControl() : dxl(DXL_SERIAL, DXL_DIR_PIN) {
   is_initialized = false;
   first_move = true;
   
+  // Initialize extended position tracking for platform motor
+  cumulative_platform_degrees = 0.0f;
+  last_platform_degrees = 0.0f;
+  
   // Platform geometry settings
   platform_center_x = 70.0f;  // Cx
   platform_center_y = 70.0f;  // Cy
   platform_radius = 45.0f;    // Rplat
+}
+
+/**
+ * @brief Extended position tracking for platform motor to avoid discontinuities
+ */
+int32_t HardwareControl::extendedPlatformPosition(float target_degrees) {
+  // Calculate the angular difference
+  float diff = target_degrees - last_platform_degrees;
+  
+  // Normalize to [-180, 180] to find shortest path
+  while (diff > 180.0f) diff -= 360.0f;
+  while (diff < -180.0f) diff += 360.0f;
+  
+  // Update cumulative angle
+  cumulative_platform_degrees += diff;
+  last_platform_degrees = target_degrees;
+  
+  // Convert to raw position (can exceed 4095)
+  int32_t raw_position = (int32_t)((cumulative_platform_degrees / 360.0f) * 4096.0f);
+  
+  DEBUG_SERIAL.print("Platform: target=");
+  DEBUG_SERIAL.print(target_degrees);
+  DEBUG_SERIAL.print("°, cumulative=");
+  DEBUG_SERIAL.print(cumulative_platform_degrees);
+  DEBUG_SERIAL.print("°, raw=");
+  DEBUG_SERIAL.println(raw_position);
+  
+  return raw_position;
 }
 
 /**
@@ -49,9 +81,9 @@ void HardwareControl::initialize() {
   dxl.torqueOn(DXL_POLAR_ARM);
   dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, DXL_POLAR_ARM, POLAR_ARM_SPEED);
   
-  // Initialize platform motor
+  // Initialize platform motor with EXTENDED POSITION MODE to avoid discontinuities
   dxl.torqueOff(DXL_PLATFORM);
-  dxl.setOperatingMode(DXL_PLATFORM, OP_POSITION);
+  dxl.setOperatingMode(DXL_PLATFORM, OP_EXTENDED_POSITION);  // Changed to extended position
   dxl.torqueOn(DXL_PLATFORM);
   dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, DXL_PLATFORM, PLATFORM_SPEED);
 
@@ -120,6 +152,10 @@ void HardwareControl::homeAllAxes() {
   dxl.setGoalPosition(DXL_CARTRIDGE2, CARTRIDGE2_HOME);
   dxl.setGoalPosition(DXL_CARTRIDGE3, CARTRIDGE3_HOME);
   dxl.setGoalPosition(DXL_PLATFORM, (uint32_t)PLATFORM_HOME);
+  
+  // Initialize extended position tracking variables to home position
+  cumulative_platform_degrees = (PLATFORM_HOME / 4096.0f) * 360.0f;
+  last_platform_degrees = cumulative_platform_degrees;
   
   // Wait for completion
   waitForMotors();
@@ -917,17 +953,17 @@ bool HardwareControl::drawPlatformPoint(float rx, float ry) {
   current_platform_angle = theta2;
   
   // Convert to motor positions
+  // Polar arm: standard position control
   float deg1 = fmod(degrees(theta1), 360.0f);
   if (deg1 < 0) deg1 += 360.0f;
   deg1 = deg1 + (POLAR_ARM_HOME/4096.0f*360.0f);
   
-  float deg2 = fmod(degrees(theta2), 360.0f);
-  if (deg2 < 0) deg2 += 360.0f;
-  deg2 = deg2 + (PLATFORM_HOME/4096.0f*360.0f);
+  // Platform: use extended position control to avoid discontinuities
+  float deg2 = degrees(theta2) + (PLATFORM_HOME/4096.0f*360.0f);
   
   // Set motor positions
   dxl.setGoalPosition(DXL_POLAR_ARM, degToRaw(deg1));
-  dxl.setGoalPosition(DXL_PLATFORM, degToRaw(deg2));
+  dxl.setGoalPosition(DXL_PLATFORM, extendedPlatformPosition(deg2));  // Use extended position
   
   waitForMotorsMin();
   return true;
