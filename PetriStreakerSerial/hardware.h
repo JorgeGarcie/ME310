@@ -71,15 +71,25 @@ class HardwareControl {
     bool moveToChocolat();        // MOVE CHOCOLAT - handler to cartridge 3 position
 
     // LIFT command implementations
+    bool liftStorageTop();    // LIFT STRG UP
     bool liftStorageUp();    // LIFT STRG UP
+    bool liftStorageMid();    // LIFT STRG UP
     bool liftStorageDown();  // LIFT STRG DOWN
+    bool liftNormalTop();     // LIFT NORMAL UP
     bool liftNormalUp();     // LIFT NORMAL UP
+    bool liftNormalMid();     // LIFT NORMAL UP
     bool liftNormalDown();   // LIFT NORMAL DOWN
+    bool liftBloodTop();      // LIFT BLOOD UP
     bool liftBloodUp();      // LIFT BLOOD UP
+    bool liftBloodMid();      // LIFT BLOOD UP
     bool liftBloodDown();    // LIFT BLOOD DOWN
+    bool liftChocolatTop();   // LIFT CHOCOLAT UP
     bool liftChocolatUp();   // LIFT CHOCOLAT UP
+    bool liftChocolatMid();   // LIFT CHOCOLAT UP
     bool liftChocolatDown(); // LIFT CHOCOLAT DOWN
+    bool liftAllTop();        // LIFT ALL UP
     bool liftAllUp();        // LIFT ALL UP
+    bool liftAllMid();      // LIFT ALL DOWN
     bool liftAllDown();      // LIFT ALL DOWN
 
     // SUCTION command implementations
