@@ -96,23 +96,23 @@ void HardwareControl::initialize() {
 
   // Initialize restacker motor
   dxl.torqueOff(DXL_RESTACKER);
-  dxl.setOperatingMode(DXL_RESTACKER, OP_POSITION);
+  dxl.setOperatingMode(DXL_RESTACKER, OP_EXTENDED_POSITION);
   dxl.torqueOn(DXL_RESTACKER);
   dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, DXL_RESTACKER, RESTACKER_SPEED);
 
   // Initialize Cartridge motors
   dxl.torqueOff(DXL_CARTRIDGE1);
-  dxl.setOperatingMode(DXL_CARTRIDGE1, OP_POSITION);
+  dxl.setOperatingMode(DXL_CARTRIDGE1, OP_EXTENDED_POSITION);
   dxl.torqueOn(DXL_CARTRIDGE1);
   dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, DXL_CARTRIDGE1, CARTRIDGE1_SPEED);
 
   dxl.torqueOff(DXL_CARTRIDGE2);
-  dxl.setOperatingMode(DXL_CARTRIDGE2, OP_POSITION);
+  dxl.setOperatingMode(DXL_CARTRIDGE2, OP_EXTENDED_POSITION);
   dxl.torqueOn(DXL_CARTRIDGE2);
   dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, DXL_CARTRIDGE2, CARTRIDGE2_SPEED);
 
   dxl.torqueOff(DXL_CARTRIDGE3);
-  dxl.setOperatingMode(DXL_CARTRIDGE3, OP_POSITION);
+  dxl.setOperatingMode(DXL_CARTRIDGE3, OP_EXTENDED_POSITION);
   dxl.torqueOn(DXL_CARTRIDGE3);
   dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, DXL_CARTRIDGE3, CARTRIDGE3_SPEED);
 
@@ -369,11 +369,29 @@ bool HardwareControl::moveToChocolat() {
 
 /**
  * @brief Lift storage (restacker) up
+ * LIFT STRG Top command implementation
+ */
+bool HardwareControl::liftStorageTop() {
+  DEBUG_SERIAL.println("Lifting storage top");
+  return moveRestackerTop();
+}
+
+/**
+ * @brief Lift storage (restacker) up
  * LIFT STRG UP command implementation
  */
 bool HardwareControl::liftStorageUp() {
   DEBUG_SERIAL.println("Lifting storage up");
   return moveRestackerUp();
+}
+
+/**
+ * @brief Lift storage (restacker) mid
+ * LIFT STRG MID command implementation
+ */
+bool HardwareControl::liftStorageMid() {
+  DEBUG_SERIAL.println("Lifting storage mid");
+  return moveRestackerMid();
 }
 
 /**
@@ -386,12 +404,30 @@ bool HardwareControl::liftStorageDown() {
 }
 
 /**
+ * @brief Lift normal cartridge top
+ * LIFT NORMAL UP command implementation
+ */
+bool HardwareControl::liftNormalTop() {
+  DEBUG_SERIAL.println("Lifting normal cartridge top");
+  return moveCartridgeTop(1);
+}
+
+/**
  * @brief Lift normal cartridge up
  * LIFT NORMAL UP command implementation
  */
 bool HardwareControl::liftNormalUp() {
   DEBUG_SERIAL.println("Lifting normal cartridge up");
   return moveCartridgeUp(1);
+}
+
+/**
+ * @brief Lift normal cartridge mid
+ * LIFT NORMAL UP command implementation
+ */
+bool HardwareControl::liftNormalMid() {
+  DEBUG_SERIAL.println("Lifting normal cartridge mid");
+  return moveCartridgeMid(1);
 }
 
 /**
@@ -404,12 +440,30 @@ bool HardwareControl::liftNormalDown() {
 }
 
 /**
+ * @brief Lift blood cartridge top
+ * LIFT NORMAL UP command implementation
+ */
+bool HardwareControl::liftBloodTop() {
+  DEBUG_SERIAL.println("Lifting blood cartridge top");
+  return moveCartridgeTop(2);
+}
+
+/**
  * @brief Lift blood cartridge up
  * LIFT BLOOD UP command implementation
  */
 bool HardwareControl::liftBloodUp() {
   DEBUG_SERIAL.println("Lifting blood cartridge up");
   return moveCartridgeUp(2);
+}
+
+/**
+ * @brief Lift blood cartridge mid
+ * LIFT BLOOD UP command implementation
+ */
+bool HardwareControl::liftBloodMid() {
+  DEBUG_SERIAL.println("Lifting blood cartridge mid");
+  return moveCartridgeMid(2);
 }
 
 /**
@@ -425,9 +479,27 @@ bool HardwareControl::liftBloodDown() {
  * @brief Lift chocolat cartridge up
  * LIFT CHOCOLAT UP command implementation
  */
+bool HardwareControl::liftChocolatTop() {
+  DEBUG_SERIAL.println("Lifting chocolat cartridge top");
+  return moveCartridgeTop(3);
+}
+
+/**
+ * @brief Lift chocolat cartridge up
+ * LIFT CHOCOLAT UP command implementation
+ */
 bool HardwareControl::liftChocolatUp() {
   DEBUG_SERIAL.println("Lifting chocolat cartridge up");
   return moveCartridgeUp(3);
+}
+
+/**
+ * @brief Lift chocolat cartridge mid
+ * LIFT CHOCOLAT DOWN command implementation
+ */
+bool HardwareControl::liftChocolatMid() {
+  DEBUG_SERIAL.println("Lifting chocolat cartridge mid");
+  return moveCartridgeMid(3);
 }
 
 /**
@@ -443,12 +515,38 @@ bool HardwareControl::liftChocolatDown() {
  * @brief Lift all cartridges up
  * LIFT ALL UP command implementation
  */
+bool HardwareControl::liftAllTop() {
+  DEBUG_SERIAL.println("Lifting all cartridges top");
+  bool success = true;
+  success &= moveCartridgeTop(1);
+  success &= moveCartridgeTop(2);
+  success &= moveCartridgeTop(3);
+  return success;
+}
+
+/**
+ * @brief Lift all cartridges up
+ * LIFT ALL UP command implementation
+ */
 bool HardwareControl::liftAllUp() {
   DEBUG_SERIAL.println("Lifting all cartridges up");
   bool success = true;
   success &= moveCartridgeUp(1);
   success &= moveCartridgeUp(2);
   success &= moveCartridgeUp(3);
+  return success;
+}
+
+/**
+ * @brief Lift all cartridges mid
+ * LIFT ALL UP command implementation
+ */
+bool HardwareControl::liftAllMid() {
+  DEBUG_SERIAL.println("Lifting all cartridges mid");
+  bool success = true;
+  success &= moveCartridgeMid(1);
+  success &= moveCartridgeMid(2);
+  success &= moveCartridgeMid(3);
   return success;
 }
 
@@ -577,6 +675,15 @@ bool HardwareControl::extrude() {
 // ============================================================================
 // CARTRIDGE AND RESTACKER MOVEMENT FUNCTIONS
 // ============================================================================
+/**
+ * @brief Move restacker to top position
+ * @return true if successful
+ */
+bool HardwareControl::moveRestackerTop() {
+  dxl.setGoalPosition(DXL_RESTACKER, RESTACKER_TOP);
+  waitForMotors(DXL_RESTACKER);
+  return true;
+}
 
 /**
  * @brief Move restacker to up position
@@ -589,12 +696,47 @@ bool HardwareControl::moveRestackerUp() {
 }
 
 /**
+ * @brief Move restacker to mid position
+ * @return true if successful
+ */
+bool HardwareControl::moveRestackerMid() {
+  dxl.setGoalPosition(DXL_RESTACKER, RESTACKER_MID);
+  waitForMotors(DXL_RESTACKER);
+  return true;
+}
+
+/**
  * @brief Move restacker to down position  
  * @return true if successful
  */
 bool HardwareControl::moveRestackerDown() {
   dxl.setGoalPosition(DXL_RESTACKER, RESTACKER_HOME);
   waitForMotors(DXL_RESTACKER);
+  return true;
+}
+
+/**
+ * @brief Move specified cartridge to top position
+ * @param cartridge_id Cartridge number (1, 2, or 3)
+ * @return true if successful
+ */
+bool HardwareControl::moveCartridgeTop(uint8_t cartridge_id) {
+  switch(cartridge_id) {
+    case 1:
+      dxl.setGoalPosition(DXL_CARTRIDGE1, CARTRIDGE1_TOP);
+      waitForMotors(DXL_CARTRIDGE1);
+      break;
+    case 2:
+      dxl.setGoalPosition(DXL_CARTRIDGE2, CARTRIDGE2_TOP);
+      waitForMotors(DXL_CARTRIDGE2);
+      break;
+    case 3:
+      dxl.setGoalPosition(DXL_CARTRIDGE3, CARTRIDGE3_TOP);
+      waitForMotors(DXL_CARTRIDGE3);
+      break;
+    default:
+      return false;
+  }
   return true;
 }
 
@@ -615,6 +757,31 @@ bool HardwareControl::moveCartridgeUp(uint8_t cartridge_id) {
       break;
     case 3:
       dxl.setGoalPosition(DXL_CARTRIDGE3, CARTRIDGE3_UP);
+      waitForMotors(DXL_CARTRIDGE3);
+      break;
+    default:
+      return false;
+  }
+  return true;
+}
+
+/**
+ * @brief Move specified cartridge to mid position
+ * @param cartridge_id Cartridge number (1, 2, or 3)
+ * @return true if successful
+ */
+bool HardwareControl::moveCartridgeMid(uint8_t cartridge_id) {
+  switch(cartridge_id) {
+    case 1:
+      dxl.setGoalPosition(DXL_CARTRIDGE1, CARTRIDGE1_MID);
+      waitForMotors(DXL_CARTRIDGE1);
+      break;
+    case 2:
+      dxl.setGoalPosition(DXL_CARTRIDGE2, CARTRIDGE2_MID);
+      waitForMotors(DXL_CARTRIDGE2);
+      break;
+    case 3:
+      dxl.setGoalPosition(DXL_CARTRIDGE3, CARTRIDGE3_MID);
       waitForMotors(DXL_CARTRIDGE3);
       break;
     default:
@@ -779,7 +946,7 @@ bool HardwareControl::setHandlerGoalPosition(float position) {
 }
 
 // ============================================================================
-// PLATFORM CONTROL FUNCTIONS
+// PLATFORM CONTROL FUNCTIONS *NOT USED SINCE HANDLED IN ARDUINO* 
 // ============================================================================
 
 bool HardwareControl::platformGearUp() {
