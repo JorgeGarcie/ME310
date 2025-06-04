@@ -182,6 +182,9 @@ class HardwareControl {
     bool isDishPresent();
     bool areMoreDishesAvailable();
     bool isSampleCollected();
+    bool liftAllTopNB();
+    bool liftAllUpNB();
+    bool liftAllMidNB();
 };
 
 #endif // HARDWARE_H

@@ -1157,7 +1157,10 @@ bool HardwareControl::drawPlatformPoint(float rx, float ry) {
     movement1 = abs(lever_angle1 - current_polar_angle) + abs((atan2(intersection1_y - platform_center_y, intersection1_x - platform_center_x) - original_angle) - current_platform_angle);
     movement2 = abs(lever_angle2 - current_polar_angle) + abs((atan2(intersection2_y - platform_center_y, intersection2_x - platform_center_x) - original_angle) - current_platform_angle);
   }
-
+  //DEBUG_SERIAL.println("MOVEMENT 1");
+  //DEBUG_SERIAL.println(movement1);
+  //DEBUG_SERIAL.println("MOVEMENT 2");
+  // /DEBUG_SERIAL.println(movement2);
   if (movement1 <= movement2) {
     theta1 = lever_angle1;
     theta2 = atan2(intersection1_y - platform_center_y, intersection1_x - platform_center_x) - original_angle;
@@ -1270,7 +1273,7 @@ bool HardwareControl::executeStreakPattern(uint8_t pattern_id) {
       return drawLine(-40, 0, 40, 0, 60);
 
     case 1:  // Spiral streak
-      return drawSpiral(30, 2, 50);
+      return drawSpiral(20, 2, 50);
 
     case 2:  // Quadrant streak
       {
