@@ -323,7 +323,7 @@ class SummaryScreen(ParentScreen):
         # Summary text with values from controller
         summary_text = (
             f"Type: {self.controller.petriDishType or '____'}\n\n"
-            f"Style: {self.controller.swabStyle or '____'}\n\n"
+            f"Style: {self.controller.SWABlist[int(self.controller.swabStyle)] or '____'}\n\n"
             f"Number: {self.controller.numberOfPlates}"
         )
 
@@ -386,7 +386,7 @@ class RunningScreen(ParentScreen):
                                        bg=self.colors['bg_secondary'])
         self.progress_label.place(relx=0.5, rely=0.55, anchor='center')
 
-        self.update_progress(1)
+        self.update_progress(0)
          
 
     def update_progress(self, current):

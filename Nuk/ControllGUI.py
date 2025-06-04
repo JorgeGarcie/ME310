@@ -37,6 +37,10 @@ class AppController:
         self.petriDishType=None
         self.swabStyle=None
 
+        self.SWABlist=["LINE","SPIRAL","QUADRANT","ZIGZAG"]
+
+
+
         self.screens = [gg.StartScreen, gg.PetriSelector, gg.SwabSelector3, gg.NumberSelector,gg.SummaryScreen,gg.RunningScreen,gg.WaitScreen]
         self.current_index = 0    
         self.current_screen = None
@@ -51,9 +55,10 @@ class AppController:
         self.orb = ORBobj.ORBobj(port='COM11', baudrate=115200, timeout=1)
         self.orb.initCom()
         self.orb2 = ORB2obj.ORB2(port='COM15', baudrate=115200, timeout=1)
-        self.CutFirst()
-
-
+        #self.CutFirst()
+              
+        
+    
     def CutFirst(self):
         self.orb.cut()
         self.wait_for_confirmation(self.orb,"CUT RDY")
@@ -62,7 +67,9 @@ class AppController:
         self.wait_for_confirmation(self.mega, "CUT START")
         self.wait_for_confirmation(self.mega, "CUT COMPLETED")
 
-
+        self.mega.cutopen()
+        self.wait_for_confirmation(self.mega, "CUTOPEN COMPLETED")
+        
     def show_screen(self, index):
         if self.current_screen:
             self.current_screen.frame.destroy()
@@ -141,6 +148,15 @@ class AppController:
         self.wait_for_confirmation(self.mega, "CUT START")
         self.wait_for_confirmation(self.mega, "CUT COMPLETED")
 
+        time.sleep(0.5)
+        
+        self.orb.fetch()
+        self.wait_for_confirmation(self.orb,"FETCH RDY")
+
+        self.mega.cutopen()
+        self.wait_for_confirmation(self.mega, "CUTOPEN COMPLETED")
+        
+        
         self.orb.sucction("OFF")
         self.wait_for_confirmation(self.orb,"SUCC OFF")
 
@@ -156,7 +172,6 @@ class AppController:
         self.StrgDish()
         
         self.current_run+=1
-        self.current_screen.update_progress(self.current_run)
         
 
     def GetDish(self,TYPE):
@@ -196,8 +211,10 @@ class AppController:
     
     def run(self):
         if(self.current_run<self.numberOfPlates):
-           
+            
             self.run_single()
+            self.current_screen.update_progress(self.current_run)
+            
             self.root.after(200,self.run)
         else:
             #self.current_screen.update_progress(self.current_run)

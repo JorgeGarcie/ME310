@@ -23,6 +23,9 @@ class MegaObj:
     def cut(self):
         self.write(f"CUT")
 
+    def cutopen(self):
+        self.write(f"CUT OPEN")
+    
     def fetch(self):
         self.write(f"FETCH")
     

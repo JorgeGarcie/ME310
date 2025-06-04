@@ -3,6 +3,7 @@ enum State{
   COLLECTION,
   PREPCUT,
   CUT,
+  CUTOPEN,
   WAIT,
   SBY,
   NAIUP,

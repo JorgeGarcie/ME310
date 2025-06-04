@@ -32,7 +32,7 @@ unsigned long timer = 0;
 unsigned long lastScaleCheck = 0;
 const unsigned long scaleInterval = 100;
 
-float calibration_factor = -3050.545898; //31450.00; //orignally this was negative
+float calibration_factor = -3050.545898;  //31450.00; //orignally this was negative
 long currentload;
 
 
@@ -54,8 +54,8 @@ void setup() {
   Serial.begin(115200);
 
   // lin actuator
-  pinMode(LIFT_PIN,OUTPUT);
-  analogWrite(LIFT_PIN,0);
+  pinMode(LIFT_PIN, OUTPUT);
+  analogWrite(LIFT_PIN, 0);
 
   // Enable driver
   pinMode(ENABLE_PIN, OUTPUT);
@@ -63,11 +63,11 @@ void setup() {
   pinMode(DIR_PIN, OUTPUT);
 
   pinMode(EN_PIN_CUT, OUTPUT);
-  digitalWrite(EN_PIN_CUT, HIGH); // LOW = enabled
+  digitalWrite(EN_PIN_CUT, HIGH);  // LOW = enabled
   pinMode(DIR_PIN_CUT, OUTPUT);
-  
-  
-  
+
+
+
   // Start init comunication
   initArd(Serial, "Bob", "Hi Bob");
 
@@ -82,12 +82,10 @@ void setup() {
   scale.begin(LOADCELL_DOUT_PIN, LOADCELL_SCK_PIN);
   scale.set_scale(calibration_factor);
   scale.tare();
-  currentload = scale.get_units() ;
+  currentload = scale.get_units();
   MEGA = WAIT;
 
   extruder.setSpeed(800);
-
-
 }
 
 void loop() {
@@ -102,10 +100,10 @@ void loop() {
       digitalWrite(ENABLE_PIN, LOW);
       if (millis() - lastScaleCheck > scaleInterval) {
         if (abs(scale.get_units() - currentload) >= 1) {
-          extruder.move(-400);
-          while(extruder.distanceToGo()!=0){
+          extruder.move(-550);
+          while (extruder.distanceToGo() != 0) {
             extruder.run();
-          }  
+          }
           Serial.println("EXTRUDE COMPLETED");
           MEGA = WAIT;
           command = "";
@@ -139,8 +137,8 @@ void loop() {
       }
 
 
-      extruder.stop();                     // Stop motion
-      extruder.setCurrentPosition(0);      // Reset position logic
+      extruder.stop();                 // Stop motion
+      extruder.setCurrentPosition(0);  // Reset position logic
       extruder.setSpeed(2000);
 
       Serial.println("FETCH COMPLETED");
@@ -168,24 +166,30 @@ void loop() {
       while (cutter.distanceToGo() != 0) {
         cutter.run();
       }
-      cutter.move(-9000);
-      while (cutter.distanceToGo() != 0) {
-        cutter.run();
-      }
       Serial.println("CUT COMPLETED");
       MEGA = SBY;
       command = "";
       break;
 
+    case CUTOPEN:
+      digitalWrite(EN_PIN_CUT, LOW);
+      cutter.move(-9000);
+      while (cutter.distanceToGo() != 0) {
+        cutter.run();
+      }
+      Serial.println("CUTOPEN COMPLETED");
+      MEGA = SBY;
+      command = "";
+      break;
 
     case NAIUP:
-      analogWrite(LIFT_PIN,100);
+      analogWrite(LIFT_PIN, 100);
       Serial.println("PLATFORM LIFT UP");
       MEGA = SBY;
       break;
 
     case NAIDOWN:
-      analogWrite(LIFT_PIN,0);
+      analogWrite(LIFT_PIN, 0);
       Serial.println("PLATFORM LIFT DOWN");
       MEGA = SBY;
       break;
@@ -202,7 +206,6 @@ void loop() {
         Serial.println("FETCH START");
         MEGA = COLLECTION;
         command = "";
-
       }
 
 
@@ -226,6 +229,12 @@ void loop() {
       else if (command == "CUT") {
         Serial.println("CUT START");
         MEGA = CUT;
+        command = "";
+      }
+
+      else if (command == "CUT OPEN") {
+        Serial.println("CUT START");
+        MEGA = CUTOPEN;
         command = "";
       }
 
@@ -257,6 +266,4 @@ void loop() {
       command = "";
       break;
   }
-
-
 }
