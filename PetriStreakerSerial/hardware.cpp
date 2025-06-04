@@ -526,6 +526,15 @@ bool HardwareControl::liftAllTop() {
   return success;
 }
 
+bool HardwareControl::liftAllTopNB(){
+  dxl.setGoalPosition(DXL_CARTRIDGE1, CARTRIDGE1_TOP);
+  dxl.setGoalPosition(DXL_CARTRIDGE2, CARTRIDGE2_TOP);
+  dxl.setGoalPosition(DXL_CARTRIDGE3, CARTRIDGE3_TOP);
+  dxl.setGoalPosition(DXL_RESTACKER, RESTACKER_TOP);
+  waitForMotors();
+  return true;
+}
+
 /**
  * @brief Lift all cartridges up
  * LIFT ALL UP command implementation
@@ -538,6 +547,15 @@ bool HardwareControl::liftAllUp() {
   success &= moveCartridgeUp(3);
   success &= moveCartridgeUp(4);
   return success;
+}
+
+bool HardwareControl::liftAllUpNB(){
+  dxl.setGoalPosition(DXL_CARTRIDGE1, CARTRIDGE1_UP);
+  dxl.setGoalPosition(DXL_CARTRIDGE2, CARTRIDGE2_UP);
+  dxl.setGoalPosition(DXL_CARTRIDGE3, CARTRIDGE3_UP);
+  dxl.setGoalPosition(DXL_RESTACKER, RESTACKER_UP);
+  waitForMotors();
+  return true;
 }
 
 /**
@@ -553,6 +571,15 @@ bool HardwareControl::liftAllMid() {
   success &= moveCartridgeMid(4);
   return success;
 }
+bool HardwareControl::liftAllMidNB(){
+  dxl.setGoalPosition(DXL_CARTRIDGE1, CARTRIDGE1_MID);
+  dxl.setGoalPosition(DXL_CARTRIDGE2, CARTRIDGE2_MID);
+  dxl.setGoalPosition(DXL_CARTRIDGE3, CARTRIDGE3_MID);
+  dxl.setGoalPosition(DXL_RESTACKER, RESTACKER_MID);
+  waitForMotors();
+  return true;
+}
+
 
 /**
  * @brief Lift all cartridges down
