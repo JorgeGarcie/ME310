@@ -1069,6 +1069,12 @@ bool HardwareControl::homePosition() {
 bool HardwareControl::drawPlatformPoint(float rx, float ry) {
   // Constrain to platform radius
   float r = sqrt(rx * rx + ry * ry);
+  
+  if (r < 1.0f) {  // Within 1mm of center
+    DEBUG_SERIAL.println("Skipping near-origin point (geometric singularity)");
+    return true;  // Skip this point, continue pattern
+  }
+  
   if (r > platform_radius) {
     rx = (platform_radius / r) * rx;
     ry = (platform_radius / r) * ry;
@@ -1145,12 +1151,13 @@ bool HardwareControl::drawPlatformPoint(float rx, float ry) {
 
   // Platform: use extended position control to avoid discontinuities
   float deg2 = degrees(theta2) + (PLATFORM_HOME / 4096.0f * 360.0f);
-
+  //DEBUG_SERIAL.println("CHECK 1");
   // Set motor positions
   dxl.setGoalPosition(DXL_POLAR_ARM, degToRaw(deg1));
   dxl.setGoalPosition(DXL_PLATFORM, extendedPlatformPosition(deg2));  // Use extended position
 
   waitForMotorsMin();
+  //DEBUG_SERIAL.println("CHECK 2");
   return true;
 }
 
@@ -1205,6 +1212,7 @@ bool HardwareControl::drawSpiral(float max_radius, float revolutions, int num_po
     DEBUG_SERIAL.print(",y: ");
     DEBUG_SERIAL.print(ry);
     if (!drawPlatformPoint(rx, ry)) {
+      DEBUG_SERIAL.println("FALSE?");
       success = false;
     }
   }
