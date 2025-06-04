@@ -158,13 +158,13 @@ void CommandHandler::handleLiftCommand(String args) {
   
   if (position == "ALL") {
     if (direction == "TOP") {
-      success = hardware->liftAllTop();
+      success = hardware->liftAllTopNB();
       DEBUG_SERIAL.println(success ? "ALL LIFT TOP" : "ALL LIFT FAILED");
     } else if (direction == "UP") {
-      success = hardware->liftAllUp();
+      success = hardware->liftAllUpNB();
       DEBUG_SERIAL.println(success ? "ALL LIFT UP" : "ALL LIFT FAILED");
     } else if (direction == "MID") {
-      success = hardware->liftAllMid();
+      success = hardware->liftAllMidNB();
       DEBUG_SERIAL.println(success ? "ALL LIFT MID" : "ALL LIFT FAILED");
     } else if (direction == "DOWN") {
       success = hardware->liftAllDown();

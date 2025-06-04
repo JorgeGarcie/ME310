@@ -431,8 +431,6 @@ class WaitScreen(ParentScreen):
                                   )
         self.done_btn.place(relx=0.5,rely=0.7,anchor='center',width=500,height=160)
 
-        # Don't place it yet, only after message changes
-        self.root.after(2000,self.update_message)
 
     def update_message(self):
         self.message_label.config(text="You can now remove\n the cartridge")
