@@ -84,7 +84,10 @@ class ParentScreen:
     def Back_btn(self):
 
         self.back_btn = tk.Button(self.frame, command=self.controller.go_back,
-                                  image=self.controller.photoBack
+                                  image=self.controller.photoBack,
+                                  bd=0,
+                                highlightthickness=0,
+                                relief='flat'
                              )
         self.back_btn.place(x=20, y=20,
                              width=200,
@@ -107,7 +110,10 @@ class StartScreen(ParentScreen):
         self.start_button = tk.Button(self.frame, 
                                     cursor='hand2',
                                     command=self.controller.go_forward,
-                                    image=self.controller.photoStart
+                                    image=self.controller.photoStart,
+                                    bd=0,
+                            highlightthickness=0,
+                            relief='flat'
                                     )
         
         self.start_button.place(anchor='center',relx=0.5,rely=0.5,width=760,height=140)
@@ -115,7 +121,9 @@ class StartScreen(ParentScreen):
         self.change_cartridge_button = tk.Button(self.frame, 
                                                   cursor='hand2',
                                                   image=self.controller.photoCCrtg,
-                                             command=self.on_change_cartridge)
+                                             command=self.on_change_cartridge,bd=0,
+                            highlightthickness=0,
+                            relief='flat')
         self.change_cartridge_button.place(anchor='center',relx=0.5,rely=0.83,width=760,height=140)  # Adjust x,y as you want
 
     def on_change_cartridge(self):
@@ -138,7 +146,7 @@ class PetriSelector(ParentScreen):
                            font=('Segoe UI', 32, 'bold'),
                            fg=self.colors['text_primary'],  # or a fixed color like '#1e3a8a'
                            bg=self.colors['bg_secondary'])    # or just 'white' if simpler
-        title_label.place(relx=0.6, y=65, anchor='center')
+        title_label.place(relx=0.62, y=65, anchor='center')
 
 
         btn_width_px = 240  # width in text units
@@ -151,7 +159,9 @@ class PetriSelector(ParentScreen):
         for i, (label, photo) in enumerate(zip(options,self.controller.photos_Dish )):
             btn = tk.Button(self.frame,cursor='hand2',
                             image=photo,
-                             command=lambda l=label: self.select_type(l))
+                             command=lambda l=label: self.select_type(l),bd=0,
+                            highlightthickness=0,
+                            relief='flat')
             btn.place(x=i*(btn_width_px + btn_pad_x)+btn_pad_x, y=140,
                   width=btn_width_px, height=btn_height_px)
 
@@ -175,7 +185,7 @@ class SwabSelector3(ParentScreen):
                            font=('Segoe UI', 32, 'bold'),
                            fg=self.colors['text_primary'],  # or a fixed color like '#1e3a8a'
                            bg=self.colors['bg_secondary'])    # or just 'white' if simpler
-        title_label.place(relx=0.6, y=65, anchor='center')
+        title_label.place(relx=0.62, y=65, anchor='center')
 
         # Container for the three big buttons, centered
         btn_width_px = 240  # width in text units
@@ -270,33 +280,39 @@ class NumberSelector(ParentScreen):
                            font=('Segoe UI', 32, 'bold'),
                            fg=self.colors['text_primary'],  # or a fixed color like '#1e3a8a'
                            bg=self.colors['bg_secondary'])    # or just 'white' if simpler
-        title_label.place(relx=0.5, rely=0.15, anchor='center')
+        title_label.place(relx=0.6, rely=0.15, anchor='center')
 
         # Square label to display number
         self.counter_label = tk.Label(self.frame, text=str(self.controller.numberOfPlates),
-                                      bg='#f1f5f9', fg='#1e293b',
-                                      font=('Segoe UI', 100, 'bold'),
-                                      width=3, height=1,
+                                      bg='#f1f5f9', fg=self.colors['text_primary'],#'#1e293b',
+                                      font=('Segoe UI', 80, 'bold'),
+                                      #width=3, height=1,
                                       relief='ridge', bd=2)
-        self.counter_label.place(relx=0.5, y=203, anchor='center')
+        self.counter_label.place(relx=0.5, y=211, anchor='center',width=200,height=140)
 
         # Increase button (+)
         self.plus_btn = tk.Button(self.frame, command=self.increase,
                                    cursor='hand2',
-                                   image=self.controller.photoPlus)
+                                   image=self.controller.photoPlus,bd=0,
+                            highlightthickness=0,
+                            relief='flat')
         self.plus_btn.place(x=510,y=140,width=270,height=325)
 
         # Decrease button (−)
         self.minus_btn = tk.Button(self.frame, command=self.decrease,
                                   cursor='hand2',
-                                  image=self.controller.photoNeg)
+                                  image=self.controller.photoNeg,bd=0,
+                            highlightthickness=0,
+                            relief='flat')
         self.minus_btn.place(x=20,y=140,width=270,height=325)
 
         # Ready button
         self.new_btn = tk.Button(self.frame, command=self.new_button_action,
                             cursor='hand2',
-                            image=self.controller.photoNext)
-        self.new_btn.place(relx=0.5, rely=0.77, anchor='center',width=205,height=190)
+                            image=self.controller.photoNext,bd=0,
+                            highlightthickness=0,
+                            relief='flat')
+        self.new_btn.place(relx=0.5, rely=0.79, anchor='center',width=200, height=174)
 
     def new_button_action(self):
         self.controller.go_forward()
@@ -330,7 +346,7 @@ class SummaryScreen(ParentScreen):
         # Frame to hold the text info
 
         self.summary_label = tk.Label(self.frame, text=summary_text,
-                                      font=('Segoe UI', 40,'bold'),
+                                      font=('Segoe UI', 35,'bold'),
                                       justify='left',
                                       bg=self.colors['bg_secondary'],
                                       fg=self.colors['text_primary'])
@@ -342,13 +358,17 @@ class SummaryScreen(ParentScreen):
         self.run_btn = tk.Button(self.frame, 
                                  cursor='hand2',
                                  command=self.on_run,
-                                 image=self.controller.photoRun)
+                                 image=self.controller.photoRun,bd=0,
+                            highlightthickness=0,
+                            relief='flat')
         self.run_btn.place(x=460,y=100,width=320,height=175)  # Padding between buttons
 
         self.cancel_btn = tk.Button(self.frame, 
                                     cursor='hand2',
                                     command=self.on_cancel,
-                                    image=self.controller.photoCancel)
+                                    image=self.controller.photoCancel,bd=0,
+                            highlightthickness=0,
+                            relief='flat')
         self.cancel_btn.place(x=460,y=285,width=320,height=175)
 
     def on_run(self):
@@ -375,7 +395,7 @@ class RunningScreen(ParentScreen):
         # Running label
         self.running_label = tk.Label(self.frame, text="Running ...",
                                       font=('Segoe UI', 48, 'bold'),
-                                      fg=self.colors['accent_primary'],
+                                      fg=self.colors['text_primary'],
                                       bg=self.colors['bg_secondary'])
         self.running_label.place(relx=0.5, rely=0.4, anchor='center')
 
@@ -399,7 +419,9 @@ class RunningScreen(ParentScreen):
 
         self.done_button = tk.Button(self.frame, cursor='hand2',
                                      command=self.go_to_start,
-                                     image=self.controller.photoDone)
+                                     image=self.controller.photoDone,bd=0,
+                            highlightthickness=0,
+                            relief='flat')
         self.done_button.place(relx=0.5, rely=0.78, anchor='center', width=500,height=160)
 
     def go_to_start(self):
@@ -420,7 +442,7 @@ class WaitScreen(ParentScreen):
     def create_widgets(self):
         self.message_label = tk.Label(self.frame, text="WAIT",
                                       font=('Segoe UI', 60, 'bold'),
-                                      fg=self.colors['accent_primary'],
+                                       fg=self.colors['text_primary'],
                                       bg=self.colors['bg_secondary'])
         self.message_label.place(relx=0.5, rely=0.4, anchor='center')
 
@@ -428,7 +450,9 @@ class WaitScreen(ParentScreen):
         self.done_btn = tk.Button(self.frame,
                                    cursor='hand2',
                                    command=self.on_done,
-                                   image=self.controller.photoDone
+                                   image=self.controller.photoDone,bd=0,
+                            highlightthickness=0,
+                            relief='flat'
                                   )
         self.done_btn.place(relx=0.5,rely=0.7,anchor='center',width=500,height=160)
 
@@ -464,18 +488,45 @@ class FakeController:
         self.photoCancel=tk.PhotoImage(file="Nuk/ImagesForGUI/cancel.png")
         self.photoRun=tk.PhotoImage(file="Nuk/ImagesForGUI/run.png")
         self.photoDone=tk.PhotoImage(file="Nuk/ImagesForGUI/done.png")
+        root.attributes("-fullscreen", True)
 
+        self.numberOfPlates=10
+        self.current_run=10
 
-        self.numberOfPlates=10000000
-        self.current_run=10000000
-
+        self.petriDishType="NORMAL"
+        self.swabStyle="0"
+        self.SWABlist=["LINE","SPIRAL","QUADRANT","ZIGZAG"]
+        self.screens = [StartScreen, PetriSelector, SwabSelector3, NumberSelector,SummaryScreen,RunningScreen,WaitScreen]
+        self.idx=0
+        self.current_screen=None
+        self.update()
+        self.root.after(5000,self.go_forward)
+        
+        
     def go_back(self):
         print("Back button pressed (fake)")
 
     def go_forward(self):
         print("Forward button pressed (fake)")
 
+    def go_forward(self):
+      
+        if self.idx < len(self.screens) - 1:
+            self.idx += 1
+            self.show_screen(self.idx)
+            self.update()
+            self.root.after(5000,self.go_forward)
 
+    def update(self):
+        self.show_screen(self.idx)
+    
+    def show_screen(self, index):
+        if self.current_screen:
+            self.current_screen.frame.destroy()
+
+        screen_class = self.screens[index]
+        self.current_screen = screen_class(self.root,self) 
+    
 
 class LoadingScreen:
     def __init__(self, parent, callback):
@@ -1012,8 +1063,7 @@ class InoQControlPanel:
 def main():
     root = tk.Tk()
     FC=FakeController(root)
-    app = SwabSelector3(root,FC)
-    #app.enable_done_button()
+    #app=NumberSelector(root,FC)
     root.mainloop()
 
 if __name__ == "__main__":

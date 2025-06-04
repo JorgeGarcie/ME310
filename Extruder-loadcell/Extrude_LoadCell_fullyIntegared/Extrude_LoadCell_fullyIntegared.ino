@@ -131,7 +131,7 @@ void loop() {
       }
 
       // Extract
-      extruder.move(-6000);
+      extruder.move(-4000);
       while (extruder.distanceToGo() != 0) {
         extruder.run();
       }
