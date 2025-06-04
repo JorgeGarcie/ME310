@@ -177,8 +177,8 @@ class SwabSelector3(ParentScreen):
         btn_height_px = 325  # height in text units
         btn_pad_x = 20  # horizontal padding between buttons
 
-
-        options = ['LINE', 'QUADRANT', 'SPIRAL']
+        # Line, quadrant and spiral
+        options = ['0', '2', '1']
 
         for i, (label, photo) in enumerate(zip(options,self.controller.photos_Swab )):
             btn = tk.Button(self.frame,cursor='hand2',image=photo,
@@ -1005,7 +1005,7 @@ class InoQControlPanel:
 def main():
     root = tk.Tk()
     FC=FakeController(root)
-    app = WaitScreen(root,FC)
+    app = SwabSelector3(root,FC)
     #app.enable_done_button()
     root.mainloop()
 

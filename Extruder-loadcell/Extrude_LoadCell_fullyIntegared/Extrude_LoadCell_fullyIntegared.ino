@@ -30,7 +30,7 @@ AccelStepper cutter(AccelStepper::DRIVER, STEP_PIN_CUT, DIR_PIN_CUT);
 HX711 scale;
 unsigned long timer = 0;
 unsigned long lastScaleCheck = 0;
-const unsigned long scaleInterval = 200;
+const unsigned long scaleInterval = 100;
 
 float calibration_factor = -3050.545898; //31450.00; //orignally this was negative
 long currentload;
@@ -52,23 +52,24 @@ String command;
 
 void setup() {
   Serial.begin(115200);
-
-  // Start init comunication
-  initArd(Serial, "Bob", "Hi Bob");
-
+  
   // lin actuator
   pinMode(LIFT_PIN,OUTPUT);
   analogWrite(LIFT_PIN,0);
 
   // Enable driver
   pinMode(ENABLE_PIN, OUTPUT);
-  digitalWrite(ENABLE_PIN, LOW); // LOW = enabled
+  digitalWrite(ENABLE_PIN, HIGH); // LOW = enabled
   pinMode(DIR_PIN, OUTPUT);
 
   pinMode(EN_PIN_CUT, OUTPUT);
-  digitalWrite(ENABLE_PIN, LOW); // LOW = enabled
+  digitalWrite(ENABLE_PIN, HIGH); // LOW = enabled
   pinMode(DIR_PIN_CUT, OUTPUT);
-
+  
+  
+  
+  // Start init comunication
+  initArd(Serial, "Bob", "Hi Bob");
 
   // Set speed and acceleration
   extruder.setAcceleration(1000);
@@ -84,7 +85,7 @@ void setup() {
   currentload = scale.get_units() ;
   MEGA = WAIT;
 
-  extruder.setSpeed(2000);
+  extruder.setSpeed(800);
 
 
 }
@@ -100,15 +101,15 @@ void loop() {
       // implement extrude for sample collection (this involves to back extrude x amount of steps)
       digitalWrite(ENABLE_PIN, LOW);
       if (millis() - lastScaleCheck > scaleInterval) {
-        if (abs(scale.get_units() - currentload) >= 1) {
-
+        if (abs(scale.get_units() - currentload) >= 0.7) {
+            
           Serial.println("EXTRUDE COMPLETED");
           MEGA = WAIT;
           command = "";
         }
         lastScaleCheck = millis();
       }
-      if (millis() - timer > 3000) {
+      if (millis() - timer > 10000) {
         Serial.println("EXTRUDE FAILED");
         MEGA = SBY;
         command = "";
@@ -123,13 +124,13 @@ void loop() {
       digitalWrite(ENABLE_PIN, LOW);
 
       //Dip
-      extruder.move(6000);
+      extruder.move(8000);
       while (extruder.distanceToGo() != 0) {
         extruder.run();
       }
 
       // Extract
-      extruder.move(-3100);
+      extruder.move(-6000);
       while (extruder.distanceToGo() != 0) {
         extruder.run();
       }
@@ -160,11 +161,11 @@ void loop() {
 
     case CUT:
       digitalWrite(EN_PIN_CUT, LOW);
-      cutter.move(9000);
+      cutter.move(9200);
       while (cutter.distanceToGo() != 0) {
         cutter.run();
       }
-      cutter.moveTo(-9000);
+      cutter.move(-9000);
       while (cutter.distanceToGo() != 0) {
         cutter.run();
       }
@@ -175,7 +176,7 @@ void loop() {
 
 
     case NAIUP:
-      analogWrite(LIFT_PIN,90);
+      analogWrite(LIFT_PIN,100);
       Serial.println("PLATFORM LIFT UP");
       MEGA = SBY;
       break;

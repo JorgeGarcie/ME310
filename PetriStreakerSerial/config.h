@@ -67,6 +67,7 @@
 #define CARTRIDGE2_UP   1976.0f     // C1 position down
 #define CARTRIDGE3_UP   4095.0f  // C2 position down
 
+
 #define RESTACKER_MID    4300.0f  // Restacker position down
 #define CARTRIDGE1_MID   4095.0f  // C3 position down
 #define CARTRIDGE2_MID   1976.0f     // C1 position down
