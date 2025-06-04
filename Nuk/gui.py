@@ -23,6 +23,7 @@ class SystemStatus(Enum):
     FINISHING = "Completing Dish"
     ERROR = "Error - Check System"
 
+# MARK: PARENT 
 class ParentScreen:
     def __init__(self, root,controller):
         self.width=800
@@ -89,6 +90,7 @@ class ParentScreen:
                              width=200,
                              height=100)
 
+# MARK: START
 class StartScreen(ParentScreen):
     def __init__(self, root, controller):
         super().__init__(root, controller)
@@ -121,6 +123,7 @@ class StartScreen(ParentScreen):
         self.controller.current_index=6
         self.controller.update()
 
+# MARK: PETRI
 class PetriSelector(ParentScreen):
     def __init__(self, root, controller):
         super().__init__(root, controller)
@@ -156,6 +159,7 @@ class PetriSelector(ParentScreen):
         self.controller.petriDishType = selection
         self.controller.go_forward()
 
+# MARK: SWAB3
 class SwabSelector3(ParentScreen):
     def __init__(self, root, controller):
         super().__init__(root, controller)
@@ -196,7 +200,7 @@ class SwabSelector3(ParentScreen):
         self.controller.swabStyle = selection
         self.controller.go_forward()
 
-
+# MARK: SWAB5
 class SwabSelector5(ParentScreen):
     def __init__(self, root, controller):
         super().__init__(root, controller)
@@ -251,6 +255,7 @@ class SwabSelector5(ParentScreen):
         self.controller.swabStyle = selection
         self.controller.go_forward()
 
+# MARK: NUMBER
 class NumberSelector(ParentScreen):
     def __init__(self, root, controller):
         super().__init__(root, controller)
@@ -305,6 +310,7 @@ class NumberSelector(ParentScreen):
             self.controller.numberOfPlates -= 1
             self.counter_label.config(text=str(self.controller.numberOfPlates))
 
+# MARK: SUMMARY
 class SummaryScreen(ParentScreen):
     def __init__(self, root, controller):
         super().__init__(root, controller)
@@ -355,6 +361,7 @@ class SummaryScreen(ParentScreen):
         self.controller.current_index =0
         self.controller.update()
 
+# MARK: RUNNING
 class RunningScreen(ParentScreen):
     def __init__(self, root, controller):
         super().__init__(root, controller)
@@ -402,6 +409,7 @@ class RunningScreen(ParentScreen):
         self.controller.current_index =0
         self.controller.update()
 
+# MARK: WAIT
 class WaitScreen(ParentScreen):
     def __init__(self, root, controller):
         super().__init__(root, controller)
@@ -433,7 +441,7 @@ class WaitScreen(ParentScreen):
     def on_done(self):
         self.controller.LoadCart()
         
-
+# MARK: FAKE
 class FakeController:
     def __init__(self, root):
         self.root = root

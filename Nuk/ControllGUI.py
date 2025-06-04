@@ -49,8 +49,18 @@ class AppController:
         self.mega = MEGAobj.MegaObj(port='COM12', baudrate=115200, timeout=1)
         self.mega.initCom()
         self.orb = ORBobj.ORBobj(port='COM11', baudrate=115200, timeout=1)
+        self.orb.initCom()
         self.orb2 = ORB2obj.ORB2(port='COM15', baudrate=115200, timeout=1)
 
+
+
+    def CutFirst(self):
+        self.orb.cut()
+        self.wait_for_confirmation(self.orb,"CUT RDY")
+
+        self.mega.cut()
+        self.wait_for_confirmation(self.mega, "CUT START")
+        self.wait_for_confirmation(self.mega, "CUT COMPLETED")
 
 
     def show_screen(self, index):
@@ -230,7 +240,7 @@ class AppController:
 
 
     @staticmethod
-    def wait_for_confirmation(comObj : MEGAobj.MegaObj | ORBobj.ORBobj, tar_resp : str,err_resp: str=None , timeout : int=10):
+    def wait_for_confirmation(comObj : MEGAobj.MegaObj | ORBobj.ORBobj | ORB2obj.ORB2, tar_resp : str,err_resp: str=None , timeout : int=10):
         start_time = time.time()
         while True:
             response = comObj.read()

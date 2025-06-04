@@ -15,7 +15,7 @@ class ORBobj:
         return self.com.readline().decode().strip()
 
     def initCom(self):
-        pass
+        self.write(f"HOME ALL")
 
     def moveArm(self, position):
         self.write(f"MOVE {position}")

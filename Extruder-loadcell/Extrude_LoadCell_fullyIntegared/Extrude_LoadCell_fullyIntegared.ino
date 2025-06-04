@@ -52,18 +52,18 @@ String command;
 
 void setup() {
   Serial.begin(115200);
-  
+
   // lin actuator
   pinMode(LIFT_PIN,OUTPUT);
   analogWrite(LIFT_PIN,0);
 
   // Enable driver
   pinMode(ENABLE_PIN, OUTPUT);
-  digitalWrite(ENABLE_PIN, HIGH); // LOW = enabled
+  digitalWrite(ENABLE_PIN, HIGH);  // Disable motor
   pinMode(DIR_PIN, OUTPUT);
 
   pinMode(EN_PIN_CUT, OUTPUT);
-  digitalWrite(ENABLE_PIN, HIGH); // LOW = enabled
+  digitalWrite(EN_PIN_CUT, HIGH); // LOW = enabled
   pinMode(DIR_PIN_CUT, OUTPUT);
   
   
