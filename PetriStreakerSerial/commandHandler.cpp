@@ -357,7 +357,7 @@ void CommandHandler::handlePatternCommand(String patternId) {
   
   int id = patternId.toInt();
   bool success = hardware->executeStreakPattern(id);
-  DEBUG_SERIAL.println(success ? "PATTERN COMPLETED" : "PATTERN FAILED");
+  DEBUG_SERIAL.println(success ? "SWAB COMPLETED" : "SWAB FAILED");
 }
 
 void CommandHandler::handleHomeCommand(String args) {

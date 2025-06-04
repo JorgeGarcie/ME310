@@ -119,9 +119,10 @@ class StartScreen(ParentScreen):
         self.change_cartridge_button.place(anchor='center',relx=0.5,rely=0.83,width=760,height=140)  # Adjust x,y as you want
 
     def on_change_cartridge(self):
-        self.controller.RemoveCart()
         self.controller.current_index=6
         self.controller.update()
+        self.root.after(200,self.controller.RemoveCart())
+        
 
 # MARK: PETRI
 class PetriSelector(ParentScreen):
@@ -385,7 +386,7 @@ class RunningScreen(ParentScreen):
                                        bg=self.colors['bg_secondary'])
         self.progress_label.place(relx=0.5, rely=0.55, anchor='center')
 
-        self.update_progress(0)
+        self.update_progress(1)
          
 
     def update_progress(self, current):

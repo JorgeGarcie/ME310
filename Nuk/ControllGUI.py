@@ -51,7 +51,7 @@ class AppController:
         self.orb = ORBobj.ORBobj(port='COM11', baudrate=115200, timeout=1)
         self.orb.initCom()
         self.orb2 = ORB2obj.ORB2(port='COM15', baudrate=115200, timeout=1)
-
+        self.CutFirst()
 
 
     def CutFirst(self):
@@ -155,8 +155,8 @@ class AppController:
 
         self.StrgDish()
         
-        self.current_screen.update_progress(self.current_run)
         self.current_run+=1
+        self.current_screen.update_progress(self.current_run)
         
 
     def GetDish(self,TYPE):
@@ -200,10 +200,11 @@ class AppController:
             self.run_single()
             self.root.after(200,self.run)
         else:
-            self.current_screen.update_progress(self.current_run)
+            #self.current_screen.update_progress(self.current_run)
             self.current_screen.enable_done_button()
 
     def RemoveCart(self):
+        
         self.orb.liftAll("UP")
         self.wait_for_confirmation(self.orb,"ALL LIFT UP")
         
@@ -222,6 +223,9 @@ class AppController:
     def LoadCart(self):
         self.orb.liftAll("TOP")
         self.wait_for_confirmation(self.orb,"ALL LIFT TOP")
+        
+        self.orb2.releasAll()
+        self.wait_for_confirmation(self.orb2,"RELEASED ALL")
         
         self.orb.liftAll("UP")
         self.wait_for_confirmation(self.orb,"ALL LIFT UP")
