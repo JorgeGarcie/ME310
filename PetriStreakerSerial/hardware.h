@@ -123,9 +123,13 @@ class HardwareControl {
     bool rotateHandlerToC3();
     
     // Cartridge and restacker functions
+    bool moveRestackerTop();
     bool moveRestackerUp();
+    bool moveRestackerMid();
     bool moveRestackerDown();
+    bool moveCartridgeTop(uint8_t cartridge_id);
     bool moveCartridgeUp(uint8_t cartridge_id);
+    bool moveCartridgeMid(uint8_t cartridge_id);
     bool moveCartridgeDown(uint8_t cartridge_id);
     bool homeAllCartridges();
     
