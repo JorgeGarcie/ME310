@@ -72,7 +72,7 @@ void CommandHandler::executeCommand(String command) {
   else if (cmd == "CUT") {
     handleCutCommand();
   }
-  else if (cmd == "PATTERN") {
+  else if (cmd == "SWAB") {
     handlePatternCommand(args);
   }
   else if (cmd == "HOME") {
