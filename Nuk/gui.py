@@ -358,7 +358,8 @@ class SummaryScreen(ParentScreen):
         self.run_btn = tk.Button(self.frame, 
                                  cursor='hand2',
                                  command=self.on_run,
-                                 image=self.controller.photoRun,bd=0,
+                                 image=self.controller.photoRun,
+                                 bd=0,
                             highlightthickness=0,
                             relief='flat')
         self.run_btn.place(x=460,y=100,width=320,height=175)  # Padding between buttons
@@ -446,24 +447,58 @@ class WaitScreen(ParentScreen):
                                       bg=self.colors['bg_secondary'])
         self.message_label.place(relx=0.5, rely=0.4, anchor='center')
 
+       
+    def update_message(self):
+        self.controller.go_forward()
+
+class RemoveCRTG(ParentScreen):
+    def __init__(self, root, controller):
+        super().__init__(root, controller)
+        self.initialize_main_interface()
+
+
+    def create_widgets(self):
+
         # DONE button starts hidden
         self.done_btn = tk.Button(self.frame,
                                    cursor='hand2',
                                    command=self.on_done,
-                                   image=self.controller.photoDone,bd=0,
+                            image=self.controller.photoRemove,
+                                   bd=0,
                             highlightthickness=0,
                             relief='flat'
                                   )
-        self.done_btn.place(relx=0.5,rely=0.7,anchor='center',width=500,height=160)
+        self.done_btn.place(relx=0.5,rely=0.5,anchor='center',width=800,height=480)
+        
+
+    def on_done(self):
+        self.controller.go_forward()
+
+class InsertCRTG(ParentScreen):
+    def __init__(self, root, controller):
+        super().__init__(root, controller)
+        self.initialize_main_interface()
 
 
-    def update_message(self):
-        self.message_label.config(text="You can now remove\n the cartridge")
-        self.done_btn.place(relx=0.5, rely=0.75, anchor='center')
+    def create_widgets(self):
+        self.done_btn = tk.Button(self.frame,
+                                   cursor='hand2',
+                                   command=self.on_done,
+                                   bd=0,
+                            highlightthickness=0,
+                            relief='flat',
+                            image=self.controller.photoInsert
+                                  )
+        self.done_btn.place(relx=0.5,rely=0.5,anchor='center',width=800,height=480)
 
     def on_done(self):
         self.controller.LoadCart()
-        
+    
+
+
+
+
+      
 # MARK: FAKE
 class FakeController:
     def __init__(self, root):
@@ -488,6 +523,10 @@ class FakeController:
         self.photoCancel=tk.PhotoImage(file="Nuk/ImagesForGUI/cancel.png")
         self.photoRun=tk.PhotoImage(file="Nuk/ImagesForGUI/run.png")
         self.photoDone=tk.PhotoImage(file="Nuk/ImagesForGUI/done.png")
+        
+        self.photoRemove=tk.PhotoImage(file="Nuk/ImagesForGUI/RemoveIMG.png")
+        self.photoInsert=tk.PhotoImage(file="Nuk/ImagesForGUI/Re-insertIMG.png")
+        
         root.attributes("-fullscreen", True)
 
         self.numberOfPlates=10
@@ -496,7 +535,7 @@ class FakeController:
         self.petriDishType="NORMAL"
         self.swabStyle="0"
         self.SWABlist=["LINE","SPIRAL","QUADRANT","ZIGZAG"]
-        self.screens = [StartScreen, PetriSelector, SwabSelector3, NumberSelector,SummaryScreen,RunningScreen,WaitScreen]
+        self.screens = [StartScreen, PetriSelector, SwabSelector3, NumberSelector,SummaryScreen,RunningScreen,WaitScreen,RemoveCRTG,InsertCRTG]
         self.idx=0
         self.current_screen=None
         self.update()

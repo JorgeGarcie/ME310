@@ -41,21 +41,23 @@ class AppController:
 
 
 
-        self.screens = [gg.StartScreen, gg.PetriSelector, gg.SwabSelector3, gg.NumberSelector,gg.SummaryScreen,gg.RunningScreen,gg.WaitScreen]
+        self.screens = [gg.StartScreen, gg.PetriSelector, gg.SwabSelector3, gg.NumberSelector,gg.SummaryScreen,gg.RunningScreen,gg.WaitScreen,gg.RemoveCRTG,gg.InsertCRTG]
         self.current_index = 0    
         self.current_screen = None
 
         self.isRun=False
-        
+        self.input_locked = False  # To prevent double taps
+
+
         self.current_run=0
-    
+
         
         self.mega = MEGAobj.MegaObj(port='COM12', baudrate=115200, timeout=1)
         self.mega.initCom()
         self.orb = ORBobj.ORBobj(port='COM18', baudrate=115200, timeout=1)
         self.orb.initCom()
         self.orb2 = ORB2obj.ORB2(port='COM15', baudrate=115200, timeout=1)
-        self.CutFirst()
+        #self.CutFirst()
               
         
     
@@ -75,21 +77,26 @@ class AppController:
             self.current_screen.frame.destroy()
 
         screen_class = self.screens[index]
-        self.current_screen = screen_class(self.root,self) 
-        
-    
+        self.current_screen = screen_class(self.root, self)
+
+    def lock_input(self):
+        self.input_locked = True
+        self.root.after(500, self.unlock_input)  # 500 ms = 0.5 seconds
+
+    def unlock_input(self):
+        self.input_locked = False
+
     def go_back(self):
-        if self.current_index >= 0:
+        if not self.input_locked and self.current_index > 0:
             self.current_index -= 1
             self.show_screen(self.current_index)
-            self.update()
+            self.lock_input()
 
     def go_forward(self):
-      
-        if self.current_index < len(self.screens) - 1:
+        if not self.input_locked and self.current_index < len(self.screens) - 1:
             self.current_index += 1
             self.show_screen(self.current_index)
-            self.update()
+            self.lock_input()
 
     def update(self):
         self.show_screen(self.current_index)
@@ -212,7 +219,6 @@ class AppController:
             
             self.root.after(200,self.run)
         else:
-            #self.current_screen.update_progress(self.current_run)
             self.current_screen.enable_done_button()
 
     def RemoveCart(self):
@@ -229,7 +235,6 @@ class AppController:
         self.orb2.grabAll()
         self.wait_for_confirmation(self.orb2,"GRABBED ALL")
         
-        self.wait_for_confirmation(self.orb,"CTRG RDY",timeout=10000000)
         self.current_screen.update_message()
     
     def LoadCart(self):
