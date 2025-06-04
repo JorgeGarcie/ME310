@@ -101,8 +101,11 @@ void loop() {
       // implement extrude for sample collection (this involves to back extrude x amount of steps)
       digitalWrite(ENABLE_PIN, LOW);
       if (millis() - lastScaleCheck > scaleInterval) {
-        if (abs(scale.get_units() - currentload) >= 0.7) {
-            
+        if (abs(scale.get_units() - currentload) >= 1) {
+          extruder.move(-400);
+          while(extruder.distanceToGo()!=0){
+            extruder.run();
+          }  
           Serial.println("EXTRUDE COMPLETED");
           MEGA = WAIT;
           command = "";
@@ -161,7 +164,7 @@ void loop() {
 
     case CUT:
       digitalWrite(EN_PIN_CUT, LOW);
-      cutter.move(9200);
+      cutter.move(9100);
       while (cutter.distanceToGo() != 0) {
         cutter.run();
       }

@@ -127,8 +127,8 @@ class AppController:
         # mid: same but now the second last one is being held. One petri dish lower basically. 4300 
         # down: obvious 
         
-        # self.orb.swab(self.petriDishType)
-        # self.wait_for_confirmation(self.orb,"SWAB COMPLETED")
+        self.orb.swab(self.swabStyle)
+        self.wait_for_confirmation(self.orb,"SWAB COMPLETED",timeout=60)
 
         self.mega.prepCut()
         self.wait_for_confirmation(self.mega, "PREP START")
@@ -216,7 +216,7 @@ class AppController:
         self.orb2.grabAll()
         self.wait_for_confirmation(self.orb2,"GRABBED ALL")
         
-        self.wait_for_confirmation(self.orb,"CTRG RDY")
+        #self.wait_for_confirmation(self.orb,"CTRG RDY",timeout=10000000)
         self.current_screen.update_message()
     
     def LoadCart(self):

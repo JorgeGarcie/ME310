@@ -1,6 +1,6 @@
 "ACTION;""COMMAND """"argument"""""";ARGUMENT;Expected response OpenRB1;Expected response MEGA;Expected result OpenRB2;COMMENT"
 "Move handler;""MOVE """"position"""""";NORMAL/BLOOD/CHOCOLAT/STRG/WORK_AREA;MOVE COMPLETED;N/A;;Move handler to specified position"
-"Lift/Lower PetriDish;""LIFT """"position"""" """"dir"""""";""NORMAL/BLOOD/CHOCOLAT/STRG; UP/DOWN/MID/TOP"";LIFT UP/DOWN/MID/TOP;;;"
+"Lift/Lower PetriDish;""LIFT """"position"""" """"dir"""""";""NORMAL/BLOOD/CHOCOLAT/STRG; UP/DOWN/MID/TOP"";LIFT UP/DOWN/MID/TOP;;;","LIFT ""position"" ""dir"""
 "Grab Petridish;""GRAB """"position"""""";NORMAL/BLOOD/CHOCOLAT;GRAB COMPLETED;N/A;;Gripper grab action"
 "Release petridish;""RELEASE """"position"""""";NORMAL/BLOOD/CHOCOLAT;RELEASE COMPLETED;N/A;;Gripper release action"
 "Platform lift control;""PLATFORM LIFT """"dir"""""";UP/DOWN;PLATFORM LIFT UP / PLATFORM LIFT DOWN;N/A;;Engage/disengage platform with dish",,,,,,Engage/disengage platform with dish
@@ -12,8 +12,8 @@ Extrude sample;EXTRUDE;N/A;N/A;EXTRUDE START -> EXTRUDE COMPLETED / EXTRUDE FAIL
 Prepare for cut;PREP CUT;N/A;N/A;PREP START -> FILAMENT RDY;;Mega prepares cutting
 "Lift all;""LIFT ALL """"dir"""""";UP/DOWN/MID/TOP;ALL LIFT UP /ALL LIFT DOWN /ALL LIFT MID /ALL LIFT TOP;N/A;;Lift all cartridges together"
 Grab all;GRAB ALL;N/A;GRAB ALL COMPLETED;N/A;;Grab all grippers
-Release all;RELEASE ALL;N/A;RELEASE ALL COMPLETED;N/A;;Release all grippers
-"Execute streak pattern;""PATTERN """"id"""""";0/1/2/3;PATTERN COMPLETED;N/A;;Execute predefined streaking pattern"
+Release all;RELEASE ALL;N/A;RELEASE ALL COMPLETED;N/A;;Release all grippers,RELEASE ALL
+"Execute streak pattern;""PATTERN """"id"""""";0/1/2/3;PATTERN COMPLETED;N/A;;Execute predefined streaking pattern","SWAB ""id"""
 Sample extrude;SAMPLE EXTRUDE;N/A;N/A;SAMPLE EXTRUDE START -> SAMPLE EXTRUDE COMPLETED;;Mega handles sample extrusion
 Sample retract;SAMPLE RETRACT;N/A;N/A;SAMPLE RETRACT START -> SAMPLE RETRACT COMPLETED;;Mega handles sample retraction
 Home all axes;HOME ALL;N/A;HOME COMPLETED;HOME COMPLETED;;Initialize all motors to home position
