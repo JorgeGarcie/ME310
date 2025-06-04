@@ -31,62 +31,59 @@
 // Geometry & homes (in raw units, 0–4095)
 #define LID_LIFTER_HOME   3849.0f
 #define POLAR_ARM_LENGTH   98.995f  // Polar arm length [mm]
-//#define POLAR_ARM_HOME    (56.25f/360.0f*4096.0f)  // DO NOT MODIFY USEFUL FOR CALCULATIONS - DO NOT GO THERE
 //#define POLAR_ARM_HOME    (178.51f/360.0f*4096.0f)  // DO NOT MODIFY USEFUL FOR CALCULATIONS - DO NOT GO THERE
 #define POLAR_ARM_HOME    (0.51f/360.0f*4096.0f)  // DO NOT MODIFY USEFUL FOR CALCULATIONS - DO NOT GO THERE
 #define POLAR_ARM_NO_OBSTRUCT_HOME (236.25f/360.0f*4096.0f) // ACTUAL POSITION TO RES      T
 #define PLATFORM_HOME     1238.0f  // Platform home position to not obstruct 
 #define HANDLER_HOME      1947.0f  // Platform home position means that it goes to cartridge. Middle is 1705 units 2112. New is 1540 so 407 units
 #define RESTACKER_HOME    2700.0f  // Restacker position down
-#define CARTRIDGE1_HOME   1320.0f  // C3 position down
-#define CARTRIDGE2_HOME   0.0f     // C1 position down
-#define CARTRIDGE3_HOME   2650.0f  // C2 position down
-
+#define CARTRIDGE1_HOME   1340.0f  // C1 position down
+#define CARTRIDGE2_HOME   150.0f   // C2 position down
+#define CARTRIDGE3_HOME   2700.0f  // C3 position down
 
 // Predetermined Positions in Units for System
 #define STREAKING_STATION 3585.0f // Handler
-#define HANDLER_RESTACKER 4416.0f 
+#define HANDLER_RESTACKER 4396.0f 
 #define HANDLER_C1 2762.0f 
-#define HANDLER_C2 1947.0f 
-#define HANDLER_C3 1123.0f 
+#define HANDLER_C2 1950.0f 
+#define HANDLER_C3 1120.0f 
 #define POLAR_ARM_TO_VIAL 2042.0f
 #define POLAR_ARM_TO_CUT 2590.0f
 #define POLAR_ARM_SWABBING   621.0f
 
-#define RESTACKER_UP    3207.0f
-#define PLATFORM_UP     790.0f
-#define LID_LIFTER_DOWN 3000.0f  // Drop the lid down
+// Predetermined Positions for the Lifting Mechanisms
+#define PLATFORM_UP     790.0f // NOT USED BECAUSE NOT 
+#define LID_LIFTER_DOWN 3000.0f  
 
-#define RESTACKER_TOP    6000.0f  // Restacker position down
-#define CARTRIDGE1_TOP   4095.0f  // C3 position down
-#define CARTRIDGE2_TOP   1976.0f     // C1 position down
-#define CARTRIDGE3_TOP   6000.0f  // C2 position down
+#define RESTACKER_TOP    6000.0f 
+#define CARTRIDGE1_TOP   4840.0f 
+#define CARTRIDGE2_TOP   3450.0f 
+#define CARTRIDGE3_TOP   6000.0f 
 
-#define RESTACKER_UP    4900.0f  // Restacker position down
-#define CARTRIDGE1_UP   4095.0f  // C3 position down
-#define CARTRIDGE2_UP   1976.0f     // C1 position down
-#define CARTRIDGE3_UP   4095.0f  // C2 position down
+#define RESTACKER_UP    4900.0f  
+#define CARTRIDGE1_UP   3640.0f  
+#define CARTRIDGE2_UP   2350.0f  
+#define CARTRIDGE3_UP   4900.0f  
 
-
-#define RESTACKER_MID    4300.0f  // Restacker position down
-#define CARTRIDGE1_MID   4095.0f  // C3 position down
-#define CARTRIDGE2_MID   1976.0f     // C1 position down
-#define CARTRIDGE3_MID   4095.0f  // C2 position down
+#define RESTACKER_MID    4300.0f  
+#define CARTRIDGE1_MID   3090.0f  
+#define CARTRIDGE2_MID   1750.0f  
+#define CARTRIDGE3_MID   4300.0f  
 
 /* 
 POSITIONS 
 
 STORAGE CARTRIDGE (EX POS) ID 5
-top: 6000, up: 4900, mid: 4300, down: 2700. HANDLER 300
+top: 6000, up: 4900, mid: 4300, down: 2700. HANDLER 300 meaning 4096+300 = 4396
 
-CHOCOLAT C3 CARTRIDGE (EX POS) ID 7
-top: 6000, up: 4900, mid: 4300, down: 2700.  HANDLER 1120
+NORMAL C1 CARTRIDGE (EX POS) ID 8
+top: 4840, up: 3640, mid: 3090, down: 1340.  HANDLER 2762
 
 BLOOD C2 CARTRIDGE (EX POS) ID 6
 top: 3450, up: 2350, mid: 1750, down: 0 OR 150.  HANDLER 1950
 
-NORMAL C1 CARTRIDGE (EX POS) ID 8
-top: 4840, up: 3640, mid: 3090, down: 1340.  HANDLER 2762
+CHOCOLAT C3 CARTRIDGE (EX POS) ID 7
+top: 6000, up: 4900, mid: 4300, down: 2700.  HANDLER 1120
 
 */
 // Motion Profiles

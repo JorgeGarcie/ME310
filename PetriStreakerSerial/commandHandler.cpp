@@ -157,45 +157,75 @@ void CommandHandler::handleLiftCommand(String args) {
   bool success = false;
   
   if (position == "ALL") {
-    if (direction == "UP") {
+    if (direction == "TOP") {
+      success = hardware->liftAllTop();
+      DEBUG_SERIAL.println(success ? "ALL LIFT TOP" : "ALL LIFT FAILED");
+    } else if (direction == "UP") {
       success = hardware->liftAllUp();
       DEBUG_SERIAL.println(success ? "ALL LIFT UP" : "ALL LIFT FAILED");
+    } else if (direction == "MID") {
+      success = hardware->liftAllMid();
+      DEBUG_SERIAL.println(success ? "ALL LIFT MID" : "ALL LIFT FAILED");
     } else if (direction == "DOWN") {
       success = hardware->liftAllDown();
       DEBUG_SERIAL.println(success ? "ALL LIFT DOWN" : "ALL LIFT FAILED");
     }
   }
   else if (position == "STRG") {
-    if (direction == "UP") {
+    if (direction == "TOP") {
+      success = hardware->liftStorageTop();
+      DEBUG_SERIAL.println(success ? "LIFT TOP" : "LIFT FAILED");
+    } else if (direction == "UP") {
       success = hardware->liftStorageUp();
       DEBUG_SERIAL.println(success ? "LIFT UP" : "LIFT FAILED");
+    } else if (direction == "MID") {
+      success = hardware->liftStorageMid();
+      DEBUG_SERIAL.println(success ? "LIFT MID" : "LIFT FAILED");
     } else if (direction == "DOWN") {
       success = hardware->liftStorageDown();
       DEBUG_SERIAL.println(success ? "LIFT DOWN" : "LIFT FAILED");
     }
   }
   else if (position == "NORMAL") {
-    if (direction == "UP") {
+    if (direction == "TOP") {
+      success = hardware->liftNormalTop();
+      DEBUG_SERIAL.println(success ? "LIFT TOP" : "LIFT FAILED");
+    } else if (direction == "UP") {
       success = hardware->liftNormalUp();
       DEBUG_SERIAL.println(success ? "LIFT UP" : "LIFT FAILED");
+    } else if (direction == "MID") {
+      success = hardware->liftNormalMid();
+      DEBUG_SERIAL.println(success ? "LIFT MID" : "LIFT FAILED");
     } else if (direction == "DOWN") {
       success = hardware->liftNormalDown();
       DEBUG_SERIAL.println(success ? "LIFT DOWN" : "LIFT FAILED");
     }
   }
   else if (position == "BLOOD") {
-    if (direction == "UP") {
+    if (direction == "TOP") {
+      success = hardware->liftBloodTop();
+      DEBUG_SERIAL.println(success ? "LIFT TOP" : "LIFT FAILED");
+    } else if (direction == "UP") {
       success = hardware->liftBloodUp();
       DEBUG_SERIAL.println(success ? "LIFT UP" : "LIFT FAILED");
+    } else if (direction == "MID") {
+      success = hardware->liftBloodMid();
+      DEBUG_SERIAL.println(success ? "LIFT MID" : "LIFT FAILED");
     } else if (direction == "DOWN") {
       success = hardware->liftBloodDown();
       DEBUG_SERIAL.println(success ? "LIFT DOWN" : "LIFT FAILED");
     }
   }
   else if (position == "CHOCOLAT") {
-    if (direction == "UP") {
+    if (direction == "TOP") {
+      success = hardware->liftChocolatTop();
+      DEBUG_SERIAL.println(success ? "LIFT TOP" : "LIFT FAILED");
+    } else if (direction == "UP") {
       success = hardware->liftChocolatUp();
       DEBUG_SERIAL.println(success ? "LIFT UP" : "LIFT FAILED");
+    } else if (direction == "MID") {
+      success = hardware->liftChocolatMid();
+      DEBUG_SERIAL.println(success ? "LIFT MID" : "LIFT FAILED");
     } else if (direction == "DOWN") {
       success = hardware->liftChocolatDown();
       DEBUG_SERIAL.println(success ? "LIFT DOWN" : "LIFT FAILED");
