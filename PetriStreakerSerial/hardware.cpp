@@ -1020,7 +1020,7 @@ bool HardwareControl::drawSpiral(float max_radius, float revolutions, int num_po
       success = false;
     }
   }
-  
+  resetEncoder(DXL_PLATFORM);
   return success;
 }
 
@@ -1101,13 +1101,14 @@ bool HardwareControl::shakeHandler() {
   return true;
 }
 
+
+
 bool HardwareControl::resetEncoder(uint8_t motorId) {
   dxl.torqueOff(motorId);
   dxl.setOperatingMode(motorId, OP_POSITION);
   dxl.setOperatingMode(motorId, 4); 
   dxl.torqueOn(motorId);
-  dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, DXL_HANDLER, HANDLER_SPEED);
-  dxl.writeControlTableItem(ControlTableItem::PROFILE_ACCELERATION, DXL_HANDLER, HANDLER_ACCEL);
+  dxl.writeControlTableItem(ControlTableItem::PROFILE_VELOCITY, motorId, 100);
   return true; 
 }
 

@@ -37,10 +37,10 @@
 #define POLAR_ARM_NO_OBSTRUCT_HOME (236.25f/360.0f*4096.0f) // ACTUAL POSITION TO RES      T
 #define PLATFORM_HOME     1238.0f  // Platform home position to not obstruct 
 #define HANDLER_HOME      1947.0f  // Platform home position means that it goes to cartridge. Middle is 1705 units 2112. New is 1540 so 407 units
-#define RESTACKER_HOME    2669.0f  // Restacker position down
+#define RESTACKER_HOME    2700.0f  // Restacker position down
+#define CARTRIDGE1_HOME   1320.0f  // C3 position down
 #define CARTRIDGE2_HOME   0.0f     // C1 position down
 #define CARTRIDGE3_HOME   2650.0f  // C2 position down
-#define CARTRIDGE1_HOME   1320.0f  // C3 position down
 
 
 // Predetermined Positions in Units for System
@@ -53,14 +53,24 @@
 #define POLAR_ARM_TO_CUT 2590.0f
 #define POLAR_ARM_SWABBING   621.0f
 
-
 #define RESTACKER_UP    3207.0f
 #define PLATFORM_UP     790.0f
-#define RESTACKER_UP    4095.0f  // Restacker position down
+#define LID_LIFTER_DOWN 3000.0f  // Drop the lid down
+
+#define RESTACKER_TOP    6000.0f  // Restacker position down
+#define CARTRIDGE1_TOP   4095.0f  // C3 position down
+#define CARTRIDGE2_TOP   1976.0f     // C1 position down
+#define CARTRIDGE3_TOP   6000.0f  // C2 position down
+
+#define RESTACKER_UP    4900.0f  // Restacker position down
+#define CARTRIDGE1_UP   4095.0f  // C3 position down
 #define CARTRIDGE2_UP   1976.0f     // C1 position down
 #define CARTRIDGE3_UP   4095.0f  // C2 position down
-#define CARTRIDGE1_UP   4095.0f  // C3 position down
-#define LID_LIFTER_DOWN 3000.0f  // Drop the lid down
+
+#define RESTACKER_MID    4300.0f  // Restacker position down
+#define CARTRIDGE1_MID   4095.0f  // C3 position down
+#define CARTRIDGE2_MID   1976.0f     // C1 position down
+#define CARTRIDGE3_MID   4095.0f  // C2 position down
 
 /* 
 POSITIONS 
