@@ -973,8 +973,17 @@ bool HardwareControl::setHandlerGoalPosition(float position) {
   float c3_pos = dxl.getPresentPosition(DXL_CARTRIDGE3);
 
   // Check if any motor is above its home position (indicating "up" state)
-  if (platform_pos > (PLATFORM_HOME + thres) || restacker_pos > (RESTACKER_HOME + thres) || c1_pos > (CARTRIDGE1_HOME + thres) || c2_pos > (CARTRIDGE2_HOME + thres) || c3_pos > (CARTRIDGE3_HOME + thres)) {
-
+  if (restacker_pos > (RESTACKER_HOME + thres) || c1_pos > (CARTRIDGE1_HOME + thres) || c2_pos > (CARTRIDGE2_HOME + thres) || c3_pos > (CARTRIDGE3_HOME + thres)) {
+    DEBUG_SERIAL.print("PLATFORM: ");
+    DEBUG_SERIAL.println(PLATFORM_HOME);
+    DEBUG_SERIAL.print("STRG: ");
+    DEBUG_SERIAL.println(RESTACKER_HOME);
+    DEBUG_SERIAL.print("NORMAL: ");
+    DEBUG_SERIAL.println(CARTRIDGE1_HOME);
+    DEBUG_SERIAL.print("BLOOD: ");
+    DEBUG_SERIAL.println(CARTRIDGE2_HOME);
+    DEBUG_SERIAL.print("CHOCO: ");
+    DEBUG_SERIAL.println(CARTRIDGE3_HOME);
     DEBUG_SERIAL.println("ERROR: Motors in UP position! Can't move handler safely!");
     return false;
   }
@@ -1233,8 +1242,7 @@ bool HardwareControl::drawSpiral(float max_radius, float revolutions, int num_po
 
   for (int i = 0; i < num_points; i++) {
     float t = (float) i / (num_points - 1);
-    // t*=-1;
-    float angle = t * revolutions * 2.0f * PI;
+    float angle = -t * revolutions * 2.0f * PI;
     float radius = t * max_radius;
     float rx = radius * cos(angle);
     float ry = radius * sin(angle);

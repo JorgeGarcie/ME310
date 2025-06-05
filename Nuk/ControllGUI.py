@@ -31,8 +31,11 @@ class AppController:
         self.photoRun=tk.PhotoImage(file="Nuk/ImagesForGUI/run.png")
         self.photoDone=tk.PhotoImage(file="Nuk/ImagesForGUI/done.png")
 
+        self.photoRemove=tk.PhotoImage(file="Nuk/ImagesForGUI/RemoveIMG.png")
+        self.photoInsert=tk.PhotoImage(file="Nuk/ImagesForGUI/Re-insertIMG.png")
+
         self.root=root
-        root.attributes("-fullscreen", True)
+        # root.attributes("-fullscreen", True)
         self.numberOfPlates=1
         self.petriDishType=None
         self.swabStyle=None
@@ -57,7 +60,7 @@ class AppController:
         self.orb = ORBobj.ORBobj(port='COM18', baudrate=115200, timeout=1)
         self.orb.initCom()
         self.orb2 = ORB2obj.ORB2(port='COM15', baudrate=115200, timeout=1)
-        #self.CutFirst()
+        # self.CutFirst()
               
         
     
@@ -81,7 +84,7 @@ class AppController:
 
     def lock_input(self):
         self.input_locked = True
-        self.root.after(500, self.unlock_input)  # 500 ms = 0.5 seconds
+        self.root.after(200, self.unlock_input)  # 500 ms = 0.5 seconds
 
     def unlock_input(self):
         self.input_locked = False
@@ -143,6 +146,12 @@ class AppController:
         self.wait_for_confirmation(self.mega, "PREP START")
         self.wait_for_confirmation(self.mega, "FILAMENT RDY")
 
+        self.orb.sucction("OFF")
+        self.wait_for_confirmation(self.orb,"SUCC OFF")
+
+        self.mega.Nai("DOWN")
+        self.wait_for_confirmation(self.mega,"PLATFORM LIFT DOWN")
+        
         self.orb.cut()
         self.wait_for_confirmation(self.orb,"CUT RDY")
 
@@ -150,20 +159,13 @@ class AppController:
         self.wait_for_confirmation(self.mega, "CUT START")
         self.wait_for_confirmation(self.mega, "CUT COMPLETED")
 
-        time.sleep(0.5)
+        time.sleep(0.2)
         
         self.orb.fetch()
         self.wait_for_confirmation(self.orb,"FETCH RDY")
 
         self.mega.cutopen()
         self.wait_for_confirmation(self.mega, "CUTOPEN COMPLETED")
-            
-            
-        self.orb.sucction("OFF")
-        self.wait_for_confirmation(self.orb,"SUCC OFF")
-
-        self.mega.Nai("DOWN")
-        self.wait_for_confirmation(self.mega,"PLATFORM LIFT DOWN")
         
         self.orb.lid("CLOSE")
         self.wait_for_confirmation(self.orb,"LID ON")
