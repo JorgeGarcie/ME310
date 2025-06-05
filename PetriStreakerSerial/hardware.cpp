@@ -1233,7 +1233,7 @@ bool HardwareControl::drawSpiral(float max_radius, float revolutions, int num_po
 
   for (int i = 0; i < num_points; i++) {
     float t = (float) i / (num_points - 1);
-    t*=-1;
+    // t*=-1;
     float angle = t * revolutions * 2.0f * PI;
     float radius = t * max_radius;
     float rx = radius * cos(angle);
