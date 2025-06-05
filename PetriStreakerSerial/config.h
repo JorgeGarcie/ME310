@@ -36,10 +36,10 @@
 #define POLAR_ARM_NO_OBSTRUCT_HOME (236.25f/360.0f*4096.0f) // ACTUAL POSITION TO RES      T
 #define PLATFORM_HOME     1238.0f  // Platform home position to not obstruct 
 #define HANDLER_HOME      1947.0f  // Platform home position means that it goes to cartridge. Middle is 1705 units 2112. New is 1540 so 407 units
-#define RESTACKER_HOME    2700.0f  // Restacker position down
-#define CARTRIDGE1_HOME   1340.0f  // C1 position down
-#define CARTRIDGE2_HOME   150.0f   // C2 position down
-#define CARTRIDGE3_HOME   2700.0f  // C3 position down
+#define RESTACKER_HOME    2800.0f  // Restacker position down
+#define CARTRIDGE1_HOME   1500.0f  // C1 position down
+#define CARTRIDGE2_HOME   160.0f   // C2 position down
+#define CARTRIDGE3_HOME   2800.0f  // C3 position down
 
 // Predetermined Positions in Units for System
 #define STREAKING_STATION 3585.0f // Handler
@@ -47,7 +47,7 @@
 #define HANDLER_C1 2762.0f 
 #define HANDLER_C2 1950.0f 
 #define HANDLER_C3 1120.0f 
-#define POLAR_ARM_TO_VIAL 1999.0f//2108.0f//2042.0f//1998.0F
+#define POLAR_ARM_TO_VIAL 2032.0f//2108.0f//2042.0f//1998.0F
 #define POLAR_ARM_TO_CUT 2590.0f
 #define POLAR_ARM_SWABBING   621.0f
 
@@ -55,19 +55,19 @@
 #define PLATFORM_UP     790.0f // NOT USED BECAUSE NOT 
 #define LID_LIFTER_DOWN 3000.0f  
 
-#define RESTACKER_TOP    6000.0f 
-#define CARTRIDGE1_TOP   4840.0f 
-#define CARTRIDGE2_TOP   3450.0f 
-#define CARTRIDGE3_TOP   6000.0f 
+#define RESTACKER_TOP    6050.0f 
+#define CARTRIDGE1_TOP   4750.0f 
+#define CARTRIDGE2_TOP   3500.0f 
+#define CARTRIDGE3_TOP   6050.0f 
 
-#define RESTACKER_UP    4900.0f  
-#define CARTRIDGE1_UP   3640.0f  
-#define CARTRIDGE2_UP   2350.0f  
+#define RESTACKER_UP    4920.0f  
+#define CARTRIDGE1_UP   3580.0f  
+#define CARTRIDGE2_UP   2300.0f  
 #define CARTRIDGE3_UP   4900.0f  
 
-#define RESTACKER_MID    4300.0f  
-#define CARTRIDGE1_MID   3090.0f  
-#define CARTRIDGE2_MID   1750.0f  
+#define RESTACKER_MID    4310.0f  
+#define CARTRIDGE1_MID   3000.0f  
+#define CARTRIDGE2_MID   1780.0f  
 #define CARTRIDGE3_MID   4300.0f  
 
 /* 
@@ -107,10 +107,10 @@ top: 6000, up: 4900, mid: 4300, down: 2700.  HANDLER 1120
 //#define LID_SOLENOID 6
 //#define PLATFORM_SUCTION 7
 //#define PLATFORM_SOLENOID 4
-#define LID_SUCTION 4
-#define LID_SOLENOID 6
-#define PLATFORM_SUCTION 5
-#define PLATFORM_SOLENOID 7
+#define LID_SUCTION 5
+#define LID_SOLENOID 7
+#define PLATFORM_SUCTION 4
+#define PLATFORM_SOLENOID 6
 
 // EEPROM addresses
 //#define EEPROM_STATE_ADDRESS  0  // Address to store current state

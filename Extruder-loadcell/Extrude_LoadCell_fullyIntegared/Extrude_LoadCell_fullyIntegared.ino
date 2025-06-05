@@ -123,9 +123,9 @@ void loop() {
 
     case COLLECTION:
       digitalWrite(ENABLE_PIN, LOW);
-
+      
       //Dip
-      extruder.move(8000);
+      extruder.move(5500);
       while (extruder.distanceToGo() != 0) {
         extruder.run();
       }
@@ -161,6 +161,11 @@ void loop() {
       break;
 
     case CUT:
+      digitalWrite(ENABLE_PIN, LOW);
+      extruder.move(3000);
+      while (extruder.distanceToGo() != 0) {
+        extruder.run();
+      }
       digitalWrite(EN_PIN_CUT, LOW);
       cutter.move(9100);
       while (cutter.distanceToGo() != 0) {

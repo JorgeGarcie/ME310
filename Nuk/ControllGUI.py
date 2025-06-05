@@ -31,8 +31,11 @@ class AppController:
         self.photoRun=tk.PhotoImage(file="Nuk/ImagesForGUI/run.png")
         self.photoDone=tk.PhotoImage(file="Nuk/ImagesForGUI/done.png")
 
+        self.photoRemove=tk.PhotoImage(file="Nuk/ImagesForGUI/RemoveIMG.png")
+        self.photoInsert=tk.PhotoImage(file="Nuk/ImagesForGUI/Re-insertIMG.png")
+
         self.root=root
-        root.attributes("-fullscreen", True)
+        # root.attributes("-fullscreen", True)
         self.numberOfPlates=1
         self.petriDishType=None
         self.swabStyle=None
@@ -57,7 +60,7 @@ class AppController:
         self.orb = ORBobj.ORBobj(port='COM18', baudrate=115200, timeout=1)
         self.orb.initCom()
         self.orb2 = ORB2obj.ORB2(port='COM15', baudrate=115200, timeout=1)
-        #self.CutFirst()
+        # self.CutFirst()
               
         
     
@@ -81,7 +84,7 @@ class AppController:
 
     def lock_input(self):
         self.input_locked = True
-        self.root.after(500, self.unlock_input)  # 500 ms = 0.5 seconds
+        self.root.after(200, self.unlock_input)  # 500 ms = 0.5 seconds
 
     def unlock_input(self):
         self.input_locked = False
@@ -104,74 +107,73 @@ class AppController:
         
     def run_single(self):
      
-        # self.orb.moveArm(self.petriDishType)
-        # self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
+        self.orb.moveArm(self.petriDishType)
+        self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
 
-        # self.GetDish(self.petriDishType)
+        self.GetDish(self.petriDishType)
 
-        # self.orb.moveArm("WORK AREA")
-        # self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
+        self.orb.moveArm("WORK AREA")
+        self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
             
-        # self.mega.Nai("UP")
-        # self.wait_for_confirmation(self.mega,"PLATFORM LIFT UP")
+        self.mega.Nai("UP")
+        self.wait_for_confirmation(self.mega,"PLATFORM LIFT UP")
 
-        # self.orb.sucction("ON")
-        # self.wait_for_confirmation(self.orb,"SUCC ON")
+        self.orb.sucction("ON")
+        self.wait_for_confirmation(self.orb,"SUCC ON")
             
-        # self.orb.lid("OPEN")
-        # self.wait_for_confirmation(self.orb,"LID REMOVED")
+        self.orb.lid("OPEN")
+        self.wait_for_confirmation(self.orb,"LID REMOVED")
 
-        # self.orb.fetch()
-        # self.wait_for_confirmation(self.orb,"FETCH RDY")
+        self.orb.fetch()
+        self.wait_for_confirmation(self.orb,"FETCH RDY")
 
-        # self.mega.fetch()
-        # self.wait_for_confirmation(self.mega, "FETCH START")
-        # self.wait_for_confirmation(self.mega, "FETCH COMPLETED",timeout=15)
+        self.mega.fetch()
+        self.wait_for_confirmation(self.mega, "FETCH START")
+        self.wait_for_confirmation(self.mega, "FETCH COMPLETED",timeout=15)
 
 
-        # self.orb.extrude()
-        # self.wait_for_confirmation(self.orb,"EXTRUDE RDY")
+        self.orb.extrude()
+        self.wait_for_confirmation(self.orb,"EXTRUDE RDY")
 
-        # self.mega.extrude()
-        # self.wait_for_confirmation(self.mega, "EXTRUDE START")
-        # self.wait_for_confirmation(self.mega, "EXTRUDE COMPLETED","EXTRUDE FAILED")
+        self.mega.extrude()
+        self.wait_for_confirmation(self.mega, "EXTRUDE START")
+        self.wait_for_confirmation(self.mega, "EXTRUDE COMPLETED","EXTRUDE FAILED")
         
-        # self.orb.swab(self.swabStyle)
-        # self.wait_for_confirmation(self.orb,"SWAB COMPLETED",timeout=60)
+        self.orb.swab(self.swabStyle)
+        self.wait_for_confirmation(self.orb,"SWAB COMPLETED",timeout=60)
 
-        # self.mega.prepCut()
-        # self.wait_for_confirmation(self.mega, "PREP START")
-        # self.wait_for_confirmation(self.mega, "FILAMENT RDY")
+        self.mega.prepCut()
+        self.wait_for_confirmation(self.mega, "PREP START")
+        self.wait_for_confirmation(self.mega, "FILAMENT RDY")
 
-        # self.orb.cut()
-        # self.wait_for_confirmation(self.orb,"CUT RDY")
+        self.orb.sucction("OFF")
+        self.wait_for_confirmation(self.orb,"SUCC OFF")
 
-        # self.mega.cut()
-        # self.wait_for_confirmation(self.mega, "CUT START")
-        # self.wait_for_confirmation(self.mega, "CUT COMPLETED")
-
-        # time.sleep(0.5)
+        self.mega.Nai("DOWN")
+        self.wait_for_confirmation(self.mega,"PLATFORM LIFT DOWN")
         
-        # self.orb.fetch()
-        # self.wait_for_confirmation(self.orb,"FETCH RDY")
+        self.orb.cut()
+        self.wait_for_confirmation(self.orb,"CUT RDY")
 
-        # self.mega.cutopen()
-        # self.wait_for_confirmation(self.mega, "CUTOPEN COMPLETED")
-            
-            
-        # self.orb.sucction("OFF")
-        # self.wait_for_confirmation(self.orb,"SUCC OFF")
+        self.mega.cut()
+        self.wait_for_confirmation(self.mega, "CUT START")
+        self.wait_for_confirmation(self.mega, "CUT COMPLETED")
 
-        # self.mega.Nai("DOWN")
-        # self.wait_for_confirmation(self.mega,"PLATFORM LIFT DOWN")
+        time.sleep(0.2)
         
-        # self.orb.lid("CLOSE")
-        # self.wait_for_confirmation(self.orb,"LID ON")
+        self.orb.fetch()
+        self.wait_for_confirmation(self.orb,"FETCH RDY")
 
-        # self.orb.moveArm("STRG")
-        # self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
+        self.mega.cutopen()
+        self.wait_for_confirmation(self.mega, "CUTOPEN COMPLETED")
+        
+        self.orb.lid("CLOSE")
+        self.wait_for_confirmation(self.orb,"LID ON")
 
-        # self.StrgDish()
+        self.orb.moveArm("STRG")
+        self.wait_for_confirmation(self.orb,"MOVE COMPLETED")
+
+        self.StrgDish()
         
         self.current_run+=1
         
@@ -223,35 +225,35 @@ class AppController:
 
     def RemoveCart(self):
         
-        # self.orb.liftAll("UP")
-        # self.wait_for_confirmation(self.orb,"ALL LIFT UP")
+        self.orb.liftAll("UP")
+        self.wait_for_confirmation(self.orb,"ALL LIFT UP")
         
-        # self.orb2.releasAll()
-        # self.wait_for_confirmation(self.orb2,"RELEASED ALL")
+        self.orb2.releasAll()
+        self.wait_for_confirmation(self.orb2,"RELEASED ALL")
         
-        # self.orb.liftAll("TOP")
-        # self.wait_for_confirmation(self.orb,"ALL LIFT TOP")
+        self.orb.liftAll("TOP")
+        self.wait_for_confirmation(self.orb,"ALL LIFT TOP")
         
-        # self.orb2.grabAll()
-        # self.wait_for_confirmation(self.orb2,"GRABBED ALL")
+        self.orb2.grabAll()
+        self.wait_for_confirmation(self.orb2,"GRABBED ALL")
         
         self.current_screen.update_message()
     
     def LoadCart(self):
-        # self.orb.liftAll("TOP")
-        # self.wait_for_confirmation(self.orb,"ALL LIFT TOP")
+        self.orb.liftAll("TOP")
+        self.wait_for_confirmation(self.orb,"ALL LIFT TOP")
         
-        # self.orb2.releasAll()
-        # self.wait_for_confirmation(self.orb2,"RELEASED ALL")
+        self.orb2.releasAll()
+        self.wait_for_confirmation(self.orb2,"RELEASED ALL")
         
-        # self.orb.liftAll("UP")
-        # self.wait_for_confirmation(self.orb,"ALL LIFT UP")
+        self.orb.liftAll("UP")
+        self.wait_for_confirmation(self.orb,"ALL LIFT UP")
         
-        # self.orb2.grabAll()
-        # self.wait_for_confirmation(self.orb2,"GRABBED ALL")
+        self.orb2.grabAll()
+        self.wait_for_confirmation(self.orb2,"GRABBED ALL")
         
-        # self.orb.liftAll("DOWN")
-        # self.wait_for_confirmation(self.orb,"ALL LIFT DOWN")
+        self.orb.liftAll("DOWN")
+        self.wait_for_confirmation(self.orb,"ALL LIFT DOWN")
 
         self.numberOfPlates=1
         self.petriDishType=None
