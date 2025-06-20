@@ -1,0 +1,14 @@
+enum State{
+  EXTRUDE,
+  COLLECTION,
+  PREPCUT,
+  CUT,
+  CUTOPEN,
+  WAIT,
+  SBY,
+  NAIUP,
+  NAIDOWN,
+
+  
+  UNKNONW
+};

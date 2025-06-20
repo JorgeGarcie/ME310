@@ -527,7 +527,7 @@ class FakeController:
         self.photoRemove=tk.PhotoImage(file="Nuk/ImagesForGUI/RemoveIMG.png")
         self.photoInsert=tk.PhotoImage(file="Nuk/ImagesForGUI/Re-insertIMG.png")
         
-        root.attributes("-fullscreen", True)
+        #root.attributes("-fullscreen", True)
 
         self.numberOfPlates=10
         self.current_run=10
@@ -538,8 +538,8 @@ class FakeController:
         self.screens = [StartScreen, PetriSelector, SwabSelector3, NumberSelector,SummaryScreen,RunningScreen,WaitScreen,RemoveCRTG,InsertCRTG]
         self.idx=0
         self.current_screen=None
-        self.update()
-        self.root.after(5000,self.go_forward)
+        # self.update()
+        # self.root.after(5000,self.go_forward)
         
         
     def go_back(self):
@@ -1102,7 +1102,7 @@ class InoQControlPanel:
 def main():
     root = tk.Tk()
     FC=FakeController(root)
-    #app=NumberSelector(root,FC)
+    app=InsertCRTG(root,FC)
     root.mainloop()
 
 if __name__ == "__main__":
